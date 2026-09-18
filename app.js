@@ -142,7 +142,10 @@ player.addEventListener('cancel',event => {event.preventDefault();closeGame();})
 fullscreen.addEventListener('click',async () => {
   try {
     if(document.fullscreenElement) await document.exitFullscreen();
-    else await document.documentElement.requestFullscreen();
+    else {
+      const frame = stage.querySelector('iframe');
+      if (frame) await frame.requestFullscreen();
+    }
   } catch (_) {
     status.textContent = 'Fullscreen is unavailable in this browser view. Open the site in your desktop browser and try again.';
     status.hidden = false;

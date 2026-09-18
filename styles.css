@@ -71,3 +71,11 @@ body.playing{overflow:hidden}
 .storage-notice{color:#d4c9f0;background:#8b7bff15;padding:12px 16px;font-size:14px;margin:0 0 18px;border:1px solid #8b7bff40;border-radius:8px}
 #player-storage-notice{margin:0;border-radius:0}
 @media(max-width:700px){.search-area{height:150px;gap:12px}.player-bar{flex-wrap:wrap}.player-actions{flex-wrap:wrap}}
+
+/* Keep the catalog out of the player, even with browser fullscreen layers. */
+body.playing > .sidebar,body.playing > #catalog{visibility:hidden;pointer-events:none}
+#game-stage iframe:fullscreen{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;border:0;background:#000}
+.collection-nav{justify-content:center;gap:26px}
+.collection-nav a{padding:7px 5px;color:#a39bb8}
+.collection-nav a[aria-current=page]{background:transparent;color:var(--accent)}
+.collection-nav a:hover{background:#8b7bff12;color:var(--accent)}

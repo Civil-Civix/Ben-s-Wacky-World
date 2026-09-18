@@ -18,7 +18,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base);
  await page.locator('.game-card').first().waitFor();
- assert.equal(await page.locator('.game-card').count(),405);
+ assert.equal(await page.locator('.game-card').count(),405); assert.equal(await page.locator('.search-area').evaluate(e=>getComputedStyle(e).flexDirection),'column');
  assert.equal(await page.locator('.game-card img').count(),0);
  const width=await page.locator('.game-card').first().evaluate(e=>e.getBoundingClientRect().width);
  assert(width>=275 && width<=281);
@@ -31,7 +31,20 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  await page.locator('#reload').click();
  assert.equal(await page.locator('#game-stage iframe').count(),1);
  await page.locator('#fullscreen').click();
- await page.waitForFunction(()=>!!document.fullscreenElement);
+ await page.waitForFunction(()=>document.fullscreenElement?.tagName==='IFRAME');
+ assert(await page.locator('#catalog').isHidden());
+ assert(await page.locator('.sidebar').isHidden());
+ const fullscreenState=await page.evaluate(()=>{
+   const frame=document.fullscreenElement,box=frame.getBoundingClientRect();
+   return {width:box.width,height:box.height,viewportWidth:innerWidth,viewportHeight:innerHeight,top:document.elementFromPoint(10,10)?.tagName};
+ });
+ assert.equal(fullscreenState.width,fullscreenState.viewportWidth);
+ assert.equal(fullscreenState.height,fullscreenState.viewportHeight);
+ assert.equal(fullscreenState.top,'IFRAME');
+ await page.screenshot({path:path.join(__dirname,'fullscreen-check.png')});
+ await page.evaluate(()=>document.exitFullscreen());
+ await page.waitForFunction(()=>!document.fullscreenElement);
+ assert(await page.locator('#player').isVisible());
  await page.locator('#close').click();
  await page.getByRole('link',{name:'Favorites',exact:true}).click(); await page.waitForFunction(()=>document.querySelector('[data-view=favorites]').getAttribute('aria-current')==='page');
  assert.equal(await page.locator('.game-card').count(),1);
