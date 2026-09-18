@@ -162,21 +162,9 @@
     "source": "noah"
   },
   {
-    "id": "fih",
-    "title": "Fih",
-    "url": "library/noah/games/450.html",
-    "source": "noah"
-  },
-  {
     "id": "slendytubbies2",
     "title": "Slendytubbies 2",
     "url": "library/noah/games/457.html",
-    "source": "noah"
-  },
-  {
-    "id": "slendytubbies",
-    "title": "Slendytubbies 1",
-    "url": "library/noah/games/448.html",
     "source": "noah"
   },
   {
@@ -1614,12 +1602,6 @@
     "source": "noah"
   },
   {
-    "id": "slimerancher",
-    "title": "Slime Rancher",
-    "url": "library/noah/games/64.html",
-    "source": "noah"
-  },
-  {
     "id": "fnafpizzasim",
     "title": "FNAF: Pizza Sim",
     "url": "library/noah/games/1.html",
@@ -2061,12 +2043,6 @@
     "id": "runningfred",
     "title": "Running Fred",
     "url": "library/noah/games/232.html",
-    "source": "noah"
-  },
-  {
-    "id": "hextrix",
-    "title": "Hextrix",
-    "url": "library/noah/games/231.html",
     "source": "noah"
   },
   {

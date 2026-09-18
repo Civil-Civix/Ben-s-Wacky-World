@@ -5,6 +5,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  try {
  const context=await browser.newContext({viewport:{width:1920,height:1080}});
  const base='http://wacky.test';
+ const catalogCount=JSON.parse(fs.readFileSync(path.join(__dirname,'games.json'))).length;
  await context.route('**/*',async route=>{
    const url=new URL(route.request().url());
    if(url.origin!==base) return route.abort();
@@ -18,7 +19,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base+'/#all');
  await page.locator('.game-card').first().waitFor();
- assert.equal(await page.locator('.game-card').count(),405); assert.equal(await page.locator('.search-area').evaluate(e=>getComputedStyle(e).flexDirection),'column');
+ assert.equal(await page.locator('.game-card').count(),catalogCount); assert.equal(await page.locator('.search-area').evaluate(e=>getComputedStyle(e).flexDirection),'column');
  assert.equal(await page.locator('.game-card img').count(),0);
  const width=await page.locator('.game-card').first().evaluate(e=>e.getBoundingClientRect().width);
  assert(width>=275 && width<=281);
@@ -101,6 +102,6 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  await broken.getByRole('link',{name:'Favorites',exact:true}).click(); await broken.waitForFunction(()=>document.querySelector('[data-view=favorites]').getAttribute('aria-current')==='page');
  assert.equal(await broken.locator('.game-card').count(),1);
  assert.deepEqual(errors,[]);
- console.log(JSON.stringify({cards:405,columns:6,favoritesAddRemove:true,recentsOrderAndDeduplication:true,persistence:true,collectionSearch:true,fullscreenAndReload:true,purpleHover:true,artworkAndFallback:true,storageFailureHandled:true,pageErrors:errors,gameplay:'not tested; game frames mocked for UI checks'},null,2));
+ console.log(JSON.stringify({cards:catalogCount,columns:6,favoritesAddRemove:true,recentsOrderAndDeduplication:true,persistence:true,collectionSearch:true,fullscreenAndReload:true,purpleHover:true,artworkAndFallback:true,storageFailureHandled:true,pageErrors:errors,gameplay:'not tested; game frames mocked for UI checks'},null,2));
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

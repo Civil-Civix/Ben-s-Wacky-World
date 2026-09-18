@@ -1,0 +1,200 @@
+[
+  {
+    "id": "wheely",
+    "title": "Wheely",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "worldshardestgame",
+    "title": "The World's Hardest Game",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "worldshardestgame2",
+    "title": "The World's Hardest Game 2",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "worldshardestgame3",
+    "title": "The World's Hardest Game 3",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "worldshardestgame4",
+    "title": "The World's Hardest Game 4",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "bankrobbery2",
+    "title": "Bank Robbery 2",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "bankrobbery3",
+    "title": "Bank Robbery 3",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "needystreameroverload",
+    "title": "Needy Streamer Overload",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "pizzatower",
+    "title": "Pizza Tower",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "tiletopia",
+    "title": "TileTopia",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "endoparasitic2",
+    "title": "Endoparasitic 2",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "endoparasitic",
+    "title": "Endoparasitic",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "shiftatmidnight",
+    "title": "Shift at Midnight",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "roadoffury",
+    "title": "Road of Fury",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "roulettehero",
+    "title": "Roulette Hero",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "raldiscrackhouse",
+    "title": "Raldi's Crackhouse",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "boxingrandom",
+    "title": "Boxing Random",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "basketrandom",
+    "title": "Basket Random",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "tosstheturtle",
+    "title": "Toss The Turtle",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "papersplease",
+    "title": "Papers, Please",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "doom2",
+    "title": "Doom 2",
+    "injectedAdScriptsRemoved": 1,
+    "flashLoaderReplaced": false
+  },
+  {
+    "id": "peggle",
+    "title": "Peggle",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "achillies2",
+    "title": "Achillies 2",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "learntofly3",
+    "title": "Learn to Fly 3",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "madnessinteractive",
+    "title": "Madness Interactive",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "douchebaglife",
+    "title": "Douche Bag Life",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "appleworm",
+    "title": "Apple Worm",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "bindingofissacwotl",
+    "title": "Binding of Issac WOTL",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "linerider",
+    "title": "Line Rider",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "supersmashflash2",
+    "title": "Super Smash Flash 2",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "raftwars2",
+    "title": "Raft Wars 2",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "8ballpool",
+    "title": "8Ball Pool",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  },
+  {
+    "id": "impossiblequiz",
+    "title": "Impossible Quiz",
+    "injectedAdScriptsRemoved": 0,
+    "flashLoaderReplaced": true
+  }
+]

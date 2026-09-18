@@ -1,0 +1,2837 @@
+[
+  {
+    "id": "peak",
+    "title": "PEAK",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "trombonechamp",
+    "title": "Trombone Champ",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "clustertruck",
+    "title": "Clustertruck",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "granny3",
+    "title": "Granny 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "grandtheftauto3",
+    "title": "Grand Theft Auto 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "inscryption",
+    "title": "Inscryption",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "lobotomycorporation",
+    "title": "Lobotomy Corporation",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kickthebuddy",
+    "title": "Kick the Buddy",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "lamadriguera",
+    "title": "La Madriguera",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "geometrydash",
+    "title": "Geometry Dash",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "plantsvszombies",
+    "title": "Plants Vs Zombies",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "metalgearsolid",
+    "title": "Metal Gear Solid",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hyppersandbox",
+    "title": "Hypper Sandbox",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfvsshucksv2",
+    "title": "FNF vs Shucks V2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cuphead",
+    "title": "Cup Head",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "yohohoio",
+    "title": "YoHoHo.io",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "totallyaccuratebattlesimulator",
+    "title": "Totally Accurate Battle Simulator",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "justshapesbeats",
+    "title": "Just Shapes & Beats",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "intospace2",
+    "title": "Into Space 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "animalcrossing",
+    "title": "Animal Crossing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "rocketgoalio",
+    "title": "Rocket Goal.io",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "20minutestilldawn",
+    "title": "20 Minutes Till Dawn",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "rhythmheaven",
+    "title": "Rhythm Heaven",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "crueltysquad",
+    "title": "Cruelty Squad",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "plagueinc",
+    "title": "Plague Inc",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "beatblock",
+    "title": "BeatBlock",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "escaperoad3",
+    "title": "Escape Road 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fih",
+    "title": "Fih",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "slendytubbies2",
+    "title": "Slendytubbies 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "slendytubbies",
+    "title": "Slendytubbies 1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "lethalape",
+    "title": "Lethal Ape",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "spaceflightsimulator",
+    "title": "Spaceflight Simulator",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "badpiggies",
+    "title": "Bad Piggies",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stardewvalley",
+    "title": "Stardew Valley",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "diceamillion",
+    "title": "Dice A Million",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "helltaker",
+    "title": "Helltaker",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "vibribbon",
+    "title": "Vib-Ribbon",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "whosyourdaddy",
+    "title": "Who's Your Daddy?",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "minecraft1121",
+    "title": "Minecraft 1.12.1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ihavenomouthandimustscream",
+    "title": "I Have No Mouth, and I Must Scream",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cheeseroll",
+    "title": "CheeseRoll",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cleggycar",
+    "title": "Cleggy Car",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "overburden",
+    "title": "Overburden",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "brotato",
+    "title": "Brotato",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "serialexperimentslain",
+    "title": "Serial Experiments Lain",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stickmanduel",
+    "title": "Stickman Duel",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "youronlymoveishustle",
+    "title": "Your Only Move Is HUSTLE",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hollowknightsilksong",
+    "title": "Hollow Knight: Silksong",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "goingballs",
+    "title": "Going Balls",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bartbash",
+    "title": "Bart Bash",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hobo1",
+    "title": "Hobo 1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hobo2",
+    "title": "Hobo 2: Prison Brawl",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hobo3",
+    "title": "Hobo 3: Wanted",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hobo4",
+    "title": "Hobo 4: Total War",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hobo5",
+    "title": "Hobo 5: Space Brawls",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cookieclicker",
+    "title": "Cookie Clicker",
+    "removedAdScripts": 1,
+    "removedAdSlots": 2,
+    "popupGuard": true
+  },
+  {
+    "id": "littlealchemy2",
+    "title": "Little Alchemy 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "scaryshawarma",
+    "title": "Scary Shawarma",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "commandconquer",
+    "title": "Command & Conquer",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fish",
+    "title": "FISH",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "umjammerlammy",
+    "title": "Um Jammer Lammy",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "brawlsimulator",
+    "title": "Brawl Simulator",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "googlebaseball",
+    "title": "Google Baseball",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dumbwaystodie",
+    "title": "Dumb Ways to Die",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ultrapool",
+    "title": "Ultrapool",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "abiteatfreddys",
+    "title": "A Bite at Freddy's",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wheely",
+    "title": "Wheely",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "worldshardestgame",
+    "title": "The World's Hardest Game",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "worldshardestgame2",
+    "title": "The World's Hardest Game 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "worldshardestgame3",
+    "title": "The World's Hardest Game 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "worldshardestgame4",
+    "title": "The World's Hardest Game 4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "escaperoadcity2",
+    "title": "Escape Road City 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "luminesii",
+    "title": "Lumines II",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bankrobbery2",
+    "title": "Bank Robbery 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bankrobbery3",
+    "title": "Bank Robbery 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "madnesscombatprojectnexus",
+    "title": "Madness Combat: Project Nexus",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "alienhominid",
+    "title": "Alien Hominid",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "customersupport",
+    "title": "Customer Support",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deadseat",
+    "title": "The Deadseat",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fireboyandwatergirl",
+    "title": "Fireboy and Watergirl: Forest Temple",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deltatraveler",
+    "title": "Deltatraveler",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "needystreameroverload",
+    "title": "Needy Streamer Overload",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pizzatower",
+    "title": "Pizza Tower",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tiletopia",
+    "title": "TileTopia",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "earntodie",
+    "title": "Earn to Die",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "earntodie2",
+    "title": "Earn to Die 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bartblast",
+    "title": "Bart Blast",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bendyandtheinkmachineallchapters",
+    "title": "Bendy and the Ink Machine: All Chapters",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gachalife",
+    "title": "Gacha Life",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gachaverse",
+    "title": "Gacha Verse",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tungsahurhorror",
+    "title": "Tung Sahur Horror",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "horrortale",
+    "title": "Horror Tale",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloonstd1",
+    "title": "Bloons Tower Defense 1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloonstd2",
+    "title": "Bloons Tower Defense 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloonstd3",
+    "title": "Bloons Tower Defense 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloonstd4",
+    "title": "Bloons Tower Defense 4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloonstd5",
+    "title": "Bloons Tower Defense 5",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "endoparasitic2",
+    "title": "Endoparasitic 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "endoparasitic",
+    "title": "Endoparasitic",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "babysniperinvietnam",
+    "title": "Baby Sniper In Vietnam",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "shiftatmidnight",
+    "title": "Shift at Midnight",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "roadoffury",
+    "title": "Road of Fury",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "roulettehero",
+    "title": "Roulette Hero",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fearassessment",
+    "title": "Fear Assessment",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dimensionincident",
+    "title": "Dimension Incident",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "raldiscrackhouse",
+    "title": "Raldi's Crackhouse",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "christmasmassacre",
+    "title": "Christmas Massacre",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "boxingrandom",
+    "title": "Boxing Random",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "volleyrandom",
+    "title": "Volley Random",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "basketrandom",
+    "title": "Basket Random",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "soccerrandom",
+    "title": "Soccer Random",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "littlebigplanet",
+    "title": "Little Big Planet",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bindingofisaacrebirth",
+    "title": "The Binding of Isaac: Rebirth",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "littlestpetshopcityfriends",
+    "title": "Littlest Pet Shop City Friends",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cloverpit",
+    "title": "Cloverpit",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "peaksofyore",
+    "title": "Peaks of Yore",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "silenthill",
+    "title": "Silent Hill",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dadnme",
+    "title": "Dad 'n Me",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fivenightsatcandys1",
+    "title": "Five Nights at Candy's 1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fivenightsatcandys2",
+    "title": "Five Nights at Candy's 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "untitledgoosegame",
+    "title": "Untitled Goose Game",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deltarunechapters34",
+    "title": "Deltarune Chapters 3 & 4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "earthbound",
+    "title": "Earthbound",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hamtarohamhamheartbreak",
+    "title": "Hamtaro: Ham-Ham Heartbreak",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "classof09",
+    "title": "Class of '09",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "antonblast",
+    "title": "Antonblast",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ironlung",
+    "title": "Iron Lung",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "superhot",
+    "title": "Superhot",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "omori",
+    "title": "OMORI",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fearhunger",
+    "title": "Fear & Hunger",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "doodlejump",
+    "title": "Doodle Jump",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "karlson",
+    "title": "Karlson",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tosstheturtle",
+    "title": "Toss The Turtle",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "survivorio",
+    "title": "Survivor.io",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "peopleplayground",
+    "title": "People Playground",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papersplease",
+    "title": "Papers, Please",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "beeswarmsimulatorhtmlversion",
+    "title": "Beeswarm Simulator (html version)",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "timeshooter3",
+    "title": "Time Shooter 3: SWAT",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "timeshooter2",
+    "title": "Time Shooter 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "timeshooter1",
+    "title": "Time Shooter 1",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "manfromthewindow",
+    "title": "The Man FROM The Window",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "realflightsimulator",
+    "title": "Real Flight Simulator",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "johnnytrigger",
+    "title": "Johnny Trigger",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kirbysoftwet",
+    "title": "Kirby Soft & Wet",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "vsrewriteround2",
+    "title": "VS Rewrite: ROUND 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stickmandestruction",
+    "title": "Stickman Destruction",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stickmanfightragdoll",
+    "title": "Stickman Fight Ragdoll",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gobble",
+    "title": "Gobble",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tag",
+    "title": "Tag",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bitplanes",
+    "title": "BitPlanes",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "halflifeopposingforce",
+    "title": "Half Life: Opposing Force",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "adifficultgameaboutclimbing",
+    "title": "A Difficult Game About Climbing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stickwarlegacy",
+    "title": "Stick War Legacy",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "busterjam",
+    "title": "Buster Jam",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dungeonsdegenerategamblers",
+    "title": "Dungeons & Degenerate Gamblers",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gorillatag",
+    "title": "Gorilla Tag",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "goblingoopmaxxing",
+    "title": "Goblin Goopmaxxing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "midnightshift",
+    "title": "Midnight Shift",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "orangeroulette",
+    "title": "Orange Roulette",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fivenightsatwinstons",
+    "title": "Five Nights at Winstons",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "finalfantasyvii",
+    "title": "Final Fantasy VII",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pleasedonttouchanything",
+    "title": "Please Dont Touch Anything",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "minesweeper",
+    "title": "Minesweeper Classic",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pixelgun3d",
+    "title": "Pixel Gun 3D",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "flyinggorilla",
+    "title": "Flying Gorilla",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "eattherich",
+    "title": "Eat The Rich",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "grandthefautovicecity",
+    "title": "Grand Thef Auto Vice City",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "heretic",
+    "title": "Heretic",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "baconmaydie",
+    "title": "Bacon May Die",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "oneshot",
+    "title": "Oneshot",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "jellydrift",
+    "title": "Jelly Drift",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfrewrite",
+    "title": "FNF Rewrite",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "terraria",
+    "title": "Terraria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "celeste",
+    "title": "Celeste",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "burritobison",
+    "title": "Burrito Bison",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tanukisunset",
+    "title": "Tanuki Sunset",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "swordfight",
+    "title": "SwordFight!!",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stationsaturn",
+    "title": "Station Saturn",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "spelunkyclassichd",
+    "title": "Spelunky Classic HD",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sonicexe",
+    "title": "Sonic.EXE",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "minesweeperplus",
+    "title": "Minesweeper Plus",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kittytoy",
+    "title": "Kitty Toy",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "happywheels",
+    "title": "Happy Wheels",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "googlefeud",
+    "title": "Google Feud",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "basketballstars",
+    "title": "Basketball Stars",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "daggerfall",
+    "title": "Daggerfall",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "portal",
+    "title": "Portal",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "icedodo",
+    "title": "Ice Dodo",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "doom",
+    "title": "Doom",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "doom2",
+    "title": "Doom 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "callofdutyworldatwar",
+    "title": "Call of Duty: World at War",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "callofduty4modernwarfare",
+    "title": "Call of Duty 4: Modern Warfare",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "peggle",
+    "title": "Peggle",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "aceattorney",
+    "title": "Ace Attorny",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfagoti",
+    "title": "FNF Agoti",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfblackbetrayal",
+    "title": "FNF Black Betrayal",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfbside",
+    "title": "FNF B-Side",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfcamellia",
+    "title": "FNF Camellia",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfimpostorv4",
+    "title": "FNF Impostor V4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfindiecross",
+    "title": "FNF Indie Cross",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfkapi",
+    "title": "FNF Kapi",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfmariomadness",
+    "title": "FNF Mario Madness",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfpibbyapocalypse",
+    "title": "FNF Pibby Apocalypse",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfshaggyxmatt",
+    "title": "FNF Shaggy X Matt",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfsonicexe",
+    "title": "FNF Sonic.exe",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfgarcello",
+    "title": "FNF Garcello",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnfhitsingle",
+    "title": "FNF Hit Single",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papasdonuteria",
+    "title": "Papa's Donuteria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papasburgeria",
+    "title": "Papa's Burgeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papascheeseria",
+    "title": "Papa's Cheeseria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papascupcakeria",
+    "title": "Papa's Cupcakeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papasfreezeria",
+    "title": "Papa's Freezeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papashotdoggeria",
+    "title": "Papa's Hot Doggeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papaspancakeria",
+    "title": "Papa's Pancakeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papaspastaria",
+    "title": "Papa's Pastaria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papasscooperia",
+    "title": "Papa's Scooperia",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papassushiria",
+    "title": "Papa's Sushiria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papastacomia",
+    "title": "Papa's Taco Mia",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papaswingeria",
+    "title": "Papa's Wingeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "papaspizzeria",
+    "title": "Papa's Pizzeria",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "achillies2",
+    "title": "Achillies 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "russiancounterstrike",
+    "title": "Russian Counter Strike",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deltarune",
+    "title": "Deltarune",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "learntofly3",
+    "title": "Learn to Fly 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "legobatman2",
+    "title": "Lego Batman 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "legostarwarscompletesaga",
+    "title": "Lego Starwars Complete Saga",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "madnessinteractive",
+    "title": "Madness Interactive",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tonyhawksproskater",
+    "title": "Tony Hawks Pro Skater",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "postal",
+    "title": "Postal",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "residentevil3",
+    "title": "Resident Evil 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "scribblenauts",
+    "title": "Scribblenauts",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sprunki",
+    "title": "Sprunki",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "amazingropepolice",
+    "title": "Strange Rope Police",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "streetfighteriii",
+    "title": "Street Fighter III",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "superliquidsoccer",
+    "title": "Super Liquid Soccer",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tempoverdose",
+    "title": "Tempoverdose",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "abandoned",
+    "title": "Abandoned",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "plantsvszombies2",
+    "title": "Plants Vs Zombies 2",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hotlinemiami",
+    "title": "Hotline Miami",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "balatro",
+    "title": "Balatro",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wolfenstein3d",
+    "title": "Wolfenstein 3D",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "zombotronreboot",
+    "title": "Zombotron Reboot",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "mortalkombat4",
+    "title": "Mortal Kombat 4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "undertale",
+    "title": "Undertale",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "majorasmask",
+    "title": "The Legend of Zelda Majora's Mask",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cookingmama3",
+    "title": "Cooking Mama 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cookingmama2",
+    "title": "Cooking Mama 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cookingmama",
+    "title": "Cooking Mama",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloodmoney",
+    "title": "BloodMoney",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bigshotboxing",
+    "title": "Big Shot Boxing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "assessmentexamination",
+    "title": "Assessment Examination",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "schoolboyrunaway",
+    "title": "Schoolboy Runaway",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fearstofathomhomealone",
+    "title": "Fears To Fathom: Home Alone",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dantheman",
+    "title": "Dan The Man",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "residentevil2",
+    "title": "Resident Evil 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "getyoked",
+    "title": "Get Yoked",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "douchebaglife",
+    "title": "Douche Bag Life",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "donkeykong",
+    "title": "Donkey Kong",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "appleworm",
+    "title": "Apple Worm",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "chess",
+    "title": "Chess",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dokidokiliteratureclub",
+    "title": "Doki Doki Literature Club",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gettingoverit",
+    "title": "Getting Over It",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tattletail",
+    "title": "Tattletail",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sonicthehedgehog3",
+    "title": "Sonic the Hedgehog 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sonicthehedgehog2",
+    "title": "Sonic the Hedgehog 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sonicmania",
+    "title": "Sonic Mania",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "soniccd",
+    "title": "Sonic CD",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wartheknights",
+    "title": "War The Knights",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "buckshotroulette",
+    "title": "Buckshot Roulette",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "slimerancher",
+    "title": "Slime Rancher",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnafpizzasim",
+    "title": "FNAF: Pizza Sim",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "baseballbros",
+    "title": "Baseball Bros",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "adanceoffireandice",
+    "title": "A Dance of Fire and Ice",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "smashykart",
+    "title": "Smashy Kart",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "retrobowlcollege",
+    "title": "Retro Bowl College",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deepestsword",
+    "title": "Deepest Sword",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tomodachilife",
+    "title": "Tomodachi Life",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnafsisterlocation",
+    "title": "FNAF: Sister Location",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fallout",
+    "title": "Fallout",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "rocketleague",
+    "title": "Rocket League",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "streetfighter2",
+    "title": "Street Fighter II",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "superstarcar",
+    "title": "Super Star Car",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stealabrainrotonline",
+    "title": "Steal a Brainrot Online",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "yanderesimulator",
+    "title": "Yandere Simulator",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "twerkrace3d",
+    "title": "Twerk Race 3D",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "quakeiii",
+    "title": "Quake III",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "nubbysnumberfactory",
+    "title": "Nubby's Number Factory",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "genericfightermaybe",
+    "title": "Generic Fighter Maybe",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "deathrun3d",
+    "title": "Death Run 3D",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "clashroyale",
+    "title": "Clash Royale",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "parappatherapper",
+    "title": "PaRappa The Rapper",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hollowknight",
+    "title": "Hollow Knight",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bindingofissacwotl",
+    "title": "Binding of Issac WOTL",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bladeball",
+    "title": "Blade Ball",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "agesofconflict",
+    "title": "Ages of Conflict",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "trivacrack",
+    "title": "Triva Crack",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bowmasters",
+    "title": "Bow Masters",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "angrybirds",
+    "title": "Angry Birds",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnafworld",
+    "title": "FNAF: World",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "solarsmash",
+    "title": "Solar Smash",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "idleminingempire",
+    "title": "Idle Mining Empire",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "highwayracers2",
+    "title": "Highway Racers 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bouncemasters",
+    "title": "Bounce Masters",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "repo",
+    "title": "R.E.P.O",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "raft",
+    "title": "Raft",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sideeffects",
+    "title": "Side Effects",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "slender",
+    "title": "Slender",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "linerider",
+    "title": "Line Rider",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kindergarten3",
+    "title": "Kindergarten 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kindergarten2",
+    "title": "Kindergarten 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "kindergarten",
+    "title": "Kindergarten",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "granny2",
+    "title": "Granny 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "granny",
+    "title": "Granny",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "badparenting",
+    "title": "Bad Parenting",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "baldisbasics",
+    "title": "Baldis Basics",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "candycrush",
+    "title": "Candy Crush",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "thatsnotmyneighbor",
+    "title": "That's Not My Neighbor",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ultrakill",
+    "title": "ULTRAKILL",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "webfishing",
+    "title": "WebFishing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "superfallingfred",
+    "title": "Super Falling Fred",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pokemonemerald",
+    "title": "Pokemon Emerald",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "supersmashflash2",
+    "title": "Super Smash Flash 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "idlebreakout",
+    "title": "Idle Breakout",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gunmayhem2",
+    "title": "Gun Mayhem 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gunmayhem",
+    "title": "Gun Mayhem",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bigtowertinysquare",
+    "title": "Big Tower Tiny Square",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bigtowertinysquare2",
+    "title": "Big Tower Tiny Square 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pokemonfirered",
+    "title": "Pokemon Firered",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stakemines",
+    "title": "Stake Mines",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "blumgirocket",
+    "title": "Blumgi Rocket",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "raftwars2",
+    "title": "Raft Wars 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "8ballpool",
+    "title": "8Ball Pool",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "escaperoad",
+    "title": "Escape Road",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ovo",
+    "title": "OvO",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fruitninja",
+    "title": "Fruit Ninja",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "theyrecoming",
+    "title": "They're Coming",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "flappybird",
+    "title": "Flappy Bird",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "recoil",
+    "title": "Recoil",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ultimatecardrivinggame",
+    "title": "Ultimate Car Driving Game",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "crazycattle3d",
+    "title": "Crazy Cattle 3D",
+    "removedAdScripts": 1,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "run3",
+    "title": "Run 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "vex8",
+    "title": "Vex 8",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "appleshooter",
+    "title": "Apple Shooter",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "runningfred",
+    "title": "Running Fred",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hextrix",
+    "title": "Hextrix",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "jellytruck",
+    "title": "Jelly Truck",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "rooftopsnipers2",
+    "title": "Rooftop Snipers 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "holeio",
+    "title": "Hole.io",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wrassling",
+    "title": "Wrassling",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "hillclimbracing",
+    "title": "Hillclimb Racing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "leveldevil",
+    "title": "Level Devil",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "templerun2",
+    "title": "Temple Run 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "boxinglive2",
+    "title": "Boxing Live 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "supermario64",
+    "title": "Super Mario 64",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wheeliebike2",
+    "title": "Wheelie Bike 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bloxorz",
+    "title": "Bloxorz",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "impossiblequiz",
+    "title": "Impossible Quiz",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stickmanhook",
+    "title": "Stickman Hook",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "riorex",
+    "title": "Rio Rex",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stacktris",
+    "title": "Stacktris",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "plinko",
+    "title": "Plinko",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "blockysnakes",
+    "title": "Blocky Snakes",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "crossyroad",
+    "title": "Crossy Road",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "happyroom",
+    "title": "Happy Room",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "zombocalypse2",
+    "title": "Zombocalypse 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "pou",
+    "title": "Pou",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "backrooms",
+    "title": "Backrooms",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "getawayshootout",
+    "title": "Getaway Shootout",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "snowrider3d",
+    "title": "Snow Rider 3D",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gladihoppers",
+    "title": "Gladihoppers",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "paperio2",
+    "title": "Paper.io 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "polytrack",
+    "title": "Poly Track",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ragdollhit",
+    "title": "Ragdoll Hit",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "gunspin",
+    "title": "Gun Spin",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "subwaysurfers",
+    "title": "Subway Surfers",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "blockblast",
+    "title": "Block Blast",
+    "removedAdScripts": 2,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "stackydash",
+    "title": "Stacky Dash",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "driftboss",
+    "title": "Drift Boss",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fridaynightfunkin",
+    "title": "Friday Night Funkin",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "codnazizombiesportable",
+    "title": "COD Nazi Zombies Portable",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "adventurecapitalist",
+    "title": "Adventure Capitalist",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "1v1lol",
+    "title": "1v1.lol",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ragdollarchers",
+    "title": "Ragdoll Archers",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "retrobowl",
+    "title": "Retro Bowl",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "halflife",
+    "title": "Half Life",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "jetpackjoyride",
+    "title": "Jetpack Joyride",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "sandgame",
+    "title": "Sand Game",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnaf1",
+    "title": "FNAF",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnaf2",
+    "title": "FNAF 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnaf3",
+    "title": "FNAF 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fnaf4",
+    "title": "FNAF 4",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "madalinstuntcars3",
+    "title": "Madalin Stunt Cars 3",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tinyfishing",
+    "title": "Tiny Fishing",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "chromedino",
+    "title": "Chrome Dino",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "dodgeball",
+    "title": "Dodge Ball",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "ageofwar2",
+    "title": "Age of War 2",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "slope",
+    "title": "Slope",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "bitlife",
+    "title": "Bitlife",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "drifthunters",
+    "title": "Drift Hunters",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "cuttherope",
+    "title": "Cut The Rope",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "tombofthemask",
+    "title": "Tomb of the Mask",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "wordle",
+    "title": "Wordle",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "monkeymart",
+    "title": "Monkey Mart",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "shortlife",
+    "title": "Short Life",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  },
+  {
+    "id": "fivenightsatepstein",
+    "title": "Five Nights at Epstein",
+    "removedAdScripts": 0,
+    "removedAdSlots": 0,
+    "popupGuard": true
+  }
+]

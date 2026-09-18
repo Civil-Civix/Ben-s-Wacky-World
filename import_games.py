@@ -26,11 +26,15 @@ def key(title):
     title=re.sub(r'^(bloonstowerdefense|bloonstd|btd)(\d*)$',lambda m:'bloonstd'+(m[2] or '1'),title)
     return ALIASES.get(title,title)
 
+disabled_path=ROOT/'disabled-games.json'
+disabled_ids={g['id'] for g in json.loads(disabled_path.read_text(encoding='utf-8-sig'))} if disabled_path.exists() else set()
+
 catalog=[]; skipped=[]; seen={}; seen_paths=set(); selected={'noah':[],'seraph':[]}
 for source in ACTIVE_SOURCES:
     for game in inventory[source]:
         if game['entry'].endswith('/'): continue
         k=key(game['title'])
+        if k in disabled_ids: continue
         if k in seen or game['entry'] in seen_paths:
             skipped.append({'title':game['title'],'source':source,'kept':seen.get(k,'same launch file')})
             continue

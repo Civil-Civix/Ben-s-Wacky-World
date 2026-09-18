@@ -1,0 +1,431 @@
+# Game audit
+
+Completed audit of all 405 original games.
+
+| Result | Count |
+|---|---:|
+| uncertain | 331 |
+| confirmed-failed | 4 |
+| appears-loaded | 70 |
+
+Open game-audit-review.html through Start Local.cmd to review uncertain games. Its working/broken marks are saved in this browser and never delete files.
+
+Checks used a real desktop browser and the same game-frame permissions as the site. Each game received a short loading check, and Flash click-to-start screens were clicked. Suspected missing-file failures were retried. Large downloads and timeouts stayed uncertain. Appears-loaded means visible game content or emulator metadata, not a verified full play-through.
+
+Ad cleanup removes known embedded ad scripts, AdSense slots, and injected ad sidebars; replaces modified Flash loaders with the local emulator; and blocks known ad hosts and popup windows in local game documents. Ads inside cross-origin remote game frames cannot be guaranteed removable from this repository. Credits and ordinary game content are retained.
+
+Original HTML backups and local screenshots are in .audit-backups/ and .audit-evidence/ (ignored by Git). Removed catalog entries are listed in disabled-games.json; their game files were not deleted.
+
+## Hidden after repeated failure
+
+- Fih: Failed on two attempts with missing required game assets. Hidden from the catalog; files kept.
+- Hextrix: Failed on two attempts with missing required game assets. Hidden from the catalog; files kept.
+- Slendytubbies 1: Failed on two attempts with missing required game assets. Hidden from the catalog; files kept.
+- Slime Rancher: Failed on two attempts with missing required game assets. Hidden from the catalog; files kept.
+
+## Uncertain: please review
+
+- **1v1.lol** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **20 Minutes Till Dawn** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **A Bite at Freddy's** — Still loading at the audit cutoff. Large games may need much longer.
+- **A Dance of Fire and Ice** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **A Difficult Game About Climbing** — Still loading at the audit cutoff. Large games may need much longer.
+- **Ace Attorny** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Adventure Capitalist** — Large download: 90 MB. Kept for you to check manually.
+- **Ages of Conflict** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Angry Birds** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Animal Crossing** — Still loading at the audit cutoff. Large games may need much longer.
+- **Antonblast** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Assessment Examination** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Baby Sniper In Vietnam** — Reached 100 MB download budget. Kept for you to check manually.
+- **Backrooms** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Bacon May Die** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Bad Parenting** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Balatro** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Baldis Basics** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Bank Robbery 2** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Bank Robbery 3** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Bart Bash** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Bart Blast** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Baseball Bros** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Basket Random** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Basketball Stars** — Still loading at the audit cutoff. Large games may need much longer.
+- **BeatBlock** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Bendy and the Ink Machine: All Chapters** — Still loading at the audit cutoff. Large games may need much longer.
+- **Big Shot Boxing** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Big Tower Tiny Square** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Big Tower Tiny Square 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Bitlife** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **BitPlanes** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Blade Ball** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Block Blast** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Blocky Snakes** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **BloodMoney** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Blumgi Rocket** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Bounce Masters** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Bow Masters** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Boxing Random** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Brawl Simulator** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Brotato** — Reached 100 MB download budget. Kept for you to check manually.
+- **Buckshot Roulette** — Still loading at the audit cutoff. Large games may need much longer.
+- **Burrito Bison** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Buster Jam** — Reached 100 MB download budget. Kept for you to check manually.
+- **Call of Duty 4: Modern Warfare** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Call of Duty: World at War** — Still loading at the audit cutoff. Large games may need much longer.
+- **Celeste** — Large download: 97 MB. Kept for you to check manually.
+- **CheeseRoll** — Still loading at the audit cutoff. Large games may need much longer.
+- **Chess** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Christmas Massacre** — Reached 100 MB download budget. Kept for you to check manually.
+- **Chrome Dino** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Clash Royale** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Class of '09** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Cleggy Car** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Cloverpit** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Clustertruck** — Still loading at the audit cutoff. Large games may need much longer.
+- **Cookie Clicker** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Cooking Mama** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Cooking Mama 2** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Cooking Mama 3** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Crossy Road** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Cruelty Squad** — Still loading at the audit cutoff. Large games may need much longer.
+- **Cup Head** — Still loading at the audit cutoff. Large games may need much longer.
+- **Customer Support** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Cut The Rope** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Daggerfall** — Still loading at the audit cutoff. Large games may need much longer.
+- **Dan The Man** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Death Run 3D** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Deepest Sword** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Deltarune** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Deltarune Chapters 3 & 4** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Deltatraveler** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Dice A Million** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Dimension Incident** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Dodge Ball** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Doki Doki Literature Club** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Donkey Kong** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Doodle Jump** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Drift Boss** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Drift Hunters** — Reached 100 MB download budget. Kept for you to check manually.
+- **Dungeons & Degenerate Gamblers** — Large download: 93 MB. Kept for you to check manually.
+- **Earthbound** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Eat The Rich** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Endoparasitic** — Still loading at the audit cutoff. Large games may need much longer.
+- **Endoparasitic 2** — Large download: 88 MB. Kept for you to check manually.
+- **Escape Road** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Escape Road 3** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Escape Road City 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Fallout** — Reached 100 MB download budget. Kept for you to check manually.
+- **Fear & Hunger** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Fear Assessment** — Reached 100 MB download budget. Kept for you to check manually.
+- **Fears To Fathom: Home Alone** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Final Fantasy VII** — Reached 100 MB download budget. Kept for you to check manually.
+- **FISH** — Reached 100 MB download budget. Kept for you to check manually.
+- **Five Nights at Candy's 1** — Reached 100 MB download budget. Kept for you to check manually.
+- **Five Nights at Candy's 2** — Reached 100 MB download budget. Kept for you to check manually.
+- **Five Nights at Epstein** — Reached 100 MB download budget. Kept for you to check manually.
+- **Flappy Bird** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Flying Gorilla** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNAF** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF 2** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF 3** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF 4** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF: Pizza Sim** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF: Sister Location** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNAF: World** — Still loading at the audit cutoff. Large games may need much longer.
+- **FNF Agoti** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF B-Side** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Black Betrayal** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF Camellia** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF Garcello** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Hit Single** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Impostor V4** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Indie Cross** — Reached 100 MB download budget. Kept for you to check manually.
+- **FNF Kapi** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF Mario Madness** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF Pibby Apocalypse** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **FNF Rewrite** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Shaggy X Matt** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **FNF Sonic.exe** — Reached 100 MB download budget. Kept for you to check manually.
+- **FNF vs Shucks V2** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Friday Night Funkin** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Fruit Ninja** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Gacha Life** — Large download: 88 MB. Kept for you to check manually.
+- **Gacha Verse** — Large download: 89 MB. Kept for you to check manually.
+- **Generic Fighter Maybe** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Geometry Dash** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Get Yoked** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Getaway Shootout** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Getting Over It** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Gladihoppers** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Gobble** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Goblin Goopmaxxing** — Reached 100 MB download budget. Kept for you to check manually.
+- **Going Balls** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Google Baseball** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Google Feud** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Gorilla Tag** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Grand Thef Auto Vice City** — Reached 100 MB download budget. Kept for you to check manually.
+- **Grand Theft Auto 3** — Still loading at the audit cutoff. Large games may need much longer.
+- **Granny** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Granny 2** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Granny 3** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Gun Spin** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Half Life** — Reached 100 MB download budget. Kept for you to check manually.
+- **Half Life: Opposing Force** — Still loading at the audit cutoff. Large games may need much longer.
+- **Hamtaro: Ham-Ham Heartbreak** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Happy Room** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Happy Wheels** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Helltaker** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Highway Racers 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Hillclimb Racing** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Hole.io** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Hollow Knight** — Still loading at the audit cutoff. Large games may need much longer.
+- **Hollow Knight: Silksong** — Still loading at the audit cutoff. Large games may need much longer.
+- **Horror Tale** — Large download: 100 MB. Kept for you to check manually.
+- **Hotline Miami** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Hypper Sandbox** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **I Have No Mouth, and I Must Scream** — Reached 100 MB download budget. Kept for you to check manually.
+- **Ice Dodo** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Idle Breakout** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Idle Mining Empire** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Impossible Quiz** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Inscryption** — Still loading at the audit cutoff. Large games may need much longer.
+- **Into Space 2** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Iron Lung** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Jelly Drift** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Jelly Truck** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Jetpack Joyride** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Johnny Trigger** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Just Shapes & Beats** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Karlson** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Kick the Buddy** — Still loading at the audit cutoff. Large games may need much longer.
+- **Kindergarten** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Kindergarten 2** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Kindergarten 3** — Still loading at the audit cutoff. Large games may need much longer.
+- **Kirby Soft & Wet** — Reached 100 MB download budget. Kept for you to check manually.
+- **Kitty Toy** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **La Madriguera** — Still loading at the audit cutoff. Large games may need much longer.
+- **Lego Batman 2** — Still loading at the audit cutoff. Large games may need much longer.
+- **Lego Starwars Complete Saga** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Lethal Ape** — Large download: 88 MB. Kept for you to check manually.
+- **Level Devil** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Little Alchemy 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Little Big Planet** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Littlest Pet Shop City Friends** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Lobotomy Corporation** — Still loading at the audit cutoff. Large games may need much longer.
+- **Lumines II** — Still loading at the audit cutoff. Large games may need much longer.
+- **Madalin Stunt Cars 3** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Metal Gear Solid** — Reached 100 MB download budget. Kept for you to check manually.
+- **Midnight Shift** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Minecraft 1.12.1** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Minesweeper Classic** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Minesweeper Plus** — Still loading at the audit cutoff. Large games may need much longer.
+- **Monkey Mart** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Mortal Kombat 4** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Needy Streamer Overload** — Still loading at the audit cutoff. Large games may need much longer.
+- **Nubby's Number Factory** — An outside server refused or limited a request. It may behave differently in your browser.
+- **OMORI** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Oneshot** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Overburden** — Still loading at the audit cutoff. Large games may need much longer.
+- **OvO** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Paper.io 2** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Papers, Please** — An outside server refused or limited a request. It may behave differently in your browser.
+- **PaRappa The Rapper** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **PEAK** — Reached 100 MB download budget. Kept for you to check manually.
+- **Peaks of Yore** — Still loading at the audit cutoff. Large games may need much longer.
+- **People Playground** — Reached 100 MB download budget. Kept for you to check manually.
+- **Pixel Gun 3D** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Pizza Tower** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Plague Inc** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Plants Vs Zombies** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Plants Vs Zombies 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Plinko** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Pokemon Emerald** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Pokemon Firered** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Poly Track** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Portal** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Postal** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Pou** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Quake III** — Still loading at the audit cutoff. Large games may need much longer.
+- **R.E.P.O** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Raft** — Still loading at the audit cutoff. Large games may need much longer.
+- **Ragdoll Archers** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Ragdoll Hit** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Raldi's Crackhouse** — Reached 100 MB download budget. Kept for you to check manually.
+- **Real Flight Simulator** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Recoil** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Resident Evil 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Resident Evil 3** — Still loading at the audit cutoff. Large games may need much longer.
+- **Retro Bowl** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Retro Bowl College** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Rhythm Heaven** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Rio Rex** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Road of Fury** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Rocket Goal.io** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Rooftop Snipers 2** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Roulette Hero** — Large download: 83 MB. Kept for you to check manually.
+- **Run 3** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Russian Counter Strike** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Sand Game** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Scary Shawarma** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Schoolboy Runaway** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Scribblenauts** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Serial Experiments Lain** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Shift at Midnight** — Reached 100 MB download budget. Kept for you to check manually.
+- **Short Life** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Side Effects** — Still loading at the audit cutoff. Large games may need much longer.
+- **Silent Hill** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Slender** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Slendytubbies 2** — Still loading at the audit cutoff. Large games may need much longer.
+- **Slope** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Smashy Kart** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Snow Rider 3D** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Soccer Random** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Solar Smash** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Sonic CD** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Sonic Mania** — Large download: 199 MB. Kept for you to check manually.
+- **Sonic the Hedgehog 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Sonic the Hedgehog 3** — Large download: 138 MB. Kept for you to check manually.
+- **Sonic.EXE** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Spaceflight Simulator** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Spelunky Classic HD** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Sprunki** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Stacktris** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Stacky Dash** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Stake Mines** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Stardew Valley** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Station Saturn** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Steal a Brainrot Online** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Stick War Legacy** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Stickman Destruction** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Stickman Duel** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Stickman Fight Ragdoll** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Stickman Hook** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Strange Rope Police** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Street Fighter II** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Street Fighter III** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Subway Surfers** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Super Falling Fred** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Super Mario 64** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Super Smash Flash 2** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Super Star Car** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Superhot** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Survivor.io** — An outside server refused or limited a request. It may behave differently in your browser.
+- **SwordFight!!** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Tag** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Tanuki Sunset** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Tattletail** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Temple Run 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Tempoverdose** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Terraria** — Still loading at the audit cutoff. Large games may need much longer.
+- **That's Not My Neighbor** — Still loading at the audit cutoff. Large games may need much longer.
+- **The Binding of Isaac: Rebirth** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **The Deadseat** — Reached 100 MB download budget. Kept for you to check manually.
+- **The Legend of Zelda Majora's Mask** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **The Man FROM The Window** — An outside server refused or limited a request. It may behave differently in your browser.
+- **They're Coming** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **TileTopia** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Time Shooter 1** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Time Shooter 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Time Shooter 3: SWAT** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Tomb of the Mask** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Tomodachi Life** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Tony Hawks Pro Skater** — Reached 100 MB download budget. Kept for you to check manually.
+- **Totally Accurate Battle Simulator** — Still loading at the audit cutoff. Large games may need much longer.
+- **Triva Crack** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Trombone Champ** — Large download: 95 MB. Kept for you to check manually.
+- **Tung Sahur Horror** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Twerk Race 3D** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Ultimate Car Driving Game** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **ULTRAKILL** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Ultrapool** — Still loading at the audit cutoff. Large games may need much longer.
+- **Um Jammer Lammy** — Still loading at the audit cutoff. Large games may need much longer.
+- **Undertale** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Untitled Goose Game** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Vex 8** — Still loading at the audit cutoff. Large games may need much longer.
+- **Vib-Ribbon** — An outside server refused or limited a request. It may behave differently in your browser.
+- **Volley Random** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **VS Rewrite: ROUND 2** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **War The Knights** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **WebFishing** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Wheelie Bike 2** — A resource was missing, but there was not enough evidence to call the whole game broken.
+- **Who's Your Daddy?** — Large download: 80 MB. Kept for you to check manually.
+- **Wolfenstein 3D** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Wordle** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Wrassling** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Yandere Simulator** — An outside server refused or limited a request. It may behave differently in your browser.
+- **YoHoHo.io** — No conclusive playable screen was detected in the short check. May require a click or more time.
+- **Your Only Move Is HUSTLE** — A browser error was observed, but failure was not confirmed. Please check manually.
+- **Zombotron Reboot** — A browser error was observed, but failure was not confirmed. Please check manually.
+
+## Appears loaded: kept
+
+- 8Ball Pool
+- Abandoned
+- Achillies 2
+- Age of War 2
+- Alien Hominid
+- Apple Shooter
+- Apple Worm
+- Bad Piggies
+- Beeswarm Simulator (html version)
+- Binding of Issac WOTL
+- Bloons Tower Defense 1
+- Bloons Tower Defense 2
+- Bloons Tower Defense 3
+- Bloons Tower Defense 4
+- Bloons Tower Defense 5
+- Bloxorz
+- Boxing Live 2
+- Candy Crush
+- COD Nazi Zombies Portable
+- Command & Conquer
+- Crazy Cattle 3D
+- Dad 'n Me
+- Doom
+- Doom 2
+- Douche Bag Life
+- Dumb Ways to Die
+- Earn to Die
+- Earn to Die 2
+- Fireboy and Watergirl: Forest Temple
+- Five Nights at Winstons
+- Gun Mayhem
+- Gun Mayhem 2
+- Heretic
+- Hobo 1
+- Hobo 2: Prison Brawl
+- Hobo 3: Wanted
+- Hobo 4: Total War
+- Hobo 5: Space Brawls
+- Learn to Fly 3
+- Line Rider
+- Madness Combat: Project Nexus
+- Madness Interactive
+- Orange Roulette
+- Papa's Burgeria
+- Papa's Cheeseria
+- Papa's Cupcakeria
+- Papa's Donuteria
+- Papa's Freezeria
+- Papa's Hot Doggeria
+- Papa's Pancakeria
+- Papa's Pastaria
+- Papa's Pizzeria
+- Papa's Scooperia
+- Papa's Sushiria
+- Papa's Taco Mia
+- Papa's Wingeria
+- Peggle
+- Please Dont Touch Anything
+- Raft Wars 2
+- Rocket League
+- Running Fred
+- Super Liquid Soccer
+- The World's Hardest Game
+- The World's Hardest Game 2
+- The World's Hardest Game 3
+- The World's Hardest Game 4
+- Tiny Fishing
+- Toss The Turtle
+- Wheely
+- Zombocalypse 2
