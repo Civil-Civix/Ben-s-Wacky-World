@@ -16,7 +16,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  });
  const page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
- await page.goto(base);
+ await page.goto(base+'/#all');
  await page.locator('.game-card').first().waitFor();
  assert.equal(await page.locator('.game-card').count(),405); assert.equal(await page.locator('.search-area').evaluate(e=>getComputedStyle(e).flexDirection),'column');
  assert.equal(await page.locator('.game-card img').count(),0);

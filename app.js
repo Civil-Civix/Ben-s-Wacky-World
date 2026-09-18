@@ -12,7 +12,7 @@ const storageNotice = document.querySelector('#storage-notice');
 const keys = {favorites:'bens-wacky-world.favorites.v1', recents:'bens-wacky-world.recents.v1'};
 let currentGame = null, lastId = null, loadTimer, savedScroll = 0;
 let imageMap = {};
-let view = 'all';
+let view = 'home';
 
 function storageWarning() {
   storageNotice.hidden = false;
@@ -37,6 +37,7 @@ function normalize(text) {
   return text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 function render() {
+  if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
   const query = normalize(search.value);
   const pool = view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
@@ -122,12 +123,14 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['favorites','recents','settings'].includes(hash) ? hash : 'all';
+  view = ['all','favorites','recents','settings'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
-  document.querySelector('#catalog').hidden = settingsOpen;
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home';
+  document.querySelector('#home-panel').hidden = view !== 'home';
+  if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-game', !settingsOpen], ['.nav-settings', settingsOpen]]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home'], ['.nav-settings', settingsOpen]]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');

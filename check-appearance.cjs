@@ -15,7 +15,7 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
    catch{return route.fulfill({status:404,body:'Not found'});}
  });
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://wacky.test');
+ await page.goto('http://wacky.test/#all');
  await page.locator('.snowflake').first().waitFor({state:'attached'});
  assert.equal(await page.locator('.snowflake').count(),80);
  const motion=await page.evaluate(async()=>{

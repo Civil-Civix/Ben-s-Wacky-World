@@ -48,3 +48,6 @@ See ADDING-IMAGES.md for instructions and every game ID. Put artwork in images/ 
 
 ## Appearance settings
 Open Settings in the left sidebar to choose Midnight, Obsidian, Slate, or Mocha; select an accent preset or custom color; and turn falling snow on or off. Changes are saved in this browser. Snow is enabled by default, except when the system requests reduced motion; it can be enabled explicitly in Settings. Animation pauses during gameplay and when the page is hidden. No game artwork is added.
+
+## Homepage
+The root address now opens Home, with Ben's Wacky World typed once per page load in locally hosted Inter Bold. The heading remains after the animation ends. The two rows of four boxes contain Games first and Settings last; the six unused boxes are blank and inactive. The Home sidebar icon returns here; Games uses a controller and Settings a gear. Direct #all, #favorites, #recents, and #settings links still work. Reduced-motion preferences show the complete heading immediately.
