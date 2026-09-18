@@ -10,7 +10,7 @@ Double-click **Start Local.cmd**, keep that window open, and open **http://127.0
 
 - 405 catalog entries, with 12 duplicates skipped. The first encountered copy is kept. Comparison ignores case, punctuation, spacing, and known spelling variants. Sequels and distinct editions remain separate.
 - A search field, a scrollable grid of blank title cards, and a sidebar with Games active.
-- Five approximately 340 x 213 pixel cards per row at a 1920 pixel desktop width.
+- Six approximately 280 x 175 pixel cards per row at a 1920 pixel desktop width.
 - An in-page player with Reload, Fullscreen, and Close. Closing unloads the game and retains search and scroll position. Reload restarts the game page but does not erase its saved progress.
 - Noah’s game launch files. Seraph games and shared runtimes were removed. Source apps and catalog thumbnails were not imported.
 - Original source license files under `licenses/`; upstream game notices remain in the game files.

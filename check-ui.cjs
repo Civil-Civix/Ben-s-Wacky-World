@@ -10,7 +10,7 @@ const assert=require('node:assert/strict');
  const count=await page.locator('.game-card').count();assert.equal(count,405);
  assert.equal(await page.locator('.game-card img').count(),0);
  const size=await page.locator('.game-card').first().boundingBox();
- assert(size.width>330);assert(size.height>200);
+ assert(size.width>=275 && size.width<=281);assert(size.height>=170 && size.height<=176);
  await page.screenshot({path:'catalog-preview.png'});
  await page.locator('#search').fill('zzznomatchzz');
  assert(await page.locator('#empty').isVisible());
