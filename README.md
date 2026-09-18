@@ -9,9 +9,9 @@ Double-click **Start Local.cmd**, keep that window open, and open **http://127.0
 ## Included
 
 - 405 catalog entries, with 12 duplicates skipped. The first encountered copy is kept. Comparison ignores case, punctuation, spacing, and known spelling variants. Sequels and distinct editions remain separate.
-- A search field, a scrollable grid of blank title cards, and a sidebar with Games active.
+- Searchable All, Favorites, and Recents views; six cards per desktop row; purple #8B7BFF accents and hover highlights. Favorites are toggled inside the player. Favorites and recents are stored locally in this browser, without a database.
 - Six approximately 280 x 175 pixel cards per row at a 1920 pixel desktop width.
-- An in-page player with Reload, Fullscreen, and Close. Closing unloads the game and retains search and scroll position. Reload restarts the game page but does not erase its saved progress.
+- An in-page player with Favorite, Reload, Fullscreen, and Close. Closing unloads the game and retains search and scroll position. Reload restarts the game page but does not erase its saved progress.
 - Noah’s game launch files. Seraph games and shared runtimes were removed. Source apps and catalog thumbnails were not imported.
 - Original source license files under `licenses/`; upstream game notices remain in the game files.
 
@@ -41,4 +41,7 @@ The remaining project is approximately 56 MB after removing Seraph, below GitHub
 
 ## Handoff
 
-Goal: a barebones desktop game site eventually hosted on GitHub Pages. Decisions: blank cards, search only, Games-only sidebar, in-page player controls, first copy wins for duplicates, all development local. Current work: catalog and player implemented and checked; Seraph removed at the user’s request. Remaining work: address incomplete source games, and verify individual game compatibility before publishing. Continue in this Wacky Games folder for the next task.
+Goal: a barebones desktop game site eventually hosted on GitHub Pages. Decisions: blank cards until artwork is mapped, searchable All/Favorites/Recents views, Games sidebar, in-page player controls, first copy wins for duplicates, all development local. Current work: catalog and player implemented and checked; Seraph removed at the user’s request. Remaining work: address incomplete source games, and verify individual game compatibility before publishing. Continue in this Wacky Games folder for the next task.
+
+## Adding artwork
+See ADDING-IMAGES.md for instructions and every game ID. Put artwork in images/ and map IDs to paths in game-images.json. No artwork is included by default.

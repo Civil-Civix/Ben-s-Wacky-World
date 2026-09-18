@@ -1,0 +1,1 @@
+Place game artwork here. See ../ADDING-IMAGES.md for file naming and mapping instructions.
