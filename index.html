@@ -7,16 +7,19 @@
   <meta name="description" content="Search and play your Wacky Games collection.">
   <title>Wacky Games</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238B7BFF'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260918-2">
+  <link rel="stylesheet" href="styles.css?v=20260918-3">
   <script src="games.js" defer></script>
-  <script src="app.js?v=20260918-2" defer></script>
+  <script src="app.js?v=20260918-3" defer></script>
+  <script src="appearance.js?v=20260918-3" defer></script>
 </head>
 <body>
+  <div id="snow" aria-hidden="true"></div>
   <aside class="sidebar" aria-label="Main navigation">
     <a class="brand" href="./" aria-label="Wacky Games home" title="Wacky Games">W</a>
     <button class="nav-game" aria-label="Games" aria-current="page" title="Games">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
     </button>
+  <button class="nav-settings" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3 1-1h4l1 3 3 2 3 0 1 4-2 2-1 3 1 3-3 2-3-1h-3l-3 1-3-3 1-3-1-3-2-2 2-4 3 0 2-2Z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </aside>
   <main id="catalog">
     <h1 id="page-title" class="sr-only">All games</h1>
@@ -32,6 +35,32 @@
     <p id="empty" class="empty" hidden>No games found. Try another name.</p>
     <noscript><p class="empty">Enable JavaScript to search and play games.</p></noscript>
   </main>
+  <section id="settings-panel" aria-labelledby="appearance-heading" hidden>
+    <header class="settings-heading"><div><p class="eyebrow">Settings</p><h1 id="appearance-heading">Appearance</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
+    <div class="appearance-grid">
+      <fieldset class="settings-card"><legend>Background</legend>
+        <div class="background-options">
+          <button type="button" data-background="midnight" aria-pressed="false"><span class="background-sample midnight" aria-hidden="true"></span>Midnight</button>
+          <button type="button" data-background="obsidian" aria-pressed="true"><span class="background-sample obsidian" aria-hidden="true"></span>Obsidian</button>
+          <button type="button" data-background="slate" aria-pressed="false"><span class="background-sample slate" aria-hidden="true"></span>Slate</button>
+          <button type="button" data-background="mocha" aria-pressed="false"><span class="background-sample mocha" aria-hidden="true"></span>Mocha</button>
+        </div>
+      </fieldset>
+      <fieldset class="settings-card"><legend>Accent color</legend>
+        <div class="accent-options">
+          <button type="button" class="accent-swatch" data-accent="#FF8018" style="--swatch:#FF8018" aria-label="Orange accent" aria-pressed="false"></button>
+          <button type="button" class="accent-swatch" data-accent="#8B7BFF" style="--swatch:#8B7BFF" aria-label="Purple accent" aria-pressed="true"></button>
+          <button type="button" class="accent-swatch" data-accent="#389AFF" style="--swatch:#389AFF" aria-label="Blue accent" aria-pressed="false"></button>
+          <button type="button" class="accent-swatch" data-accent="#FA578C" style="--swatch:#FA578C" aria-label="Pink accent" aria-pressed="false"></button>
+          <button type="button" class="accent-swatch" data-accent="#20C392" style="--swatch:#20C392" aria-label="Green accent" aria-pressed="false"></button>
+        </div>
+        <label class="custom-accent"><input id="custom-accent" type="color" value="#8B7BFF"><span>Custom color<output id="accent-value" for="custom-accent">#8B7BFF</output></span></label>
+      </fieldset>
+      <fieldset class="settings-card snow-setting"><legend>Background effect</legend><label class="toggle-row"><span>Falling snow<small>Soft particles in your accent color.</small></span><input id="snow-enabled" type="checkbox" checked></label></fieldset>
+    </div>
+    <footer class="settings-footer"><span>Saved on this browser.</span><button id="reset-appearance" type="button">Reset appearance</button></footer>
+    <p id="appearance-notice" class="storage-notice" role="status" hidden>Your browser could not save these settings. Changes will last only for this visit.</p>
+  </section>
   <dialog id="player" aria-labelledby="game-title">
     <header class="player-bar">
       <h2 id="game-title"></h2>

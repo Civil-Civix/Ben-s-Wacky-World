@@ -45,3 +45,6 @@ Goal: a barebones desktop game site eventually hosted on GitHub Pages. Decisions
 
 ## Adding artwork
 See ADDING-IMAGES.md for instructions and every game ID. Put artwork in images/ and map IDs to paths in game-images.json. No artwork is included by default.
+
+## Appearance settings
+Open Settings in the left sidebar to choose Midnight, Obsidian, Slate, or Mocha; select an accent preset or custom color; and turn falling snow on or off. Changes are saved in this browser. Snow is enabled by default, except when the system requests reduced motion; it can be enabled explicitly in Settings. Animation pauses during gameplay and when the page is hidden. No game artwork is added.

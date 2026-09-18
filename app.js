@@ -37,6 +37,7 @@ function normalize(text) {
   return text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 function render() {
+  if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
   const query = normalize(search.value);
   const pool = view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
@@ -121,10 +122,20 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['favorites','recents'].includes(hash) ? hash : 'all';
+  view = ['favorites','recents','settings'].includes(hash) ? hash : 'all';
+  const settingsOpen = view === 'settings';
+  document.querySelector('#catalog').hidden = settingsOpen;
+  document.querySelector('#settings-panel').hidden = !settingsOpen;
+  document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
+  for (const [selector, active] of [['.nav-game', !settingsOpen], ['.nav-settings', settingsOpen]]) {
+    const button = document.querySelector(selector);
+    if (active) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  }
   search.value = '';
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
+document.querySelector('.nav-settings').addEventListener('click',()=>{location.hash='settings';});
 search.addEventListener('input',render);
 document.querySelector('.nav-game').addEventListener('click', () => {
   if (location.hash !== '#all') location.hash = 'all';
