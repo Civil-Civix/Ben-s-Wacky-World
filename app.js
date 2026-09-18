@@ -1,5 +1,6 @@
 'use strict';
 const games = window.WACKY_GAMES || [];
+const apps = window.WACKY_APPS || [];
 const byId = new Map(games.map(game => [game.id, game]));
 const grid = document.querySelector('#game-grid');
 const search = document.querySelector('#search');
@@ -40,15 +41,15 @@ function render() {
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
   const query = normalize(search.value);
-  const pool = view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
+  const pool = view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
   const fragment = document.createDocumentFragment();
   for (const game of matches) {
     const card = document.createElement('button');
     card.type = 'button'; card.className = 'game-card'; card.dataset.game = game.id;
-    card.setAttribute('aria-label', 'Play ' + game.title);
-    const artwork = imageMap[game.id];
+    card.setAttribute('aria-label', (game.kind === 'app' ? 'Open ' : 'Play ') + game.title);
+    const artwork = game.kind === 'app' ? null : imageMap[game.id];
     if (typeof artwork === 'string' && artwork.startsWith('images/') && !artwork.includes('..')) {
       const img = document.createElement('img');
       img.src = artwork; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
@@ -63,12 +64,12 @@ function render() {
   grid.replaceChildren(fragment);
   const empty = document.querySelector('#empty');
   empty.hidden = matches.length > 0;
-  empty.textContent = query ? 'No games found. Try another name.'
+  empty.textContent = query ? (view === 'apps' ? 'No apps found. Try another name.' : 'No games found. Try another name.')
     : view === 'favorites' ? 'No favorites yet. Open a game and select Favorite.'
     : view === 'recents' ? 'No recent games yet. Open a game to get started.'
     : 'No games available.';
-  document.querySelector('#result-count').textContent = matches.length + ' games';
-  const title = view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
+  document.querySelector('#result-count').textContent = matches.length + (view === 'apps' ? ' apps' : ' games');
+  const title = view === 'apps' ? 'Apps' : view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
   grid.setAttribute('aria-label', title);
   document.querySelector('#page-title').textContent = title;
   document.title = title + ' | Wacky Games';
@@ -94,7 +95,7 @@ function loadGame() {
   frame.addEventListener('load', () => {clearTimeout(loadTimer);status.hidden = true;frame.focus();});
   frame.addEventListener('error', () => {
     clearTimeout(loadTimer);
-    status.textContent = 'This game could not load. Try Reload, or close it and choose another game.';
+    status.textContent = 'This content could not load. Try Reload, or close it and choose another game.';
     status.hidden = false;
   });
   stage.replaceChildren(frame);
@@ -105,8 +106,11 @@ function loadGame() {
 }
 function openGame(game) {
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
-  recents = [game.id,...recents.filter(id => id !== game.id)];
-  saveList(keys.recents,recents);
+  favoriteButton.hidden = game.kind === 'app';
+  if (game.kind !== 'app') {
+    recents = [game.id,...recents.filter(id => id !== game.id)];
+    saveList(keys.recents,recents);
+  }
   document.querySelector('#game-title').textContent = game.title;
   updateFavorite();
   document.body.classList.add('playing'); player.showModal(); loadGame();
@@ -123,14 +127,17 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','favorites','recents','settings'].includes(hash) ? hash : 'home';
+  view = ['all','favorites','recents','settings','apps'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
+  document.querySelector('.collection-nav').hidden = view === 'apps';
+  search.placeholder = view === 'apps' ? 'Search apps…' : 'Search games…';
+  document.querySelector('.search-wrap .sr-only').textContent = view === 'apps' ? 'Search apps' : 'Search games';
   document.querySelector('#catalog').hidden = settingsOpen || view === 'home';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home'], ['.nav-settings', settingsOpen]]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'apps'], ['.nav-apps', view === 'apps'], ['.nav-settings', settingsOpen]]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
@@ -145,7 +152,7 @@ document.querySelector('.nav-game').addEventListener('click', () => {
   else {search.value = '';render();window.scrollTo({top:0,behavior:'instant'});}
 });
 favoriteButton.addEventListener('click', () => {
-  if (!currentGame) return;
+  if (!currentGame || currentGame.kind === 'app') return;
   if (favorites.has(currentGame.id)) favorites.delete(currentGame.id);
   else favorites.add(currentGame.id);
   saveList(keys.favorites,[...favorites]); updateFavorite();

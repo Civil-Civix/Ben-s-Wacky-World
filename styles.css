@@ -158,3 +158,12 @@ a.launch-tile:hover{background:color-mix(in srgb,var(--accent) 12%,var(--surface
 body.playing #home-panel{visibility:hidden}
 @media(max-width:700px){#home-panel{margin-left:54px;padding:60px 18px 32px}.launch-grid{gap:10px;margin-top:70px}.launch-tile{aspect-ratio:1;gap:10px;font-size:12px;border-radius:12px}.launch-tile svg{width:26px;height:26px}.home-title{font-size:clamp(23px,5vw,34px)}}
 @media(prefers-reduced-motion:reduce){#typed-title.typing:after{animation:none}}
+
+.nav-apps{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:transparent;color:var(--muted)}
+.nav-apps svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7}
+.nav-apps[aria-current=page]{color:var(--accent-ink);background:var(--accent)}
+.nav-apps:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.18)}
+.title-letter{display:inline-block;white-space:pre}
+.rippling .title-letter{animation:title-ripple 6s ease-in-out infinite;animation-delay:calc(var(--letter-index)*80ms)}
+@keyframes title-ripple{0%,22%,100%{transform:translateY(0);color:inherit;text-shadow:none}8%{transform:translateY(-5px);color:var(--accent);text-shadow:0 0 18px rgb(var(--accent-rgb)/.4)}14%{transform:translateY(2px)}}
+@media(prefers-reduced-motion:reduce){.rippling .title-letter{animation:none}}

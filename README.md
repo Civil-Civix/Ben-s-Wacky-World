@@ -27,7 +27,7 @@ The source's Doom 3 entry pointed to a folder rather than a supplied game file a
 
 The page uses static HTML, CSS, and JavaScript, with relative paths for project hosting. A local Git repository is initialized on `main`. Nothing has been committed, pushed, or published.
 
-The remaining project is approximately 56 MB after removing Seraph, below GitHub Pages’ published-site size limit. Individual games still require compatibility checks before publication. No deployment was configured.
+The project is approximately 528 MB with Noah games and Seraph apps, below GitHub Pages’ published-site size limit. Individual games still require compatibility checks before publication. No deployment was configured.
 
 ## Files
 
@@ -50,4 +50,7 @@ See ADDING-IMAGES.md for instructions and every game ID. Put artwork in images/ 
 Open Settings in the left sidebar to choose Midnight, Obsidian, Slate, or Mocha; select an accent preset or custom color; and turn falling snow on or off. Changes are saved in this browser. Snow is enabled by default, except when the system requests reduced motion; it can be enabled explicitly in Settings. Animation pauses during gameplay and when the page is hidden. No game artwork is added.
 
 ## Homepage
-The root address now opens Home, with Ben's Wacky World typed once per page load in locally hosted Inter Bold. The heading remains after the animation ends. The two rows of four boxes contain Games first and Settings last; the six unused boxes are blank and inactive. The Home sidebar icon returns here; Games uses a controller and Settings a gear. Direct #all, #favorites, #recents, and #settings links still work. Reduced-motion preferences show the complete heading immediately.
+The root address now opens Home, with Ben's Wacky World typed once per page load in locally hosted Inter Bold. The heading remains after the animation ends. The two rows of four boxes contain Games first, Apps second, and Settings last; the five unused boxes are blank and inactive. The Home sidebar icon returns here; Games uses a controller and Settings a gear. Direct #all, #favorites, #recents, and #settings links still work. Reduced-motion preferences show the complete heading immediately.
+
+## Apps and homepage ripple
+Apps is available beside Games on Home and in the sidebar. It contains the 16 supplied Seraph apps as searchable, text-only cards with six columns on desktop. Apps open in the viewer with Reload, Fullscreen, and Close; they do not enter game Favorites or Recents. Files are in library/seraph-apps. Some apps depend on external services. The homepage title types once, then runs a subtle staggered ripple; reduced-motion preferences suppress both animations. Seraph games remain excluded.
