@@ -181,7 +181,7 @@ window.addEventListener('storage', event => {
   }
 });
 applyRoute();
-fetch('./game-images.json').then(response => {
+fetch('./game-images.json', {cache:'no-store'}).then(response => {
   if(!response.ok) throw new Error('Image map unavailable');
   return response.json();
 }).then(map => {
