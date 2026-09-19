@@ -1452,12 +1452,6 @@
     "source": "noah"
   },
   {
-    "id": "majorasmask",
-    "title": "The Legend of Zelda Majora's Mask",
-    "url": "library/noah/games/90.html",
-    "source": "noah"
-  },
-  {
     "id": "cookingmama3",
     "title": "Cooking Mama 3",
     "url": "library/noah/games/89.html",
@@ -2512,5 +2506,11 @@
     "title": "SCP Containment Breach",
     "url": "library/imported-20260919/scpcontainmentbreach/index.html",
     "source": "user-upload"
+  },
+  {
+    "id": "radicalred",
+    "title": "Pokémon Radical Red",
+    "url": "https://civil-civix.github.io/really-radical-red/",
+    "source": "external"
   }
 ]

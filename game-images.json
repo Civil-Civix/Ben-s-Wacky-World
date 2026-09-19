@@ -241,7 +241,6 @@
   "zombotronreboot": "images/noah/zombotronreboot.webp",
   "mortalkombat4": "images/noah/mortalkombat4.webp",
   "undertale": "images/noah/undertale.webp",
-  "majorasmask": "images/noah/majorasmask.webp",
   "cookingmama3": "images/noah/cookingmama3.webp",
   "cookingmama2": "images/noah/cookingmama2.webp",
   "cookingmama": "images/noah/cookingmama.webp",
@@ -416,5 +415,6 @@
   "pokerogue": "images/pokerogue-custom.jpeg",
   "worldguessr": "images/worldguessr-custom.jpg",
   "breaklock": "images/breaklock.png",
-  "fnafucn": "images/fnafucn.png"
+  "fnafucn": "images/fnafucn.png",
+  "radicalred": "images/radicalred.png"
 }
