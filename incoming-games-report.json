@@ -1,0 +1,113 @@
+{
+  "added": [
+    {
+      "id": "endacopia",
+      "title": "Endacopia",
+      "url": "library/imported-20260919/endacopia/index.html",
+      "source": "user-upload"
+    },
+    {
+      "id": "howtofish",
+      "title": "How to Fish",
+      "url": "library/imported-20260919/howtofish/index.html",
+      "source": "user-upload"
+    },
+    {
+      "id": "mindustry",
+      "title": "Mindustry",
+      "url": "library/imported-20260919/mindustry/index.html",
+      "source": "user-upload"
+    },
+    {
+      "id": "scamptonthegreat",
+      "title": "Scampton the Great",
+      "url": "library/imported-20260919/scamptonthegreat/index.html",
+      "source": "user-upload"
+    },
+    {
+      "id": "supersmashflash",
+      "title": "Super Smash Flash",
+      "url": "library/imported-20260919/supersmashflash/index.html",
+      "source": "user-upload"
+    }
+  ],
+  "replaced": [
+    {
+      "id": "fnaf2",
+      "title": "FNAF 2",
+      "url": "library/noah/games/167.html",
+      "source": "noah"
+    },
+    {
+      "id": "fnaf3",
+      "title": "FNAF 3",
+      "url": "library/noah/games/168.html",
+      "source": "noah"
+    },
+    {
+      "id": "fnaf4",
+      "title": "FNAF 4",
+      "url": "library/noah/games/169.html",
+      "source": "noah"
+    },
+    {
+      "id": "fnafpizzasim",
+      "title": "FNAF: Pizza Sim",
+      "url": "library/noah/games/1.html",
+      "source": "noah"
+    },
+    {
+      "id": "geometrydash",
+      "title": "Geometry Dash",
+      "url": "library/noah/games/417.html",
+      "source": "noah"
+    }
+  ],
+  "images": [
+    {
+      "id": "pokemonmysterydungeon",
+      "source": "DUVzEBz928syiBqkdMu5hj-1140-80.jpg"
+    },
+    {
+      "id": "pokemonplatinum",
+      "source": "H2x1_NDS_PokemonPlatinum_enGB_image1280w.jpg"
+    },
+    {
+      "id": "pokemondiamond",
+      "source": "images (1).jpg"
+    },
+    {
+      "id": "pokemonleafgreen",
+      "source": "leafgreenbanner-1771617982138.jpg"
+    },
+    {
+      "id": "pokemonsapphire",
+      "source": "maxresdefault (1).jpg"
+    },
+    {
+      "id": "pokemonsnap",
+      "source": "Pokémon_Snap_Coverart.png"
+    },
+    {
+      "id": "pokemonruby",
+      "source": "SI_GBA_PokemonRuby_enGB.jpg"
+    },
+    {
+      "id": "pokemonsoulsilver",
+      "source": "SI_NDS_PokemonSoulSilver_enGB_image1600w.jpg"
+    },
+    {
+      "id": "pokemonunbound",
+      "source": "what-are-your-thoughts-on-pokemon-unbound-v0-hpkaeas6vaqc1.webp"
+    }
+  ],
+  "skipped": [
+    "endacopia (1).html (identical duplicate)"
+  ],
+  "mindustryScriptParts": 7,
+  "pending": {
+    "file": "fnaf.html",
+    "actualGame": "Ultimate Custom Night",
+    "reason": "Awaiting user choice; original FNAF 1 retained"
+  }
+}

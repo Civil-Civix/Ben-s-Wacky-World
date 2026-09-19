@@ -2464,5 +2464,35 @@
     "title": "Pokémon Yellow",
     "url": "library/seraph-pokemon/pokemonyellow/index.html",
     "source": "seraph"
+  },
+  {
+    "id": "endacopia",
+    "title": "Endacopia",
+    "url": "library/imported-20260919/endacopia/index.html",
+    "source": "user-upload"
+  },
+  {
+    "id": "howtofish",
+    "title": "How to Fish",
+    "url": "library/imported-20260919/howtofish/index.html",
+    "source": "user-upload"
+  },
+  {
+    "id": "mindustry",
+    "title": "Mindustry",
+    "url": "library/imported-20260919/mindustry/index.html",
+    "source": "user-upload"
+  },
+  {
+    "id": "scamptonthegreat",
+    "title": "Scampton the Great",
+    "url": "library/imported-20260919/scamptonthegreat/index.html",
+    "source": "user-upload"
+  },
+  {
+    "id": "supersmashflash",
+    "title": "Super Smash Flash",
+    "url": "library/imported-20260919/supersmashflash/index.html",
+    "source": "user-upload"
   }
 ]

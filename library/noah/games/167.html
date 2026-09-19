@@ -1,7 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Ultimate Game Stash file-->
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+<!-- Made by genizy -->
 
-<head><script id="wacky-ad-guard">/* Wacky World: suppress known ad hosts and popup windows in this game document. */
+<!doctype html>
+<html lang="en">
+  <head><script id="wacky-ad-guard">/* Wacky World: suppress known ad hosts and popup windows in this game document. */
 (() => {
   const adHost = /(^|\.)(googlesyndication\.com|doubleclick\.net|googleadservices\.com|adservice\.google\.[a-z.]+|adsterra\.com|monetag\.com|breadisgay\.eduplace\.net|popads\.net|popcash\.net|adnxs\.com|adsrvr\.org|adinplay\.com)$/i;
   const isAd = value => {try{return adHost.test(new URL(String(value),document.baseURI).hostname);}catch{return false;}};
@@ -30,33 +33,73 @@
   try{Object.defineProperty(window,'adsbygoogle',{get:()=>queue,set:()=>{},configurable:false});}catch(_){}
   window.open=()=>({closed:true,focus(){},close(){},location:{}});
 })();</script>
-	<base href="https://cdn.jsdelivr.net/gh/genizy/fnaf@latest/2/">
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <base href="https://cdn.jsdelivr.net/gh/bubblfan/fnaf@latest/2/" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
+    <meta
+      name="viewport"
+      content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="HandheldFriendly" content="true" />
     <title>Five Nights at Freddy's 2</title>
-</head>
+  </head>
 
-<body>
-    <div style="display: inline-block; -webkit-user-select: none; text-align: left">
-        <canvas id="MMFCanvas" width="1280" height="720"> Your browser does not support Canvas, Please try again. </canvas>
+  <body>
+    <div
+      style="display: inline-block; -webkit-user-select: none; text-align: left"
+    >
+      <canvas id="MMFCanvas" width="1280" height="720">
+        Your browser does not support Canvas, Please try again.
+      </canvas>
     </div>
     <div id="progress-container">
-        <div style="margin-bottom: 6px;">Downloading... <span id="download-text">0%</span></div>
-        <div style="width: 100%; background: #444; border-radius: 6px; overflow: hidden;">
-            <div id="download-bar" style="height: 10px; background: #3b82f6; width: 0%; transition: width 0.2s;"></div>
-        </div>
-        <div style="margin: 12px 0 6px;">Extracting... <span id="extract-text">0%</span></div>
-        <div style="width: 100%; background: #444; border-radius: 6px; overflow: hidden;">
-            <div id="extract-bar" style="height: 10px; background: #10b981; width: 0%; transition: width 0.2s;"></div>
-        </div>
+      <div style="margin-bottom: 6px">
+        Downloading... <span id="download-text">0%</span>
+      </div>
+      <div
+        style="
+          width: 100%;
+          background: #444;
+          border-radius: 6px;
+          overflow: hidden;
+        "
+      >
+        <div
+          id="download-bar"
+          style="
+            height: 10px;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.2s;
+          "
+        ></div>
+      </div>
+      <div style="margin: 12px 0 6px">
+        Extracting... <span id="extract-text">0%</span>
+      </div>
+      <div
+        style="
+          width: 100%;
+          background: #444;
+          border-radius: 6px;
+          overflow: hidden;
+        "
+      >
+        <div
+          id="extract-bar"
+          style="
+            height: 10px;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.2s;
+          "
+        ></div>
+      </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="main.js"></script>
-</body>
-
+  <style>.noah-wmk{position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;align-items:center;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}.noah-wmk .wm-prefix{font-size:11px;font-weight:600;color:#d4d4d4;letter-spacing:0.02em;text-shadow:0 1px 3px rgba(0,0,0,0.8);margin-bottom:3px;white-space:nowrap;transition:color 0.2s}.noah-wmk img{display:block;height:34px;width:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6))}.noah-wmk:hover .wm-prefix{color:#f7931e}</style><a class="noah-wmk" href="https://noahstutoring.academy" target="_blank" rel="noopener"><span class="wm-prefix">Downloaded from</span><img src="https://cdn.jsdelivr.net/gh/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor@master/images/logo.png" alt="Noah's Tutoring Hub"></a></body>
 </html>

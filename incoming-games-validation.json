@@ -1,0 +1,137 @@
+[
+  {
+    "title": "Endacopia",
+    "snapshot": {
+      "title": "Endacopia",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [],
+    "errors": []
+  },
+  {
+    "title": "How to Fish",
+    "snapshot": {
+      "title": "How to Fish",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/NotRexed/HowToFishPort@main/Build/WebGL.data.part8",
+      "https://cdn.jsdelivr.net/gh/NotRexed/HowToFishPort@main/Build/WebGL.wasm.part1",
+      "https://cdn.jsdelivr.net/gh/NotRexed/HowToFishPort@main/Build/WebGL.wasm.004",
+      "https://cdn.jsdelivr.net/gh/NotRexed/HowToFishPort@main/StreamingAssets/aa/settings.json"
+    ],
+    "errors": []
+  },
+  {
+    "title": "Mindustry",
+    "snapshot": {
+      "title": "Mindustry",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [],
+    "errors": []
+  },
+  {
+    "title": "Scampton the Great",
+    "snapshot": {
+      "title": "Scampton_The_Great",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [],
+    "errors": [
+      "Permissions check failed"
+    ]
+  },
+  {
+    "title": "Super Smash Flash",
+    "snapshot": {
+      "title": "",
+      "text": "",
+      "canvases": 0
+    },
+    "missing": [],
+    "errors": []
+  },
+  {
+    "title": "FNAF",
+    "snapshot": {
+      "title": "Five Nights at Freddy's UCN",
+      "text": "Downloading... 100%\nExtracting... 0%\nDownloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/bubblfan/fnaf@latest/ucn/undefined/pages/home.html"
+    ],
+    "errors": []
+  },
+  {
+    "title": "FNAF 2",
+    "snapshot": {
+      "title": "Five Nights at Freddy's 2",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/bubblfan/fnaf@latest/2/undefined/pages/home.html",
+      "http://127.0.0.1:4192/"
+    ],
+    "errors": []
+  },
+  {
+    "title": "FNAF 3",
+    "snapshot": {
+      "title": "Five Nights at Freddy's 3",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/bubblfan/fnaf@latest/3/undefined/pages/home.html",
+      "http://127.0.0.1:4192/"
+    ],
+    "errors": []
+  },
+  {
+    "title": "FNAF 4",
+    "snapshot": {
+      "title": "Five Nights at Freddy's 4",
+      "text": "Downloading... 66%\nExtracting... 0%\nDownloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/bubblfan/fnaf@latest/4/undefined/pages/home.html"
+    ],
+    "errors": []
+  },
+  {
+    "title": "FNAF: Pizza Sim",
+    "snapshot": {
+      "title": "Five Nights at Freddy's Pizzeria Simulator",
+      "text": "Downloading... 79%\nExtracting... 0%\nDownloaded from",
+      "canvases": 1
+    },
+    "missing": [],
+    "errors": []
+  },
+  {
+    "title": "Geometry Dash",
+    "snapshot": {
+      "title": "Web Dashers",
+      "text": "Downloaded from",
+      "canvases": 1
+    },
+    "missing": [
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_03_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_04_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_06_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_05_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_07_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_01_2_001.png",
+      "https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/assets/game-ground/groundSquare_02_2_001.png"
+    ],
+    "errors": []
+  }
+]
