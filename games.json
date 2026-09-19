@@ -2398,5 +2398,71 @@
     "title": "Short Life",
     "url": "library/noah/games/174.html",
     "source": "noah"
+  },
+  {
+    "id": "pokemonleafgreen",
+    "title": "Pokémon LeafGreen",
+    "url": "library/seraph-pokemon/pokemonleafgreen/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonruby",
+    "title": "Pokémon Ruby",
+    "url": "library/seraph-pokemon/pokemonruby/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonsapphire",
+    "title": "Pokémon Sapphire",
+    "url": "library/seraph-pokemon/pokemonsapphire/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemondiamond",
+    "title": "Pokémon Diamond",
+    "url": "library/seraph-pokemon/pokemondiamond/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonplatinum",
+    "title": "Pokémon Platinum",
+    "url": "library/seraph-pokemon/pokemonplatinum/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonsoulsilver",
+    "title": "Pokémon SoulSilver",
+    "url": "library/seraph-pokemon/pokemonsoulsilver/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonmysterydungeon",
+    "title": "Pokémon Mystery Dungeon",
+    "url": "library/seraph-pokemon/pokemonmysterydungeon/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonunbound",
+    "title": "Pokémon Unbound",
+    "url": "library/seraph-pokemon/pokemonunbound/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonstadium",
+    "title": "Pokémon Stadium",
+    "url": "library/seraph-pokemon/pokemonstadium/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonsnap",
+    "title": "Pokémon Snap",
+    "url": "library/seraph-pokemon/pokemonsnap/index.html",
+    "source": "seraph"
+  },
+  {
+    "id": "pokemonyellow",
+    "title": "Pokémon Yellow",
+    "url": "library/seraph-pokemon/pokemonyellow/index.html",
+    "source": "seraph"
   }
 ]

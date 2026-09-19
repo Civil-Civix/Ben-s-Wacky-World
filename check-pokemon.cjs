@@ -1,0 +1,8 @@
+const fs=require('fs'),path=require('path'),http=require('http');
+const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const root=process.cwd(),games=JSON.parse(fs.readFileSync('pokemon-import-report.json')).added;
+const server=http.createServer((req,res)=>{const p=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!p.startsWith(root+path.sep)){res.writeHead(403).end();return;}try{const stat=fs.statSync(p);res.writeHead(200,{'Content-Type':({'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.json':'application/json'})[path.extname(p)]||'application/octet-stream','Content-Length':stat.size});fs.createReadStream(p).pipe(res);}catch{res.writeHead(404).end();}});
+(async()=>{await new Promise(r=>server.listen(4192,'127.0.0.1',r));const b=await chromium.launch({headless:true,channel:'msedge'});const results=[];try{
+for(const game of games){const p=await b.newPage(),bad=[],errors=[];p.on('response',r=>{if(r.status()>=400)bad.push(r.url());});p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:4192/'+game.url);let loaded=false;try{await p.waitForFunction(()=>window.EJS_emulator?.gameManager&&document.querySelector('canvas'),{},{timeout:20000});await p.waitForTimeout(1000);loaded=true;}catch{}results.push({title:game.title,loaded,missing:bad,errors});console.log(JSON.stringify(results.at(-1)));await p.close();}
+fs.writeFileSync('pokemon-validation.json',JSON.stringify(results,null,2));
+}finally{await b.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});
