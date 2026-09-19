@@ -198,3 +198,6 @@ body::before{background:rgb(var(--accent-rgb)/.022)}
 #effect-speed{grid-column:1/-1;width:100%;margin:0;accent-color:var(--accent);cursor:pointer}
 .speed-setting small{color:var(--muted)}.speed-setting small:last-child{text-align:right}
 
+.home-quote{margin:26px auto 0;max-width:760px;min-height:1.6em;color:var(--muted);font-size:16px;line-height:1.6;opacity:0;transition:opacity .6s ease;overflow-wrap:anywhere}
+.home-quote.quote-visible{opacity:1}
+@media(prefers-reduced-motion:reduce){.home-quote{transition:none}}
