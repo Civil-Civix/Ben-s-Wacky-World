@@ -8,12 +8,13 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238B7BFF'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260918-quote-spacing">
+  <link rel="stylesheet" href="styles.css?v=20260918-chat">
   <script src="games.js?v=20260918-artwork" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
-  <script src="app.js?v=20260918-random" defer></script>
+  <script src="chat-board.js?v=20260918-1" defer></script>
+  <script src="app.js?v=20260918-chat" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
   <script src="appearance.js?v=20260918-7" defer></script>
 </head>
@@ -25,6 +26,7 @@
     <button class="nav-game" aria-label="Games" aria-current="page" title="Games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg>
     </button>
   <a class="nav-apps" href="#apps" aria-label="Apps" title="Apps"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></a>
+  <a class="nav-chat" href="#chat" aria-label="Chat board" title="Chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg></a>
   <button class="nav-settings" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
   </aside>
   <section id="home-panel" aria-labelledby="home-heading">
@@ -39,7 +41,7 @@
       <div class="launch-tile launch-placeholder" aria-hidden="true"></div>
       <a class="launch-tile" href="https://docs.google.com/forms/d/e/1FAIpQLScLnhJjGnEV3kSKwBuLGhv1XNpWtFYBgr0Q42Pzk_tzSrw0FA/viewform?usp=header" target="_blank" rel="noopener noreferrer" aria-label="Request (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>
       <a class="launch-tile" href="https://sites.google.com/stu.tempeunion.org/bens-wack-world/home" target="_blank" rel="noopener noreferrer" aria-label="Ben's Wacky Site (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="20" text-anchor="middle" style="font-family:Inter,Arial,sans-serif;font-size:24px;font-weight:800;fill:currentColor;stroke:none">W</text></svg><span>Ben's Wacky Site</span></a>
-      <div class="launch-tile launch-placeholder" aria-hidden="true"></div>
+      <a class="launch-tile" href="#chat" aria-label="Open chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span>Chat board</span></a>
       <a class="launch-tile" href="#settings" aria-label="Open settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg><span>Settings</span></a>
     </div>
   </section>
@@ -57,6 +59,16 @@
     <p id="empty" class="empty" hidden>No games found. Try another name.</p>
     <noscript><p class="empty">Enable JavaScript to search and play games.</p></noscript>
   </main>
+  <section id="chat-panel" aria-labelledby="chat-heading" hidden>
+    <header class="chat-heading"><h1 id="chat-heading">Chat board</h1><a href="#home">Go back</a></header>
+    <div class="chat-shell">
+      <div id="chat-content" class="chat-content gated" inert aria-hidden="true"><div class="chat-placeholder" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+      <div id="chat-warning" class="chat-warning">
+        <div class="chat-warning-card"><h2 id="chat-warning-title">Profanity warning</h2><p>This chat board contains user posts that may include profanity or other inappropriate language.</p><p>Select OK to load and view the board.</p><div class="chat-warning-actions"><button type="button" id="chat-accept">OK</button><a href="#home">Go back</a></div></div>
+      </div>
+    </div>
+    <p id="chat-help" hidden>Board not loading? <a href="https://padlet.com/s28400278/ben-s-wacky-chatboard-s7pwwvbavdtpqawp" target="_blank" rel="noopener noreferrer">Open on Padlet</a>.</p>
+  </section>
   <section id="settings-panel" aria-labelledby="appearance-heading" hidden>
     <header class="settings-heading"><div><p class="eyebrow">Settings</p><h1 id="appearance-heading">Appearance</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
     <div class="appearance-grid">

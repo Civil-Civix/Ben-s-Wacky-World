@@ -67,6 +67,7 @@ function makeRandomCard(){
 
 function render() {
   clearInterval(randomArtTimer);
+  if (view === "chat") {document.title = "Chat board | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
   const query = normalize(search.value);
@@ -157,17 +158,18 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','favorites','recents','settings','apps'].includes(hash) ? hash : 'home';
+  view = ['all','favorites','recents','settings','apps','chat'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
+  window.showChatBoard(view === 'chat');
   document.querySelector('.collection-nav').hidden = view === 'apps';
   search.placeholder = view === 'apps' ? 'Search apps…' : 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = view === 'apps' ? 'Search apps' : 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'apps'], ['.nav-apps', view === 'apps'], ['.nav-settings', settingsOpen]]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'apps' && view !== 'chat'], ['.nav-apps', view === 'apps'], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
