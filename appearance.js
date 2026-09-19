@@ -39,6 +39,9 @@
     root.style.setProperty('--accent-rgb',rgb.join(' '));
     root.style.setProperty('--accent-ink',rgb[0]*.299+rgb[1]*.587+rgb[2]*.114>145?'#101014':'#ffffff');
     document.querySelector('meta[name="theme-color"]').content = appearance.accent;
+    const favicon = document.querySelector('link[rel="icon"]');
+    const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="'+appearance.accent+'"/><text x="16" y="23" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="23" fill="'+root.style.getPropertyValue('--accent-ink')+'">W</text></svg>';
+    favicon.href = 'data:image/svg+xml,' + encodeURIComponent(icon);
     document.querySelectorAll('[data-background]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.background===appearance.background)));
     document.querySelectorAll('[data-accent]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.accent.toUpperCase()===appearance.accent)));
     document.querySelector('#custom-accent').value = appearance.accent;

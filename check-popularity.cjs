@@ -74,8 +74,10 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('[data-accent="#8B7BFF"]').click();
  await page.reload();
  assert.equal(await page.locator('#custom-accent').inputValue(),'#8b7bff');
+ assert(decodeURIComponent(await page.locator('link[rel=icon]').getAttribute('href')).includes('fill="#8B7BFF"'));
  await page.locator('#reset-appearance').click();
  assert.equal(await page.locator('#custom-accent').inputValue(),'#ffae00');
+ assert(decodeURIComponent(await page.locator('link[rel=icon]').getAttribute('href')).includes('fill="#FFAE00"'));
  await page.locator('.nav-game').click();
  assert(!JSON.parse(fs.readFileSync('home-quotes.json','utf8')).includes('GG fricken easy'));
  offline=true;
