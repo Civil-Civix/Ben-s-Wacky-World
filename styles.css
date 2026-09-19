@@ -1,4 +1,4 @@
-:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#050505;color:#f5f5f5;--accent:#8B7BFF;--line:#262629}
+:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#050505;color:#f5f5f5;--accent:#FFAE00;--line:#262629}
 *{box-sizing:border-box}
 body{margin:0}
 button,input,a{-webkit-tap-highlight-color:transparent}
@@ -43,7 +43,7 @@ body.playing{overflow:hidden}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* Purple theme, collection navigation, and optional card artwork. */
-:root{--accent:#8B7BFF;--line:#2b2738;background:#07060b}
+:root{--accent:#FFAE00;--line:#2b2738;background:#07060b}
 .sidebar{background:#0c0a12;border-color:#242030}
 .brand{border-radius:8px;padding:2px 5px;transition:color .15s,background .15s}
 .brand:hover{color:var(--accent);background:rgb(var(--accent-rgb) / 0.094)}
@@ -80,7 +80,7 @@ body.playing > .sidebar,body.playing > #catalog{visibility:hidden;pointer-events
 .collection-nav a[aria-current=page]{background:transparent;color:var(--accent)}
 .collection-nav a:hover{background:rgb(var(--accent-rgb) / 0.071);color:var(--accent)}
 /* Local appearance preferences and a moving background layer. */
-:root{--accent-rgb:139 123 255;--accent-ink:#101014;--page:#050505;--surface:#0c0c0f;--panel:#0a0a0de8;--line:#29272f;--muted:#a39fac;background:var(--page)}
+:root{--accent-rgb:255 174 0;--accent-ink:#101014;--page:#050505;--surface:#0c0c0f;--panel:#0a0a0de8;--line:#29272f;--muted:#a39fac;background:var(--page)}
 :root[data-background=midnight]{--page:#101017;--surface:#191921;--panel:#17171ee8;--line:#35353f;--muted:#aaaabb}
 :root[data-background=obsidian]{--page:#050505;--surface:#0c0c0f;--panel:#0a0a0de8;--line:#29272f;--muted:#a39fac}
 :root[data-background=slate]{--page:#101922;--surface:#172430;--panel:#15212de8;--line:#334658;--muted:#a6b8ca}
@@ -239,3 +239,7 @@ button.launch-tile:hover{background:color-mix(in srgb,var(--accent) 12%,var(--su
 #game-sort{font:inherit;padding:6px 9px;border-radius:8px;border:1px solid var(--line);color:inherit;background:var(--surface)}
 #game-sort:hover,#game-sort:focus-visible{border-color:var(--accent)}
 @media(max-width:700px){.catalog-controls{gap:12px}.collection-nav{gap:14px}}
+
+/* Keep uploaded logos completely inside their game cards. */
+.game-card[data-game="pokerogue"] img,.game-card[data-game="worldguessr"] img{object-fit:contain}
+.game-card[data-game="pokerogue"] span,.game-card[data-game="worldguessr"] span{text-shadow:0 1px 4px #000}

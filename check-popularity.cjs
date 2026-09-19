@@ -23,11 +23,22 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
   catch{return route.fulfill({status:404,body:''});}
  });
  await page.goto('https://civil-civix.github.io/Ben-s-Wacky-World/#all');
- await page.locator('#game-sort').selectOption('popular');
+ assert.equal(await page.locator('#game-sort').inputValue(),'popular');
+ assert.deepEqual(await page.locator('#game-sort option').evaluateAll(options=>options.map(o=>o.value)),['popular','az']);
+ assert.equal(await page.locator('html').evaluate(e=>getComputedStyle(e).getPropertyValue('--accent').trim()),'#FFAE00');
  await page.waitForFunction(()=>window.WackyPopularity.state==='ready');
+ assert(await page.locator('#popularity-note').isHidden());
+ for(const id of ['pokerogue','worldguessr']) {
+  const card=page.locator('[data-game='+id+']');
+  await card.scrollIntoViewIfNeeded();
+  await page.waitForFunction(id=>document.querySelector('[data-game='+id+'] img')?.naturalWidth>0,id);
+  assert.equal(await card.locator('img').evaluate(e=>getComputedStyle(e).objectFit),'contain');
+  assert(await card.locator('span').isVisible());
+  await card.screenshot({path:'.audit-evidence/'+id+'-new-card.png'});
+ }
  const order=await page.locator('[data-game]').evaluateAll(cards=>cards.map(c=>c.dataset.game));
- assert.deepEqual(order.slice(0,2),games.filter(g=>g.pinned).sort((a,b)=>a.title.localeCompare(b.title)).map(g=>g.id));
- assert.equal(order[2],featured.id);
+ assert.equal(order[0],featured.id);
+ assert(!games.some(g=>['pokerogue','worldguessr'].includes(g.id)&&g.pinned));
  await page.locator('[data-game="'+featured.id+'"]').click();
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('bens-wacky-world.popularity-counted.v1'))?.ids?.length===1);
  assert.equal(posts.length,1);
@@ -49,6 +60,23 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  const az=await page.locator('[data-game]').evaluateAll(cards=>cards.map(c=>c.dataset.game));
  const expected=games.slice().sort((a,b)=>Number(Boolean(b.pinned))-Number(Boolean(a.pinned))||a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true})).map(g=>g.id);
  assert.deepEqual(az,expected);
+ await page.locator('.nav-home').click();
+ await page.locator('#home-panel').waitFor({state:'visible'});
+ await page.locator('#home-panel [data-stream]').click();
+ assert.equal(await page.evaluate(()=>document.fullscreenElement),null);
+ assert(await page.locator('#player').isVisible());
+ await page.locator('#fullscreen').click();
+ await page.waitForFunction(()=>document.fullscreenElement?.tagName==='IFRAME');
+ await page.locator('html').evaluate(()=>document.exitFullscreen());
+ await page.locator('#close').click();
+ await page.locator('.nav-settings').click();
+ await page.locator('[data-accent="#8B7BFF"]').click();
+ await page.reload();
+ assert.equal(await page.locator('#custom-accent').inputValue(),'#8b7bff');
+ await page.locator('#reset-appearance').click();
+ assert.equal(await page.locator('#custom-accent').inputValue(),'#ffae00');
+ await page.locator('.nav-game').click();
+ assert(!JSON.parse(fs.readFileSync('home-quotes.json','utf8')).includes('GG fricken easy'));
  offline=true;
  await page.locator('#game-sort').selectOption('popular');
  await page.reload();

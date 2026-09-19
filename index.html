@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#8B7BFF">
+  <meta name="theme-color" content="#FFAE00">
   <meta name="description" content="Search and play your Wacky Games collection.">
   <title>Ben's Wacky World</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238B7BFF'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFAE00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260919-app-lists">
-  <script src="games.js?v=20260919-embeds" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260919-gold">
+  <script src="games.js?v=20260919-gold" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="chat-board.js?v=20260918-1" defer></script>
   <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="app.js?v=20260919-popular" defer></script>
+  <script src="app.js?v=20260919-gold" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
-  <script src="appearance.js?v=20260918-7" defer></script>
+  <script src="appearance.js?v=20260919-gold" defer></script>
 </head>
 <body>
   <canvas id="theme-canvas" aria-hidden="true"></canvas>
@@ -55,7 +55,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
         <input id="search" type="search" placeholder="Search games…" autocomplete="off" spellcheck="false">
       </label>
-      <div class="catalog-controls"><nav class="collection-nav" aria-label="Game collections"><a href="#all" data-view="all" aria-current="page">All</a><a href="#favorites" data-view="favorites">Favorites</a><a href="#recents" data-view="recents">Recents</a></nav><label id="sort-wrap">Sort <select id="game-sort"><option value="default">Default</option><option value="az">A–Z</option><option value="popular">Popular (30 days)</option></select></label></div><p id="popularity-note" role="status" hidden style="text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px"></p><p id="result-count" class="sr-only" role="status" aria-live="polite"></p>
+      <div class="catalog-controls"><nav class="collection-nav" aria-label="Game collections"><a href="#all" data-view="all" aria-current="page">All</a><a href="#favorites" data-view="favorites">Favorites</a><a href="#recents" data-view="recents">Recents</a></nav><label id="sort-wrap">Sort <select id="game-sort"><option value="popular">Popular (30 days)</option><option value="az">A–Z</option></select></label></div><p id="popularity-note" role="status" hidden style="text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px"></p><p id="result-count" class="sr-only" role="status" aria-live="polite"></p>
     </header>
     <p id="storage-notice" class="storage-notice" role="status" hidden>Your browser could not read or save your lists. Changes may last only until you close this page.</p><section id="game-grid" class="game-grid" aria-label="Games"></section>
     <p id="empty" class="empty" hidden>No games found. Try another name.</p>
@@ -84,13 +84,14 @@
       </fieldset>
       <fieldset class="settings-card"><legend>Accent color</legend>
         <div class="accent-options">
+          <button type="button" class="accent-swatch" data-accent="#FFAE00" style="--swatch:#FFAE00" aria-label="Gold accent" aria-pressed="true"></button>
           <button type="button" class="accent-swatch" data-accent="#FF8018" style="--swatch:#FF8018" aria-label="Orange accent" aria-pressed="false"></button>
-          <button type="button" class="accent-swatch" data-accent="#8B7BFF" style="--swatch:#8B7BFF" aria-label="Purple accent" aria-pressed="true"></button>
+          <button type="button" class="accent-swatch" data-accent="#8B7BFF" style="--swatch:#8B7BFF" aria-label="Purple accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#389AFF" style="--swatch:#389AFF" aria-label="Blue accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#FA578C" style="--swatch:#FA578C" aria-label="Pink accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#20C392" style="--swatch:#20C392" aria-label="Green accent" aria-pressed="false"></button>
         </div>
-        <label class="custom-accent"><input id="custom-accent" type="color" value="#8B7BFF"><span>Custom color<output id="accent-value" for="custom-accent">#8B7BFF</output></span></label>
+        <label class="custom-accent"><input id="custom-accent" type="color" value="#FFAE00"><span>Custom color<output id="accent-value" for="custom-accent">#FFAE00</output></span></label>
       </fieldset>
       <fieldset class="settings-card snow-setting"><legend>Background effect</legend><div class="effect-options"><button type="button" data-effect="none" aria-pressed="false"><span class="effect-sample none" aria-hidden="true"></span>None</button><button type="button" data-effect="snow" aria-pressed="false"><span class="effect-sample snow" aria-hidden="true"></span>Falling snow</button><button type="button" data-effect="matrix" aria-pressed="false"><span class="effect-sample matrix" aria-hidden="true"></span>Matrix</button><button type="button" data-effect="constellation" aria-pressed="false"><span class="effect-sample constellation" aria-hidden="true"></span>Constellation</button><button type="button" data-effect="topography" aria-pressed="false"><span class="effect-sample topography" aria-hidden="true"></span>Topography</button><button type="button" data-effect="starfield" aria-pressed="false"><span class="effect-sample starfield" aria-hidden="true"></span>Starfield</button></div><label class="speed-setting" for="effect-speed"><span>Animation speed</span><output id="speed-value" for="effect-speed">1×</output><input id="effect-speed" type="range" min="0.25" max="3" step="0.25" value="1"><small>Slow</small><small>Fast</small></label><label class="toggle-row effect-animation"><span>Animate background<small>Effects follow your accent color and pause while playing.</small></span><input id="snow-enabled" type="checkbox" checked></label></fieldset>
     </div>

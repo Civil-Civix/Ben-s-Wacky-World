@@ -17,7 +17,7 @@ let currentGame = null, lastId = null, loadTimer, savedScroll = 0;
 let imageMap = {};
 let view = 'home';
 let lastLaunch=null;
-let gameSort='default';try{const saved=localStorage.getItem('bens-wacky-world.game-sort');gameSort=['az','popular'].includes(saved)?saved:'default';}catch(_){}
+let gameSort='popular';try{const saved=localStorage.getItem('bens-wacky-world.game-sort');gameSort=['az','popular'].includes(saved)?saved:'popular';}catch(_){}
 document.querySelector('#game-sort').value=gameSort;
 
 function storageWarning() {
@@ -82,16 +82,16 @@ function render() {
   const matches = pool.filter(game => normalize(game.title).includes(query));
   const popularity=window.WackyPopularity;
   const popularSort=gameSort==='popular';
-  if(!isAppsView()&&(view!=='recents'||gameSort!=='default'))matches.sort((a,b)=>
+  if(!isAppsView())matches.sort((a,b)=>
     (view==='all' ? Number(Boolean(b.pinned))-Number(Boolean(a.pinned)) : 0) ||
     (popularSort && popularity.hasScores ? popularity.score(b.id)-popularity.score(a.id) : 0) ||
-    (gameSort==='az'||popularSort&&popularity.hasScores ? a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}) : 0));
+    (gameSort==='az'||popularSort ? a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}) : 0));
   const popularityNote=document.querySelector('#popularity-note');
-  popularityNote.hidden=isAppsView()||!popularSort;
+  popularityNote.hidden=isAppsView()||!popularSort||popularity.state==='ready';
   popularityNote.textContent=popularity.state==='error' ?
-    (popularity.hasScores?'Rankings could not refresh. Showing the last available ranking.':'Rankings are temporarily unavailable. Showing the default order.') :
+    (popularity.hasScores?'Rankings could not refresh. Showing the last available ranking.':'Rankings are temporarily unavailable. Showing A–Z order.') :
     popularity.state!=='ready' ? 'Loading site-wide rankings…' :
-    'Most opened across the site in the last 30 days. One opening per browser, per game, per day. Pinned games stay first.';
+    '';
   const fragment = document.createDocumentFragment();
   if(view==='all'&&!query&&games.length)fragment.append(makeRandomCard());
   for (const game of matches) {
@@ -221,8 +221,6 @@ document.querySelector('#game-sort').addEventListener('change',event=>{
 });
 document.querySelectorAll('[data-stream]').forEach(button=>button.addEventListener('click',()=>{
  openGame({id:'stream-hub',title:'Stream Hub',kind:'stream',url:'https://stream-hub-pydm.onrender.com/'});
- const frame=stage.querySelector('iframe');
- frame.requestFullscreen?.().catch(()=>{status.textContent='Fullscreen was blocked. Use the Fullscreen button to try again.';status.hidden=false;});
 }));
 
 document.querySelector('#reload').addEventListener('click', () => {if(currentGame) loadGame();});

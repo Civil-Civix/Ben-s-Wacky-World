@@ -2499,14 +2499,12 @@
     "id": "worldguessr",
     "title": "WorldGuessr",
     "url": "https://worldguessr-u3sg.onrender.com/",
-    "source": "external",
-    "pinned": true
+    "source": "external"
   },
   {
     "id": "pokerogue",
     "title": "PokéRogue",
     "url": "https://pokerogue-tuon.onrender.com/",
-    "source": "external",
-    "pinned": true
+    "source": "external"
   }
 ]

@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'obsidian',accent:'#8B7BFF',effect:'snow',speed:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'obsidian',accent:'#FFAE00',effect:'snow',speed:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
   const effects = ['none','snow','matrix','constellation','topography','starfield'];
   const backgrounds = ['midnight','obsidian','slate','mocha'];
   const root = document.documentElement;
