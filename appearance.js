@@ -1,7 +1,8 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'obsidian',accent:'#8B7BFF',snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'obsidian',accent:'#8B7BFF',effect:'snow',snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const effects = ['none','snow','matrix','constellation','topography','starfield'];
   const backgrounds = ['midnight','obsidian','slate','mocha'];
   const root = document.documentElement;
   const layer = document.querySelector('#snow');
@@ -12,6 +13,7 @@
       return {
         background:backgrounds.includes(saved?.background) ? saved.background : defaults.background,
         accent:/^#[0-9a-f]{6}$/i.test(saved?.accent) ? saved.accent.toUpperCase() : defaults.accent,
+        effect:effects.includes(saved?.effect) ? saved.effect : defaults.effect,
         snow:typeof saved?.snow === 'boolean' ? saved.snow : defaults.snow
       };
     } catch (_) {return {...defaults};}
@@ -38,17 +40,21 @@
     document.querySelector('#custom-accent').value = appearance.accent;
     document.querySelector('#accent-value').textContent = appearance.accent;
     document.querySelector('#snow-enabled').checked = appearance.snow;
-    layer.hidden = !appearance.snow;
+    layer.hidden = appearance.effect !== 'snow';
+    layer.classList.toggle('still',!appearance.snow);
+    document.querySelectorAll('[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
+    window.setBackgroundEffect(appearance);
     if(save) {
       try {localStorage.setItem(key,JSON.stringify(appearance));warning.hidden=true;}
       catch (_) {warning.hidden=false;}
     }
   }
   document.querySelectorAll('[data-background]').forEach(button=>button.addEventListener('click',()=>{appearance.background=button.dataset.background;apply(true);}));
+  document.querySelectorAll('[data-effect]').forEach(button=>button.addEventListener('click',()=>{appearance.effect=button.dataset.effect;apply(true);}));
   document.querySelectorAll('[data-accent]').forEach(button=>button.addEventListener('click',()=>{appearance.accent=button.dataset.accent.toUpperCase();apply(true);}));
   document.querySelector('#custom-accent').addEventListener('input',event=>{appearance.accent=event.target.value.toUpperCase();apply(true);});
   document.querySelector('#snow-enabled').addEventListener('change',event=>{appearance.snow=event.target.checked;apply(true);});
-  document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults};apply(true);});
+  document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};apply(true);});
   window.addEventListener('storage',event=>{if(event.key===key || event.key===null){appearance=read();apply();}});
   document.addEventListener('visibilitychange',()=>{layer.classList.toggle('paused',document.hidden);});
   apply();

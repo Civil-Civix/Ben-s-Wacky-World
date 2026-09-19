@@ -45,3 +45,6 @@ Some games download large files from outside servers. Local hosting does not mak
 
 Current goal: keep usable games, hide only confirmed failures, and remove identifiable ads. Automated checks and local ad cleanup are complete; uncertain games need manual review. Continue in this GitHub repository. These audit changes have not been committed or pushed.
 
+
+## Background effects
+Settings → Appearance offers None, Falling snow, Matrix, Constellation, Topography, and Starfield. Each follows the accent color, with a subtle page tint and a soft homepage title spotlight. Animate background pauses motion while retaining the selected design. Choices are saved locally; animations pause during gameplay and in hidden tabs. New effects are original lightweight implementations inspired by the supplied Noah theme options.

@@ -8,14 +8,16 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238B7BFF'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260918-5">
+  <link rel="stylesheet" href="styles.css?v=20260918-6">
   <script src="games.js?v=20260918-audit" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="app.js?v=20260918-5" defer></script>
-  <script src="appearance.js?v=20260918-5" defer></script>
+  <script src="background-effects.js?v=20260918-6" defer></script>
+  <script src="appearance.js?v=20260918-6" defer></script>
 </head>
 <body>
+  <canvas id="theme-canvas" aria-hidden="true"></canvas>
   <div id="snow" aria-hidden="true"></div>
   <aside class="sidebar" aria-label="Main navigation">
     <a class="brand" href="#home" aria-label="Ben's Wacky World home" title="Wacky Games">W</a>
@@ -73,7 +75,7 @@
         </div>
         <label class="custom-accent"><input id="custom-accent" type="color" value="#8B7BFF"><span>Custom color<output id="accent-value" for="custom-accent">#8B7BFF</output></span></label>
       </fieldset>
-      <fieldset class="settings-card snow-setting"><legend>Background effect</legend><label class="toggle-row"><span>Falling snow<small>Soft particles in your accent color.</small></span><input id="snow-enabled" type="checkbox" checked></label></fieldset>
+      <fieldset class="settings-card snow-setting"><legend>Background effect</legend><div class="effect-options"><button type="button" data-effect="none" aria-pressed="false"><span class="effect-sample none" aria-hidden="true"></span>None</button><button type="button" data-effect="snow" aria-pressed="false"><span class="effect-sample snow" aria-hidden="true"></span>Falling snow</button><button type="button" data-effect="matrix" aria-pressed="false"><span class="effect-sample matrix" aria-hidden="true"></span>Matrix</button><button type="button" data-effect="constellation" aria-pressed="false"><span class="effect-sample constellation" aria-hidden="true"></span>Constellation</button><button type="button" data-effect="topography" aria-pressed="false"><span class="effect-sample topography" aria-hidden="true"></span>Topography</button><button type="button" data-effect="starfield" aria-pressed="false"><span class="effect-sample starfield" aria-hidden="true"></span>Starfield</button></div><label class="toggle-row effect-animation"><span>Animate background<small>Effects follow your accent color and pause while playing.</small></span><input id="snow-enabled" type="checkbox" checked></label></fieldset>
     </div>
     <footer class="settings-footer"><span>Saved on this browser.</span><button id="reset-appearance" type="button">Reset appearance</button></footer>
     <p id="appearance-notice" class="storage-notice" role="status" hidden>Your browser could not save these settings. Changes will last only for this visit.</p>
