@@ -1,6 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
 <head><script id="wacky-ad-guard">/* Wacky World: suppress known ad hosts and popup windows in this game document. */
 (() => {
   const adHost = /(^|\.)(googlesyndication\.com|doubleclick\.net|googleadservices\.com|adservice\.google\.[a-z.]+|adsterra\.com|monetag\.com|breadisgay\.eduplace\.net|popads\.net|popcash\.net|adnxs\.com|adsrvr\.org|adinplay\.com)$/i;
@@ -29,66 +32,128 @@
   });return 0;};
   try{Object.defineProperty(window,'adsbygoogle',{get:()=>queue,set:()=>{},configurable:false});}catch(_){}
   window.open=()=>({closed:true,focus(){},close(){},location:{}});
-})();</script>
-
-    <base href="https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Web Dashers</title>
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="stylesheet" href="assets/style.css">
-    <meta name="description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and a level search to play online levels. The project is actively in development, with more features and updates planned.">
-    <meta name="theme-color" content="#C1FB3D">
-
-    <!-- - Embeds - -->
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://web-dashers.github.io/" />
-    <meta property="og:title" content="Web Dashers" />
-    <meta property="og:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and a level search to play online levels. The project is actively in development, with more features and updates planned." />
-    <meta property="og:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://web-dashers.github.io/" />
-    <meta property="twitter:title" content="Web Dashers" />
-    <meta property="twitter:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and an evel search to play online levels. The project is actively in development, with more features and updates planned." />
-    <meta property="twitter:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
-
-    <!-- Libraries and stuff -->
-    <script src="assets/scripts/game/allObjects.js?latest"></script>
-    <script src="assets/scripts/game/allLevels.js"></script>
-    <script src="assets/scripts/libs/phaser.min.js"></script>
-    <script src="assets/scripts/libs/pako.min.js"></script>
-    <script src="assets/scripts/utils/cache-manager.js"></script>
-    <script src="assets/scripts/api/GDapiWrapper.js"></script>
-    <script src="assets/scripts/utils/api-config.js"></script>
-    <script src="assets/scripts/api/account-api.js"></script>
-    <!-- worker -->
-    <script>
-        window._gdProxyUrl = "https://gd-proxy.gmdc.workers.dev";
-    </script>
-    <script defer src="assets/scripts/utils/config.js"></script>
-    <script defer src="assets/scripts/core/triggers.js"></script>
-    <script defer src="assets/scripts/core/level.js?latest"></script>
-    <script defer src="assets/scripts/core/player.js?latehkjthykhst"></script>
-    <script defer src="assets/scripts/core/audio.js"></script>
-    <script defer src="assets/scripts/core/loading-screen.js"></script>
-    <script defer src="assets/scripts/core/level-editor.js?latest"></script>
-    <script defer src="assets/scripts/core/game-scene.js?latest3"></script>
-    <script defer src="assets/scripts/core/main.js"></script>
-    <script>
-        new ResizeObserver(() => {
-            window.dispatchEvent(new Event('resize'));
-        }).observe(document.documentElement);
-
-        document.oncontextmenu = (event) => {
-            event.preventDefault();
-        };
-    </script>
-</head>
-
-<body>
-<style>.noah-wmk{position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;align-items:center;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}.noah-wmk .wm-prefix{font-size:11px;font-weight:600;color:#d4d4d4;letter-spacing:0.02em;text-shadow:0 1px 3px rgba(0,0,0,0.8);margin-bottom:3px;white-space:nowrap;transition:color 0.2s}.noah-wmk img{display:block;height:34px;width:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6))}.noah-wmk:hover .wm-prefix{color:#f7931e}</style><a class="noah-wmk" href="https://noahstutoring.academy" target="_blank" rel="noopener"><span class="wm-prefix">Downloaded from</span><img src="https://cdn.jsdelivr.net/gh/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor@master/images/logo.png" alt="Noah's Tutoring Hub"></a></body>
-
+})();</script>
+
+
+
+    <base href="https://cdn.jsdelivr.net/gh/web-dashers/web-dashers.github.io@9f086b9cd3297b9ab9625cf49ccb602a547ecae6/">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Web Dashers</title>
+
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
+    <link rel="stylesheet" href="assets/style.css">
+
+    <meta name="description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and a level search to play online levels. The project is actively in development, with more features and updates planned.">
+
+    <meta name="theme-color" content="#C1FB3D">
+
+
+
+    <!-- - Embeds - -->
+
+    <!-- Open Graph -->
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:url" content="https://web-dashers.github.io/" />
+
+    <meta property="og:title" content="Web Dashers" />
+
+    <meta property="og:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and a level search to play online levels. The project is actively in development, with more features and updates planned." />
+
+    <meta property="og:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
+
+
+
+    <!-- Twitter -->
+
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <meta property="twitter:url" content="https://web-dashers.github.io/" />
+
+    <meta property="twitter:title" content="Web Dashers" />
+
+    <meta property="twitter:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and an evel search to play online levels. The project is actively in development, with more features and updates planned." />
+
+    <meta property="twitter:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
+
+
+
+    <!-- Libraries and stuff -->
+
+    <script src="assets/scripts/game/allObjects.js?latest"></script>
+
+    <script src="assets/scripts/game/allLevels.js"></script>
+
+    <script src="assets/scripts/libs/phaser.min.js"></script>
+
+    <script src="assets/scripts/libs/pako.min.js"></script>
+
+    <script src="assets/scripts/utils/cache-manager.js"></script>
+
+    <script src="assets/scripts/api/GDapiWrapper.js"></script>
+
+    <script src="assets/scripts/utils/api-config.js"></script>
+
+    <script src="assets/scripts/api/account-api.js"></script>
+
+    <!-- worker -->
+
+    <script>
+
+        window._gdProxyUrl = "https://gd-proxy.gmdc.workers.dev";
+
+    </script>
+
+    <script defer src="assets/scripts/utils/config.js"></script>
+
+    <script defer src="assets/scripts/core/triggers.js"></script>
+
+    <script defer src="assets/scripts/core/level.js?latest"></script>
+
+    <script defer src="assets/scripts/core/player.js?latehkjthykhst"></script>
+
+    <script defer src="assets/scripts/core/audio.js"></script>
+
+    <script defer src="assets/scripts/core/loading-screen.js"></script>
+
+    <script defer src="assets/scripts/core/level-editor.js?latest"></script>
+
+    <script defer src="assets/scripts/core/game-scene.js?latest3"></script>
+
+    <script defer src="assets/scripts/core/main.js"></script>
+
+    <script>
+
+        new ResizeObserver(() => {
+
+            window.dispatchEvent(new Event('resize'));
+
+        }).observe(document.documentElement);
+
+
+
+        document.oncontextmenu = (event) => {
+
+            event.preventDefault();
+
+        };
+
+    </script>
+
+</head>
+
+
+
+<body>
+
+</body>
+
+
+
 </html>

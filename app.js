@@ -74,6 +74,7 @@ function render() {
   const pool = view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
+  if(view==='all')matches.sort((a,b)=>Number(Boolean(b.pinned))-Number(Boolean(a.pinned)));
   const fragment = document.createDocumentFragment();
   if(view==='all'&&!query&&games.length)fragment.append(makeRandomCard());
   for (const game of matches) {

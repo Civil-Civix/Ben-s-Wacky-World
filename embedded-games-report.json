@@ -1,0 +1,28 @@
+{
+  "pinned": [
+    "worldguessr",
+    "pokerogue"
+  ],
+  "replaced": "polytrack",
+  "artwork": {
+    "480.jpg": "scamptonthegreat",
+    "486.jpg": "howtofish",
+    "487.jpg": "endacopia",
+    "488.jpg": "mindustry",
+    "64.jpg": "supersmashflash",
+    "H2x1_GB_PokemonYellow_enGB.jpg": "pokemonyellow",
+    "Pokemonstadiumbox.jpg": "pokemonstadium"
+  },
+  "watermarksRemoved": [
+    "Endacopia",
+    "How to Fish",
+    "Mindustry",
+    "Scampton the Great",
+    "Super Smash Flash",
+    "FNAF 2",
+    "FNAF 3",
+    "FNAF 4",
+    "FNAF: Pizza Sim",
+    "Geometry Dash"
+  ]
+}

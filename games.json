@@ -2204,7 +2204,7 @@
   {
     "id": "polytrack",
     "title": "Poly Track",
-    "url": "library/noah/games/203.html",
+    "url": "https://civil-civix.github.io/newcargame/",
     "source": "noah"
   },
   {
@@ -2494,5 +2494,19 @@
     "title": "Super Smash Flash",
     "url": "library/imported-20260919/supersmashflash/index.html",
     "source": "user-upload"
+  },
+  {
+    "id": "worldguessr",
+    "title": "WorldGuessr",
+    "url": "https://worldguessr-u3sg.onrender.com/",
+    "source": "external",
+    "pinned": true
+  },
+  {
+    "id": "pokerogue",
+    "title": "PokéRogue",
+    "url": "https://pokerogue-tuon.onrender.com/",
+    "source": "external",
+    "pinned": true
   }
 ]
