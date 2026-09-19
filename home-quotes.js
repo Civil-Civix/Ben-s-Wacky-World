@@ -12,13 +12,14 @@
  }
  function next(){
   element.classList.remove('quote-visible');
-  timer=setTimeout(()=>{index=(index+1)%quotes.length;sync();},600);
+  timer=setTimeout(()=>{index=Math.floor(Math.random()*quotes.length);sync();},600);
  }
  new MutationObserver(sync).observe(home,{attributes:true,attributeFilter:['hidden']});
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);motion.addEventListener('change',sync);
  fetch('./home-quotes.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Quotes unavailable');return r.json();}).then(data=>{
   if(Array.isArray(data))quotes=[...new Set(data.filter(q=>typeof q==='string'&&q.trim()).map(q=>q.trim()))];
+  index=Math.floor(Math.random()*quotes.length);
   sync();
  }).catch(()=>{element.hidden=true;});
 })();

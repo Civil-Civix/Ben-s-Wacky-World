@@ -37,7 +37,36 @@ function saveList(key, list) {
 function normalize(text) {
   return text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+
+let randomArtTimer;
+const randomMotion=matchMedia('(prefers-reduced-motion: reduce)');
+function makeRandomCard(){
+ const card=document.createElement('button');
+ card.type='button';card.className='game-card random-card';card.setAttribute('aria-label','Play a random game');
+ const img=document.createElement('img');img.alt='';img.decoding='async';
+ const label=document.createElement('span');label.textContent='Random game';
+ card.append(img,label);
+ const art=games.map(g=>imageMap[g.id]).filter(p=>typeof p==='string'&&p.startsWith('images/')&&!p.includes('..'));
+ let previous=-1;
+ function changeArt(){
+  if(!art.length)return;
+  let n=Math.floor(Math.random()*art.length);
+  if(art.length>1&&n===previous)n=(n+1)%art.length;
+  previous=n;img.src=art[n];card.classList.add('has-artwork');
+ }
+ img.addEventListener('error',()=>{card.classList.remove('has-artwork');img.hidden=true;});
+ img.addEventListener('load',()=>{img.hidden=false;});
+ changeArt();
+ randomArtTimer=setInterval(()=>{
+  if(!document.hidden&&!document.body.classList.contains('playing')&&!randomMotion.matches&&card.isConnected)changeArt();
+ },1800);
+ card.addEventListener('click',()=>openGame(games[Math.floor(Math.random()*games.length)]));
+ return card;
+}
+
+
 function render() {
+  clearInterval(randomArtTimer);
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
   const query = normalize(search.value);
@@ -45,6 +74,7 @@ function render() {
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
   const fragment = document.createDocumentFragment();
+  if(view==='all'&&!query&&games.length)fragment.append(makeRandomCard());
   for (const game of matches) {
     const card = document.createElement('button');
     card.type = 'button'; card.className = 'game-card'; card.dataset.game = game.id;

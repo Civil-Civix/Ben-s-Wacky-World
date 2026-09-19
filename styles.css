@@ -201,3 +201,8 @@ body::before{background:rgb(var(--accent-rgb)/.022)}
 .home-quote{margin:26px auto 0;max-width:760px;min-height:1.6em;color:var(--muted);font-size:16px;line-height:1.6;opacity:0;transition:opacity .6s ease;overflow-wrap:anywhere}
 .home-quote.quote-visible{opacity:1}
 @media(prefers-reduced-motion:reduce){.home-quote{transition:none}}
+
+/* Keep quotes inside the existing title-to-menu gap. */
+.home-heading-group{position:relative}
+.home-heading-group .home-quote{position:absolute;top:100%;left:0;right:0;margin:26px auto 0}
+@media(max-width:700px){.home-heading-group .home-quote{margin-top:16px;font-size:13px;line-height:1.5}.launch-grid{margin-top:110px}}

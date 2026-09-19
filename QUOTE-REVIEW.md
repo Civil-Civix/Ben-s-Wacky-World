@@ -104,3 +104,7 @@ Applied your removals: 1, 8, 10, 11, 12, 14, 16, 22, 23, 24, 25, 27, 28, 29, 30,
 - My favorite game is Persona
 - You can run from your demons until you are exhaus-
 - If you are reading this, then I've run out of ideas
+
+Update: original quote 44 removed by request. Active list: 51 quotes, chosen randomly on launch and each change.
+
+Update: highlighted original quotes 67 and 70–80 removed by request. 39 active quotes remain.
