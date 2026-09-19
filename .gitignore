@@ -5,3 +5,8 @@ __pycache__/
 
 .audit-backups/
 .audit-evidence/
+
+node_modules/
+.wrangler/
+.dev.vars*
+.env*

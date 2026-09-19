@@ -14,7 +14,8 @@
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="chat-board.js?v=20260918-1" defer></script>
-  <script src="app.js?v=20260919-app-lists" defer></script>
+  <script src="popularity.js?v=20260919-popular" defer></script>
+  <script src="app.js?v=20260919-popular" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
   <script src="appearance.js?v=20260918-7" defer></script>
 </head>
@@ -54,7 +55,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
         <input id="search" type="search" placeholder="Search games…" autocomplete="off" spellcheck="false">
       </label>
-      <div class="catalog-controls"><nav class="collection-nav" aria-label="Game collections"><a href="#all" data-view="all" aria-current="page">All</a><a href="#favorites" data-view="favorites">Favorites</a><a href="#recents" data-view="recents">Recents</a></nav><label id="sort-wrap">Sort <select id="game-sort"><option value="default">Default</option><option value="az">A–Z</option></select></label></div><p id="result-count" class="sr-only" role="status" aria-live="polite"></p>
+      <div class="catalog-controls"><nav class="collection-nav" aria-label="Game collections"><a href="#all" data-view="all" aria-current="page">All</a><a href="#favorites" data-view="favorites">Favorites</a><a href="#recents" data-view="recents">Recents</a></nav><label id="sort-wrap">Sort <select id="game-sort"><option value="default">Default</option><option value="az">A–Z</option><option value="popular">Popular (30 days)</option></select></label></div><p id="popularity-note" role="status" hidden style="text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px"></p><p id="result-count" class="sr-only" role="status" aria-live="polite"></p>
     </header>
     <p id="storage-notice" class="storage-notice" role="status" hidden>Your browser could not read or save your lists. Changes may last only until you close this page.</p><section id="game-grid" class="game-grid" aria-label="Games"></section>
     <p id="empty" class="empty" hidden>No games found. Try another name.</p>

@@ -17,7 +17,7 @@ let currentGame = null, lastId = null, loadTimer, savedScroll = 0;
 let imageMap = {};
 let view = 'home';
 let lastLaunch=null;
-let gameSort='default';try{gameSort=localStorage.getItem('bens-wacky-world.game-sort')==='az'?'az':'default';}catch(_){}
+let gameSort='default';try{const saved=localStorage.getItem('bens-wacky-world.game-sort');gameSort=['az','popular'].includes(saved)?saved:'default';}catch(_){}
 document.querySelector('#game-sort').value=gameSort;
 
 function storageWarning() {
@@ -80,7 +80,18 @@ function render() {
   const pool = view === 'app-favorites' ? apps.filter(a=>appFavorites.has(a.id)) : view === 'app-recents' ? appRecents.map(id=>appById.get(id)).filter(Boolean) : view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
-  if(!isAppsView()&&(view!=='recents'||gameSort==='az'))matches.sort((a,b)=>(view==='all' ? Number(Boolean(b.pinned))-Number(Boolean(a.pinned)) : 0)||(gameSort==='az'?a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}):0));
+  const popularity=window.WackyPopularity;
+  const popularSort=gameSort==='popular';
+  if(!isAppsView()&&(view!=='recents'||gameSort!=='default'))matches.sort((a,b)=>
+    (view==='all' ? Number(Boolean(b.pinned))-Number(Boolean(a.pinned)) : 0) ||
+    (popularSort && popularity.hasScores ? popularity.score(b.id)-popularity.score(a.id) : 0) ||
+    (gameSort==='az'||popularSort&&popularity.hasScores ? a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}) : 0));
+  const popularityNote=document.querySelector('#popularity-note');
+  popularityNote.hidden=isAppsView()||!popularSort;
+  popularityNote.textContent=popularity.state==='error' ?
+    (popularity.hasScores?'Rankings could not refresh. Showing the last available ranking.':'Rankings are temporarily unavailable. Showing the default order.') :
+    popularity.state!=='ready' ? 'Loading site-wide rankings…' :
+    'Most opened across the site in the last 30 days. One opening per browser, per game, per day. Pinned games stay first.';
   const fragment = document.createDocumentFragment();
   if(view==='all'&&!query&&games.length)fragment.append(makeRandomCard());
   for (const game of matches) {
@@ -150,6 +161,7 @@ function openGame(game) {
   if (game.kind !== 'app' && game.kind !== 'stream') {
     recents = [game.id,...recents.filter(id => id !== game.id)];
     saveList(keys.recents,recents);
+    void window.WackyPopularity.track(game);
   }
   document.querySelector('#game-title').textContent = game.title;
   updateFavorite();
@@ -188,6 +200,7 @@ function applyRoute() {
     else button.removeAttribute('aria-current');
   }
   search.value = '';
+  if(!isAppsView() && gameSort==='popular')void window.WackyPopularity.refresh();
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
 document.querySelector('.nav-settings').addEventListener('click',()=>{location.hash='settings';});
@@ -203,7 +216,7 @@ favoriteButton.addEventListener('click', () => {
   saveList(currentGame.kind==='app'?keys.appFavorites:keys.favorites,[...list]);updateFavorite();
 });
 document.querySelector('#game-sort').addEventListener('change',event=>{
- gameSort=event.target.value;try{localStorage.setItem('bens-wacky-world.game-sort',gameSort);}catch(_){}
+ gameSort=event.target.value;if(gameSort==='popular')void window.WackyPopularity.refresh();try{localStorage.setItem('bens-wacky-world.game-sort',gameSort);}catch(_){}
  render();
 });
 document.querySelectorAll('[data-stream]').forEach(button=>button.addEventListener('click',()=>{
@@ -236,6 +249,7 @@ window.addEventListener('storage', event => {
     render(); updateFavorite();
   }
 });
+window.addEventListener('popularitychange',()=>{if(gameSort==='popular')render();});
 applyRoute();
 fetch('./game-images.json', {cache:'no-store'}).then(response => {
   if(!response.ok) throw new Error('Image map unavailable');
