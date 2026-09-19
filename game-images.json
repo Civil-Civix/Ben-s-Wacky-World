@@ -317,7 +317,6 @@
   "webfishing": "images/noah/webfishing.webp",
   "superfallingfred": "images/noah/superfallingfred.webp",
   "pokemonemerald": "images/noah/pokemonemerald.webp",
-  "supersmashflash2": "images/noah/supersmashflash2.webp",
   "idlebreakout": "images/noah/idlebreakout.webp",
   "gunmayhem2": "images/noah/gunmayhem2.webp",
   "gunmayhem": "images/noah/gunmayhem.webp",
@@ -370,7 +369,6 @@
   "ragdollhit": "images/noah/ragdollhit.webp",
   "gunspin": "images/noah/gunspin.webp",
   "subwaysurfers": "images/noah/subwaysurfers.webp",
-  "blockblast": "images/noah/blockblast.webp",
   "stackydash": "images/noah/stackydash.webp",
   "driftboss": "images/noah/driftboss.webp",
   "fridaynightfunkin": "images/noah/fridaynightfunkin.webp",
@@ -416,5 +414,7 @@
   "pokemonyellow": "images/uploaded/pokemonyellow.webp",
   "pokemonstadium": "images/uploaded/pokemonstadium.webp",
   "pokerogue": "images/pokerogue-custom.jpeg",
-  "worldguessr": "images/worldguessr-custom.jpg"
+  "worldguessr": "images/worldguessr-custom.jpg",
+  "breaklock": "images/breaklock.png",
+  "fnafucn": "images/fnafucn.png"
 }

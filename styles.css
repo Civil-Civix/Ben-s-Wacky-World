@@ -243,3 +243,16 @@ button.launch-tile:hover{background:color-mix(in srgb,var(--accent) 12%,var(--su
 /* Keep uploaded logos completely inside their game cards. */
 .game-card[data-game="pokerogue"] img,.game-card[data-game="worldguessr"] img{object-fit:contain}
 .game-card[data-game="pokerogue"] span,.game-card[data-game="worldguessr"] span{text-shadow:0 1px 4px #000}
+
+/* Themed, keyboard-accessible sorting menu. */
+#sort-wrap{position:relative;z-index:20}
+#sort-trigger{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:180px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted);font:inherit;cursor:pointer}
+#sort-trigger:hover,#sort-trigger[aria-expanded=true]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));color:var(--accent)}
+#sort-trigger svg{transition:transform .15s}
+#sort-trigger[aria-expanded=true] svg{transform:rotate(180deg)}
+#sort-menu{position:absolute;top:calc(100% + 8px);right:0;width:210px;padding:6px;background:var(--surface);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:14px;box-shadow:0 12px 30px #0008;overflow:hidden}
+#sort-menu button{width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:inherit;text-align:left;cursor:pointer}
+#sort-menu button:hover,#sort-menu button:focus-visible{background:rgb(var(--accent-rgb)/.12);color:var(--accent);outline:none}
+#sort-menu button[aria-selected=true]{background:rgb(var(--accent-rgb)/.08);color:var(--accent)}
+#sort-menu button span{visibility:hidden}
+#sort-menu button[aria-selected=true] span{visibility:visible}

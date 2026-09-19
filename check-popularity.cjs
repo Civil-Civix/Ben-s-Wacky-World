@@ -38,6 +38,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  }
  const order=await page.locator('[data-game]').evaluateAll(cards=>cards.map(c=>c.dataset.game));
  assert.equal(order[0],featured.id);
+ await page.locator('#sort-trigger').click();await page.locator('#sort-menu').screenshot({path:'.audit-evidence/sort-menu.png'});await page.keyboard.press('Escape');assert.equal(await page.locator('#sort-trigger').getAttribute('aria-expanded'),'false');
  assert(!games.some(g=>['pokerogue','worldguessr'].includes(g.id)&&g.pinned));
  await page.locator('[data-game="'+featured.id+'"]').click();
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('bens-wacky-world.popularity-counted.v1'))?.ids?.length===1);
@@ -56,7 +57,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('[data-game]').first().click();await page.locator('#close').click();
  assert.equal(posts.length,1);
  await page.locator('.nav-game').click();
- await page.locator('#game-sort').selectOption('az');
+ await page.locator('#sort-trigger').click();await page.locator('[data-sort=az]').click();
  const az=await page.locator('[data-game]').evaluateAll(cards=>cards.map(c=>c.dataset.game));
  const expected=games.slice().sort((a,b)=>Number(Boolean(b.pinned))-Number(Boolean(a.pinned))||a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true})).map(g=>g.id);
  assert.deepEqual(az,expected);
@@ -78,7 +79,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('.nav-game').click();
  assert(!JSON.parse(fs.readFileSync('home-quotes.json','utf8')).includes('GG fricken easy'));
  offline=true;
- await page.locator('#game-sort').selectOption('popular');
+ await page.locator('#sort-trigger').click();await page.locator('[data-sort=popular]').click();
  await page.reload();
  await page.waitForFunction(()=>window.WackyPopularity.state==='error');
  assert.match(await page.locator('#popularity-note').textContent(),/temporarily unavailable/);

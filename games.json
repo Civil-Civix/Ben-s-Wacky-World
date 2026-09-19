@@ -1908,12 +1908,6 @@
     "source": "noah"
   },
   {
-    "id": "supersmashflash2",
-    "title": "Super Smash Flash 2",
-    "url": "library/noah/games/253.html",
-    "source": "noah"
-  },
-  {
     "id": "idlebreakout",
     "title": "Idle Breakout",
     "url": "library/noah/games/252.html",
@@ -2226,12 +2220,6 @@
     "source": "noah"
   },
   {
-    "id": "blockblast",
-    "title": "Block Blast",
-    "url": "library/noah/games/199.html",
-    "source": "noah"
-  },
-  {
     "id": "stackydash",
     "title": "Stacky Dash",
     "url": "library/noah/games/198.html",
@@ -2506,5 +2494,17 @@
     "title": "PokéRogue",
     "url": "https://pokerogue-tuon.onrender.com/",
     "source": "external"
+  },
+  {
+    "id": "breaklock",
+    "title": "Breaklock",
+    "url": "library/imported-20260919/breaklock/index.html",
+    "source": "user-upload"
+  },
+  {
+    "id": "fnafucn",
+    "title": "FNAF Ultimate Custom Night",
+    "url": "library/imported-20260919/fnafucn/index.html",
+    "source": "user-upload"
   }
 ]
