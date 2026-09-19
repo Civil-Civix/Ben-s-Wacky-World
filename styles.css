@@ -230,3 +230,12 @@ body::before{background:rgb(var(--accent-rgb)/.022)}
 #chat-help{color:var(--muted);font-size:14px}#chat-help a{color:var(--accent)}
 @media(max-width:700px){#chat-panel{margin-left:54px;padding:24px 16px}.chat-warning-card{padding:22px}.chat-shell{min-height:480px}}
 
+.nav-stream{flex:none;width:44px;height:44px;display:grid;place-items:center;border:0;padding:0;border-radius:13px;background:transparent;color:var(--muted)}
+.nav-stream svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav-stream:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.18)}
+button.launch-tile:hover{background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:var(--accent);color:var(--accent)}
+.catalog-controls{display:flex;align-items:center;justify-content:center;gap:26px}
+#sort-wrap{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+#game-sort{font:inherit;padding:6px 9px;border-radius:8px;border:1px solid var(--line);color:inherit;background:var(--surface)}
+#game-sort:hover,#game-sort:focus-visible{border-color:var(--accent)}
+@media(max-width:700px){.catalog-controls{gap:12px}.collection-nav{gap:14px}}
