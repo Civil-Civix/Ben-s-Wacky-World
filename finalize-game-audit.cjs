@@ -2,6 +2,7 @@ const fs=require('node:fs'),path=require('node:path');
 const root=__dirname,file=n=>path.join(root,n);
 let results=JSON.parse(fs.readFileSync(file('game-audit-results.json')));
 const final=process.argv.includes('--finalize');
+const previouslyDisabled=fs.existsSync(file('disabled-games.json'))?JSON.parse(fs.readFileSync(file('disabled-games.json'))):[];
 const approved=fs.existsSync(file('reviewed-failures.json'))?JSON.parse(fs.readFileSync(file('reviewed-failures.json'))):[];
 if(final) {
  if(results.length!==405)throw new Error('Audit must cover all 405 original entries before finalizing');
@@ -11,7 +12,8 @@ if(final) {
  const backup=file('.audit-backups/catalog-before-removals.json');
  const catalog=JSON.parse(fs.readFileSync(fs.existsSync(backup)?backup:file('games.json')));
  if(!fs.existsSync(backup))fs.writeFileSync(backup,JSON.stringify(catalog,null,2));
- const removed=catalog.filter(g=>approved.includes(g.id)),kept=catalog.filter(g=>!approved.includes(g.id));
+ const hiddenIds=new Set([...approved,...previouslyDisabled.map(g=>g.id)]);
+ const removed=catalog.filter(g=>hiddenIds.has(g.id)),kept=catalog.filter(g=>!hiddenIds.has(g.id));
  fs.writeFileSync(file('disabled-games.json'),JSON.stringify(removed,null,2));
  fs.writeFileSync(file('games.json'),JSON.stringify(kept,null,2));
  fs.writeFileSync(file('games.js'),'window.WACKY_GAMES = '+JSON.stringify(kept)+';\n');
@@ -29,7 +31,8 @@ function reason(r) {
  if(r.errors?.length)return 'A browser error was observed, but failure was not confirmed. Please check manually.';
  return 'No conclusive playable screen was detected in the short check. May require a click or more time.';
 }
-const data=results.map(r=>({id:r.id,title:r.title,url:r.url,status:r.status,reason:reason(r)})).sort((a,b)=>a.title.localeCompare(b.title));
+const manuallyDisabled=new Set(previouslyDisabled.filter(g=>!approved.includes(g.id)).map(g=>g.id));
+const data=results.filter(r=>!manuallyDisabled.has(r.id)).map(r=>({id:r.id,title:r.title,url:r.url,status:r.status,reason:reason(r)})).sort((a,b)=>a.title.localeCompare(b.title));
 fs.writeFileSync(file('audit-review-data.js'),'window.GAME_AUDIT = '+JSON.stringify(data)+';\n');
 const counts=results.reduce((a,r)=>(a[r.status]=(a[r.status]||0)+1,a),{});
 const lines=['# Game audit','',final?'Completed audit of all 405 original games.':'Audit in progress: '+results.length+' of 405 checked.','',

@@ -186,3 +186,15 @@ body.playing #theme-canvas{visibility:hidden}
 .effect-animation{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
 @media(max-width:700px){.effect-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* A restrained tint, with light falling from above the homepage heading. */
+body::before{background:rgb(var(--accent-rgb)/.022)}
+.home-title::before{display:none}
+#home-panel::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(1100px,100%);height:360px;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 50% 0%,rgb(var(--accent-rgb)/.19) 0%,rgb(var(--accent-rgb)/.075) 32%,transparent 72%)}
+:root{--effect-speed:1}
+.snowflake{animation-duration:calc(var(--duration)/var(--effect-speed))}
+.speed-setting{display:grid;grid-template-columns:1fr auto;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.speed-setting output{color:var(--accent);font-variant-numeric:tabular-nums}
+#effect-speed{grid-column:1/-1;width:100%;margin:0;accent-color:var(--accent);cursor:pointer}
+.speed-setting small{color:var(--muted)}.speed-setting small:last-child{text-align:right}
+

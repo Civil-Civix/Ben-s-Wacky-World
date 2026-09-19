@@ -5,7 +5,7 @@
 3. Add the game's exact ID and image path. Use the ID table below.
 4. Save both files, commit and push, then refresh your site.
 
-Example game-images.json (replace the whole empty {} with this):
+Example entries (edit individual mappings; keep the other games):
 
 ```json
 {
@@ -16,7 +16,7 @@ Example game-images.json (replace the whole empty {} with this):
 
 Use double quotes, commas between entries, and no comma after the final entry. Paths are case-sensitive on GitHub Pages and use forward slashes. Files must be inside images/. Use lowercase filenames without spaces for convenience.
 
-Recommended artwork: 800 x 500 pixels (the cards use an 8:5 shape). Larger or differently shaped pictures are cropped to fill the card. Titles remain readable over a dark gradient. Games without a mapping, or with a missing image, keep their blank cards. No game artwork has been added for you.
+Recommended artwork: 800 x 500 pixels (the cards use an 8:5 shape). Larger or differently shaped pictures are cropped to fill the card. Titles remain readable over a dark gradient. Games without a mapping, or with a missing image, keep their blank cards. All 400 current games now use matched Noah artwork in images/noah/. Change an individual mapping to replace its picture.
 
 Favorites and recents save in browser localStorage for this site's address. They survive refreshes and browser restarts but do not sync between devices or different site addresses; clearing site data removes them. Private browsing may discard them when closed.
 
@@ -428,4 +428,3 @@ Favorites and recents save in browser localStorage for this site's address. They
 | Wordle | wordle |
 | Monkey Mart | monkeymart |
 | Short Life | shortlife |
-| Five Nights at Epstein | fivenightsatepstein |

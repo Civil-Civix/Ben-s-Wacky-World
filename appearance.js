@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'obsidian',accent:'#8B7BFF',effect:'snow',snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'obsidian',accent:'#8B7BFF',effect:'snow',speed:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
   const effects = ['none','snow','matrix','constellation','topography','starfield'];
   const backgrounds = ['midnight','obsidian','slate','mocha'];
   const root = document.documentElement;
@@ -13,6 +13,7 @@
       return {
         background:backgrounds.includes(saved?.background) ? saved.background : defaults.background,
         accent:/^#[0-9a-f]{6}$/i.test(saved?.accent) ? saved.accent.toUpperCase() : defaults.accent,
+        speed:Number.isFinite(saved?.speed) ? Math.max(.25,Math.min(3,saved.speed)) : 1,
         effect:effects.includes(saved?.effect) ? saved.effect : defaults.effect,
         snow:typeof saved?.snow === 'boolean' ? saved.snow : defaults.snow
       };
@@ -30,6 +31,9 @@
   layer.append(fragment);
   function apply(save=false) {
     root.dataset.background = appearance.background;
+    root.style.setProperty('--effect-speed',appearance.speed);
+    document.querySelector('#effect-speed').value=appearance.speed;
+    document.querySelector('#speed-value').textContent=appearance.speed.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')+'×';
     root.style.setProperty('--accent',appearance.accent);
     const rgb = appearance.accent.slice(1).match(/../g).map(x=>parseInt(x,16));
     root.style.setProperty('--accent-rgb',rgb.join(' '));
@@ -53,6 +57,7 @@
   document.querySelectorAll('[data-effect]').forEach(button=>button.addEventListener('click',()=>{appearance.effect=button.dataset.effect;apply(true);}));
   document.querySelectorAll('[data-accent]').forEach(button=>button.addEventListener('click',()=>{appearance.accent=button.dataset.accent.toUpperCase();apply(true);}));
   document.querySelector('#custom-accent').addEventListener('input',event=>{appearance.accent=event.target.value.toUpperCase();apply(true);});
+  document.querySelector('#effect-speed').addEventListener('input',event=>{appearance.speed=Number(event.target.value);apply(true);});
   document.querySelector('#snow-enabled').addEventListener('change',event=>{appearance.snow=event.target.checked;apply(true);});
   document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};apply(true);});
   window.addEventListener('storage',event=>{if(event.key===key || event.key===null){appearance=read();apply();}});

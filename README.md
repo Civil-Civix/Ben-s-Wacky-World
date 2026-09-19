@@ -10,7 +10,7 @@ Run **Start Local.cmd** from this repository, then open **http://127.0.0.1:4173*
 
 - Games from Noah's supplied files, with duplicate titles excluded. See games.json for the current catalog.
 - 16 Seraph apps in their own tab. Seraph games remain excluded.
-- Six text-only cards per desktop row, with search and an in-page player.
+- Six cards per desktop row with matched Noah game artwork, with search and an in-page player.
 - Favorites and Recents saved locally in the browser. Apps do not enter these game collections.
 - Reload, game-only fullscreen, and Close controls.
 - Home with locally hosted Inter Bold, typing and ripple animation, and a four-by-two tile layout.
@@ -48,3 +48,5 @@ Current goal: keep usable games, hide only confirmed failures, and remove identi
 
 ## Background effects
 Settings → Appearance offers None, Falling snow, Matrix, Constellation, Topography, and Starfield. Each follows the accent color, with a subtle page tint and a soft homepage title spotlight. Animate background pauses motion while retaining the selected design. Choices are saved locally; animations pause during gameplay and in hidden tabs. New effects are original lightweight implementations inspired by the supplied Noah theme options.
+
+Animation speed in Settings ranges from 0.25× to 3× and is saved locally. The homepage glow originates above the heading; the accent tint is deliberately subtle. All 400 current games have locally optimized artwork (about 9.5 MB). Five Nights at Epstein was removed by request; its catalog entry remains in disabled-games.json to prevent reimporting it.

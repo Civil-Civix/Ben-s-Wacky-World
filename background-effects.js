@@ -1,7 +1,7 @@
 'use strict';
 (() => {
  const canvas=document.querySelector('#theme-canvas'),ctx=canvas.getContext('2d');
- let effect='none',color='#8B7BFF',animate=true,w=0,h=0,points=[],raf=0,last=0,time=0;
+ let effect='none',color='#8B7BFF',animate=true,speed=1,w=0,h=0,points=[],raf=0,last=0,time=0;
  function resize(){
   w=innerWidth;h=innerHeight;const d=Math.min(devicePixelRatio||1,1.5);
   canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);
@@ -10,7 +10,7 @@
  }
  function dot(x,y,r,a){ctx.globalAlpha=a;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
  function draw(dt){
-  time+=dt;ctx.clearRect(0,0,w,h);ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=.7;
+  dt*=speed;time+=dt;ctx.clearRect(0,0,w,h);ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=.7;
   if(effect==='matrix'){
    ctx.font='13px monospace';
    points.forEach((p,i)=>{
@@ -47,7 +47,7 @@
   raf=requestAnimationFrame(tick);
  }
  function sync(){cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect;effect=settings.effect;color=settings.accent;animate=settings.snow;if(changed)resize();sync();};
+ window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect;effect=settings.effect;color=settings.accent;animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();
