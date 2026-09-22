@@ -16,14 +16,14 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFAE00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260919-menu">
+  <link rel="stylesheet" href="styles.css?v=20260922-servers">
   <script src="games.js?v=20260919-radical" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="chat-board.js?v=20260918-1" defer></script>
   <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="app.js?v=20260919-gold" defer></script>
+  <script src="app.js?v=20260922-servers" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
   <script src="appearance.js?v=20260919-scp" defer></script>
@@ -38,8 +38,10 @@
   <a class="nav-apps" href="#apps" aria-label="Apps" title="Apps"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></a>
   <button class="nav-stream" type="button" data-stream aria-label="Stream Hub" title="Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg></button>
   <a class="nav-chat" href="#chat" aria-label="Chat board" title="Chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg></a>
+  <a class="nav-request" href="#request" aria-label="Request" title="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg></a>
   <button class="nav-settings" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
   </aside>
+  <section id="request-panel" hidden aria-labelledby="request-heading"><header><h1 id="request-heading">Request</h1><a href="#home">Back to home</a></header><div id="request-content"></div></section>
   <section id="home-panel" aria-labelledby="home-heading">
     <div class="home-heading-group">
     <h1 class="home-title" id="home-heading" aria-label="Ben's Wacky World"><span class="title-reserve" aria-hidden="true">Ben's Wacky World</span><span id="typed-title" aria-hidden="true">Ben's Wacky World</span></h1>
@@ -50,7 +52,7 @@
       <a class="launch-tile" href="#apps" aria-label="Open apps"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Apps</span></a>
       <button class="launch-tile" type="button" data-stream aria-label="Open Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg><span>Stream Hub</span></button>
       <div class="launch-tile launch-placeholder" aria-hidden="true"></div>
-      <a class="launch-tile" href="https://docs.google.com/forms/d/e/1FAIpQLScLnhJjGnEV3kSKwBuLGhv1XNpWtFYBgr0Q42Pzk_tzSrw0FA/viewform?usp=header" target="_blank" rel="noopener noreferrer" aria-label="Request (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>
+      <a class="launch-tile" href="#request" aria-label="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>
       <a class="launch-tile" href="https://sites.google.com/stu.tempeunion.org/bens-wack-world/home" target="_blank" rel="noopener noreferrer" aria-label="Ben's Wacky Site (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="20" text-anchor="middle" style="font-family:Inter,Arial,sans-serif;font-size:24px;font-weight:800;fill:currentColor;stroke:none">W</text></svg><span>Ben's Wacky Site</span></a>
       <a class="launch-tile" href="#chat" aria-label="Open chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span>Chat board</span></a>
       <a class="launch-tile" href="#settings" aria-label="Open settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg><span>Settings</span></a>
@@ -107,6 +109,7 @@
     <footer class="settings-footer"><span>Saved on this browser.</span><button id="reset-appearance" type="button">Reset appearance</button></footer>
     <p id="appearance-notice" class="storage-notice" role="status" hidden>Your browser could not save these settings. Changes will last only for this visit.</p>
   </section>
+  <dialog id="server-picker" aria-labelledby="server-heading"><h2 id="server-heading">Choose a server</h2><p>Choose a server to continue.</p><div id="server-choices"></div><button type="button" id="server-cancel">Cancel</button></dialog>
   <dialog id="player" aria-labelledby="game-title">
     <header class="player-bar">
       <h2 id="game-title"></h2>

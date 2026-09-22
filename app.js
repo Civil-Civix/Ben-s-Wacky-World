@@ -73,6 +73,7 @@ function makeRandomCard(){
 
 function render() {
   clearInterval(randomArtTimer);
+  if (view === "request") {document.title="Request | Ben's Wacky World";return;}
   if (view === "chat") {document.title = "Chat board | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
@@ -153,8 +154,31 @@ function loadGame() {
     status.hidden = false;
   },30000);
 }
+const alternateServers={
+ 'pokerogue':['https://pokerogue-tuon.onrender.com/','https://pokerogue-mxyt.onrender.com/'],
+ 'stream-hub':['https://stream-hub-pydm.onrender.com/','https://stream-hub-zuaa.onrender.com/']
+};
+const serverPicker=document.querySelector('#server-picker');
 function openGame(game) {
-  lastLaunch=document.activeElement;
+ const urls=alternateServers[game.id];
+ if(!urls){launchGame(game);return;}
+ const opener=document.activeElement;
+ document.querySelector('#server-heading').textContent=game.title;
+ const choices=document.querySelector('#server-choices');
+ choices.replaceChildren();
+ urls.forEach((url,index)=>{
+  const button=document.createElement('button');button.type='button';button.className='server-choice';
+  const title=document.createElement('strong');title.textContent='Server '+(index+1);
+  const detail=document.createElement('span');detail.textContent=index===0?'Original server':'Alternate server';
+  button.append(title,detail);
+  button.addEventListener('click',()=>{serverPicker.close();launchGame({...game,url},opener);});
+  choices.append(button);
+ });
+ serverPicker.showModal();
+}
+document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
+function launchGame(game,opener=document.activeElement) {
+  lastLaunch=opener;
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
   favoriteButton.hidden = game.kind === 'stream';
   if(game.kind==='app'){appRecents=[game.id,...appRecents.filter(id=>id!==game.id)];saveList(keys.appRecents,appRecents);}
@@ -179,9 +203,16 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','favorites','recents','settings','apps','app-favorites','app-recents','chat'].includes(hash) ? hash : 'home';
+  view = ['all','favorites','recents','settings','apps','app-favorites','app-recents','chat','request'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showChatBoard(view === 'chat');
+  const requestPanel=document.querySelector('#request-panel');
+  requestPanel.hidden=view!=='request';
+  if(view==='request'&&!requestPanel.querySelector('iframe')){
+    const frame=document.createElement('iframe');frame.title='Request a game or feature';
+    frame.src='https://docs.google.com/forms/d/e/1FAIpQLScLnhJjGnEV3kSKwBuLGhv1XNpWtFYBgr0Q42Pzk_tzSrw0FA/viewform?embedded=true';
+    document.querySelector('#request-content').append(frame);
+  }
   document.querySelector('.collection-nav').hidden = false;
   const routes=isAppsView()?['apps','app-favorites','app-recents']:['all','favorites','recents'];
   document.querySelectorAll('[data-view]').forEach((link,i)=>{link.dataset.view=routes[i];link.href='#'+routes[i];});
@@ -189,12 +220,12 @@ function applyRoute() {
   document.querySelector('#sort-wrap').hidden=isAppsView();
   search.placeholder = isAppsView() ? 'Search apps…' : 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = isAppsView() ? 'Search apps' : 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat']]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');

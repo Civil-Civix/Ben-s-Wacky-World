@@ -15,7 +15,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
    if(u.pathname==='/play'){posts.push(route.request().postDataJSON());return route.fulfill({json:{ok:true}});}
    return route.fulfill({json:{windowDays:30,games:[{id:featured.id,plays:50}]}});
   }
-  if(u.origin!=='https://civil-civix.github.io')return route.fulfill({contentType:'text/html',body:'Game fixture'});
+  if(u.origin!=='https://civil-civix.github.io')return route.fulfill({contentType:route.request().resourceType()==='script'?'text/javascript':'text/html',body:''});
   let rel=decodeURIComponent(u.pathname.replace(/^\/Ben-s-Wacky-World\//,''));
   if(rel.startsWith('library/'))return route.fulfill({contentType:'text/html',body:'Game fixture'});
   const file=path.join(__dirname,rel||'index.html');
@@ -64,6 +64,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('.nav-home').click();
  await page.locator('#home-panel').waitFor({state:'visible'});
  await page.locator('#home-panel [data-stream]').click();
+ await page.locator('.server-choice').first().click();
  assert.equal(await page.evaluate(()=>document.fullscreenElement),null);
  assert(await page.locator('#player').isVisible());
  await page.locator('#fullscreen').click();

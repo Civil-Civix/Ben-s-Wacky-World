@@ -256,3 +256,22 @@ button.launch-tile:hover{background:color-mix(in srgb,var(--accent) 12%,var(--su
 #sort-menu button[aria-selected=true]{background:rgb(var(--accent-rgb)/.08);color:var(--accent)}
 #sort-menu button span{visibility:hidden}
 #sort-menu button[aria-selected=true] span{visibility:visible}
+
+.nav-request{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:13px;color:var(--muted);text-decoration:none}
+.nav-request svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-request:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.18)}
+.nav-request[aria-current=page]{color:var(--accent-ink);background:var(--accent)}
+#request-panel{max-width:1000px;margin:24px auto}
+#request-panel header{display:flex;align-items:center;justify-content:space-between;gap:20px}
+#request-panel a{color:var(--accent)}
+#request-content iframe{width:100%;height:calc(100vh - 150px);min-height:580px;border:1px solid var(--line);border-radius:16px;background:#fff}
+#server-picker{box-sizing:border-box;width:min(460px,calc(100vw - 40px));padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--surface);color:#f5f5f5;box-shadow:0 20px 80px #0009}
+#server-picker::backdrop{background:#000b;backdrop-filter:blur(5px)}
+#server-picker h2{margin:0 0 8px;font-size:24px}
+#server-picker p{color:var(--muted);margin:0 0 22px}
+#server-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.server-choice{padding:22px 12px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:inherit;display:flex;flex-direction:column;gap:8px;font:inherit;cursor:pointer}
+.server-choice span{font-size:12px;color:var(--muted)}
+.server-choice:hover{border-color:var(--accent);background:rgb(var(--accent-rgb)/.1);color:var(--accent)}
+#server-cancel{display:block;margin:20px auto 0;padding:9px 20px;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--muted);font:inherit;cursor:pointer}
+#server-cancel:hover{border-color:var(--accent);color:var(--accent)}
