@@ -358,3 +358,9 @@ body.playing #leaderboard-panel{visibility:hidden}
 [hidden]{display:none!important}
 
 .account-card .account-primary:hover{background:var(--accent);color:var(--accent-ink);filter:brightness(1.12)}
+
+/* Collapse the player toolbar without touching the running iframe. */
+#show-player-bar{position:absolute;z-index:5;top:8px;right:12px;padding:7px 12px;border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--muted);font:inherit;font-size:12px;opacity:.75;cursor:pointer;transition:opacity .15s,background .15s}
+#show-player-bar:hover,#show-player-bar:focus-visible{opacity:1;color:var(--accent);border-color:var(--accent);background:var(--surface)}
+
+.nav-settings[aria-current=page] .profile-avatar{color:var(--accent-ink);background:transparent;border-color:transparent}

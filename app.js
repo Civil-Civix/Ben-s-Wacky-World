@@ -11,6 +11,17 @@ const stage = document.querySelector('#game-stage');
 const status = document.querySelector('#player-status');
 const fullscreen = document.querySelector('#fullscreen');
 const favoriteButton = document.querySelector('#favorite');
+const hidePlayerBar = document.querySelector('#hide-player-bar');
+const showPlayerBar = document.querySelector('#show-player-bar');
+function setPlayerBarHidden(hidden, moveFocus=false) {
+  document.querySelector('#player-toolbar').hidden=hidden;
+  showPlayerBar.hidden=!hidden;
+  hidePlayerBar.setAttribute('aria-expanded',String(!hidden));
+  showPlayerBar.setAttribute('aria-expanded',String(!hidden));
+  if(moveFocus)(hidden?showPlayerBar:hidePlayerBar).focus({preventScroll:true});
+}
+hidePlayerBar.addEventListener('click',()=>setPlayerBarHidden(true,true));
+showPlayerBar.addEventListener('click',()=>setPlayerBarHidden(false,true));
 const storageNotice = document.querySelector('#storage-notice');
 const keys = {favorites:'bens-wacky-world.favorites.v1', recents:'bens-wacky-world.recents.v1',appFavorites:'bens-wacky-world.app-favorites.v1',appRecents:'bens-wacky-world.app-recents.v1'};
 let currentGame = null, lastId = null, loadTimer, savedScroll = 0;
@@ -179,6 +190,8 @@ function openGame(game) {
 }
 document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
 function launchGame(game,opener=document.activeElement) {
+  setPlayerBarHidden(false);
+  hidePlayerBar.hidden=game.kind==='app';
   lastLaunch=opener;
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
   favoriteButton.hidden = game.kind === 'stream';

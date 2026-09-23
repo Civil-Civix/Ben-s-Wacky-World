@@ -10,6 +10,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  const games=JSON.parse(fs.readFileSync('games.json','utf8')), featured=games.find(g=>!g.pinned);
  await context.route('**/*',route=>{
   const u=new URL(route.request().url());
+  if(u.hostname==='bens-wacky-accounts.mr-ellis1009.workers.dev')return route.fulfill({status:401,json:{error:'Please log in.'}});
   if(u.hostname==='bens-wacky-popularity.mr-ellis1009.workers.dev') {
    if(offline)return route.fulfill({status:503,body:'{}'});
    if(u.pathname==='/play'){posts.push(route.request().postDataJSON());return route.fulfill({json:{ok:true}});}
@@ -43,6 +44,17 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('[data-game="'+featured.id+'"]').click();
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('bens-wacky-world.popularity-counted.v1'))?.ids?.length===1);
  assert.equal(posts.length,1);
+ const originalHeight=await page.locator('#game-stage').evaluate(e=>e.clientHeight);
+ await page.locator('#game-stage iframe').evaluate(e=>e.testContinuity='still-running');
+ await page.locator('#hide-player-bar').click();
+ assert(await page.locator('#player-toolbar').isHidden());
+ assert(await page.locator('#show-player-bar').isVisible());
+ assert((await page.locator('#game-stage').evaluate(e=>e.clientHeight))>=originalHeight+50);
+ assert.equal(await page.locator('#game-stage iframe').evaluate(e=>e.testContinuity),'still-running');
+ await page.screenshot({path:'.audit-evidence/player-hidden-bar.png'});
+ await page.locator('#show-player-bar').click();
+ assert(await page.locator('#player-toolbar').isVisible());
+ assert.equal(await page.locator('#game-stage iframe').evaluate(e=>e.testContinuity),'still-running');
  await page.locator('#reload').click();
  await page.locator('#close').click();
  await page.locator('[data-game="'+featured.id+'"]').click();
@@ -54,7 +66,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  assert.equal(posts.length,1);
  await page.locator('.nav-apps').click();
  await page.locator('#popularity-note').waitFor({state:'hidden'});
- await page.locator('[data-game]').first().click();await page.locator('#close').click();
+ await page.locator('[data-game]').first().click();assert(await page.locator('#hide-player-bar').isHidden());await page.locator('#close').click();
  assert.equal(posts.length,1);
  await page.locator('.nav-game').click();
  await page.locator('#sort-trigger').click();await page.locator('[data-sort=az]').click();
@@ -63,15 +75,25 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  assert.deepEqual(az,expected);
  await page.locator('.nav-home').click();
  await page.locator('#home-panel').waitFor({state:'visible'});
+ assert.equal(await page.locator('#home-panel .launch-tile').count(),8);
+ assert.equal(await page.locator('#home-panel [href="#leaderboard"]').count(),1);
+ await page.screenshot({path:'.audit-evidence/account-home.png'});
  await page.locator('#home-panel [data-stream]').click();
  await page.locator('.server-choice').first().click();
  assert.equal(await page.evaluate(()=>document.fullscreenElement),null);
  assert(await page.locator('#player').isVisible());
+ assert(await page.locator('#hide-player-bar').isVisible());
+ await page.locator('#hide-player-bar').click();assert(await page.locator('#player-toolbar').isHidden());
+ await page.locator('#show-player-bar').click();assert(await page.locator('#player-toolbar').isVisible());
  await page.locator('#fullscreen').click();
  await page.waitForFunction(()=>document.fullscreenElement?.tagName==='IFRAME');
  await page.locator('html').evaluate(()=>document.exitFullscreen());
  await page.locator('#close').click();
  await page.locator('.nav-settings').click();
+ await page.setViewportSize({width:1366,height:900});
+ assert(await page.locator('#account-auth').isVisible());
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await page.screenshot({path:'.audit-evidence/account-settings-1366.png',fullPage:true});
  await page.locator('[data-accent="#8B7BFF"]').click();
  await page.reload();
  assert.equal(await page.locator('#custom-accent').inputValue(),'#8b7bff');
@@ -89,6 +111,6 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  await page.locator('[data-game]').first().click();
  assert(await page.locator('#player').isVisible());
  assert.deepEqual(errors,[]);
- console.log('PASS: popular ordering, pins, A-Z, saved sorting, local dedup, reload exclusion, apps exclusion and outage playability.');
+ console.log('PASS: popular ordering, pins, A-Z, saved sorting, local dedup, reload exclusion, apps exclusion outage playability, hide/restore controls without iframe restart, Stream Hub controls, and account layout.');
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
