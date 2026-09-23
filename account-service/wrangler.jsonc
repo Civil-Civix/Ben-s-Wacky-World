@@ -1,0 +1,60 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "bens-wacky-accounts",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-22",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "ALLOWED_ORIGIN": "https://civil-civix.github.io"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bens-wacky-accounts",
+      "database_id": "5e683b3e-fcda-4a84-8d55-0db23514438e"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "REQUEST_LIMIT",
+      "namespace_id": "2026092201",
+      "simple": {
+        "limit": 600,
+        "period": 60
+      }
+    },
+    {
+      "name": "AUTH_LIMIT",
+      "namespace_id": "2026092202",
+      "simple": {
+        "limit": 30,
+        "period": 60
+      }
+    },
+    {
+      "name": "LOGIN_LIMIT",
+      "namespace_id": "2026092203",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "37 0 * * *"
+    ]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": false
+    }
+  }
+}

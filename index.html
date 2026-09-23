@@ -16,14 +16,15 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFAE00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260922-servers">
+  <link rel="stylesheet" href="styles.css?v=20260922-accounts">
   <script src="games.js?v=20260919-radical" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="chat-board.js?v=20260918-1" defer></script>
   <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="app.js?v=20260922-servers" defer></script>
+  <script src="accounts.js?v=20260922-accounts" defer></script>
+  <script src="app.js?v=20260922-accounts" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
   <script src="appearance.js?v=20260919-scp" defer></script>
@@ -39,7 +40,8 @@
   <button class="nav-stream" type="button" data-stream aria-label="Stream Hub" title="Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg></button>
   <a class="nav-chat" href="#chat" aria-label="Chat board" title="Chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg></a>
   <a class="nav-request" href="#request" aria-label="Request" title="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg></a>
-  <button class="nav-settings" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
+  <a class="nav-leaderboard" href="#leaderboard" aria-label="Leaderboard" title="Leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg></a>
+  <button class="nav-settings" type="button" aria-label="Account Settings" title="Account Settings"><span data-account-avatar aria-hidden="true"></span></button>
   </aside>
   <section id="request-panel" hidden aria-labelledby="request-heading"><header><h1 id="request-heading">Request</h1><a href="#home">Back to home</a></header><div id="request-content"></div></section>
   <section id="home-panel" aria-labelledby="home-heading">
@@ -51,11 +53,11 @@
       <a class="launch-tile" href="#all" aria-label="Open games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg><span>Games</span></a>
       <a class="launch-tile" href="#apps" aria-label="Open apps"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Apps</span></a>
       <button class="launch-tile" type="button" data-stream aria-label="Open Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg><span>Stream Hub</span></button>
-      <div class="launch-tile launch-placeholder" aria-hidden="true"></div>
+      <a class="launch-tile" href="#leaderboard" aria-label="Open leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg><span>Leaderboard</span></a>
       <a class="launch-tile" href="#request" aria-label="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>
       <a class="launch-tile" href="https://sites.google.com/stu.tempeunion.org/bens-wack-world/home" target="_blank" rel="noopener noreferrer" aria-label="Ben's Wacky Site (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="20" text-anchor="middle" style="font-family:Inter,Arial,sans-serif;font-size:24px;font-weight:800;fill:currentColor;stroke:none">W</text></svg><span>Ben's Wacky Site</span></a>
       <a class="launch-tile" href="#chat" aria-label="Open chat board"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span>Chat board</span></a>
-      <a class="launch-tile" href="#settings" aria-label="Open settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2-1.7 1-2-.6-2.5 4.2L4.4 11v2L2.8 14.4l2.5 4.2 2-.6 1.7 1 .5 2h5l.5-2 1.7-1 2 .6 2.5-4.2-1.6-1.4v-2l1.6-1.4-2.5-4.2-2 .6L15 5l-.5-2Z"/><circle cx="12" cy="12" r="3.2"/></svg><span>Settings</span></a>
+      <a class="launch-tile" href="#settings" aria-label="Open Account Settings"><span data-account-avatar aria-hidden="true"></span><span>Account Settings</span></a>
     </div>
   </section>
   <main id="catalog" hidden>
@@ -83,7 +85,8 @@
     <p id="chat-help" hidden>Board not loading? <a href="https://padlet.com/s28400278/ben-s-wacky-chatboard-s7pwwvbavdtpqawp" target="_blank" rel="noopener noreferrer">Open on Padlet</a>.</p>
   </section>
   <section id="settings-panel" aria-labelledby="appearance-heading" hidden>
-    <header class="settings-heading"><div><p class="eyebrow">Settings</p><h1 id="appearance-heading">Appearance</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
+    <header class="settings-heading"><div><p class="eyebrow">Make yourself at home</p><h1 id="appearance-heading">Account Settings</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
+    <div class="settings-layout"><div class="appearance-column"><h2>Appearance</h2>
     <div class="appearance-grid">
       <fieldset class="settings-card"><legend>Background</legend>
         <div class="background-options">
@@ -108,7 +111,41 @@
     </div>
     <footer class="settings-footer"><span>Saved on this browser.</span><button id="reset-appearance" type="button">Reset appearance</button></footer>
     <p id="appearance-notice" class="storage-notice" role="status" hidden>Your browser could not save these settings. Changes will last only for this visit.</p>
+    </div>
+    <section class="account-card" aria-labelledby="account-heading">
+      <h2 id="account-heading">Your profile</h2>
+      <p class="account-intro">Make it yours. Keep your playtime.</p>
+      <div id="account-auth">
+        <div class="auth-tabs" aria-label="Account access"><button type="button" data-auth-mode="login" aria-pressed="true">Log in</button><button type="button" data-auth-mode="signup" aria-pressed="false">Create account</button></div>
+        <form id="auth-form">
+          <label>Username<input id="auth-username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required spellcheck="false"></label>
+          <label>Password<input id="auth-password" type="password" autocomplete="current-password" maxlength="128" required></label>
+          <label id="signup-notice" class="check-label" hidden><input id="no-recovery" type="checkbox"><span>I understand there is no password recovery. If I forget it, I lose access.</span></label>
+          <button id="auth-submit" class="account-primary" type="submit">Log in</button>
+        </form>
+        <p class="account-hint">Your profile and total playtime are public. This browser keeps you signed in.</p>
+      </div>
+      <div id="account-profile" hidden>
+        <div class="my-profile-heading"><div id="my-avatar"></div><strong id="my-name"></strong><span id="my-badge"></span></div>
+        <div class="photo-actions"><label class="photo-upload">Upload photo<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="avatar-remove">Remove photo</button></div>
+        <div class="playtime-summary"><span>Total game playtime</span><strong id="my-playtime">0h 0m</strong><small id="playtime-state">Open a game to start counting.</small></div>
+        <form id="profile-form">
+          <label>Username<input id="profile-username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required autocomplete="username" spellcheck="false"></label>
+          <label>Bio<textarea id="profile-bio" maxlength="280" rows="3" placeholder="A little about you…"></textarea></label>
+          <button id="profile-save" class="account-primary" type="submit">Save profile</button>
+        </form>
+        <div class="account-actions"><button type="button" id="my-public-profile">View public profile</button><button type="button" id="account-logout">Log out</button></div>
+      </div>
+      <p id="account-message" role="status" aria-live="polite"></p>
+    </section></div>
   </section>
+  <section id="leaderboard-panel" aria-labelledby="leaderboard-heading" hidden>
+    <header class="leaderboard-heading"><div><p class="eyebrow">The Wacky crowd</p><h1 id="leaderboard-heading">Leaderboard</h1><p>Every player. One shared scoreboard.</p></div><button type="button" id="leaderboard-refresh">Refresh</button></header>
+    <div id="leaderboard-podium" aria-label="Top three players"></div>
+    <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>
+    <p id="leaderboard-status" role="status"></p><div id="leaderboard-list" aria-label="All players"></div><button type="button" id="leaderboard-more" hidden>Load more</button>
+  </section>
+  <dialog id="public-profile" aria-label="Public profile"><button id="public-profile-close" type="button" aria-label="Close profile">Close</button><div id="public-profile-content"></div></dialog>
   <dialog id="server-picker" aria-labelledby="server-heading"><h2 id="server-heading">Choose a server</h2><p>Choose a server to continue.</p><div id="server-choices"></div><button type="button" id="server-cancel">Cancel</button></dialog>
   <dialog id="player" aria-labelledby="game-title">
     <header class="player-bar">

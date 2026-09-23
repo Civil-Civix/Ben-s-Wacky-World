@@ -73,10 +73,11 @@ function makeRandomCard(){
 
 function render() {
   clearInterval(randomArtTimer);
+  if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
   if (view === "request") {document.title="Request | Ben's Wacky World";return;}
   if (view === "chat") {document.title = "Chat board | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
-  if (view === "settings") {document.title = "Appearance | Wacky Games"; return;}
+  if (view === "settings") {document.title = "Account Settings | Wacky Games"; return;}
   const query = normalize(search.value);
   const pool = view === 'app-favorites' ? apps.filter(a=>appFavorites.has(a.id)) : view === 'app-recents' ? appRecents.map(id=>appById.get(id)).filter(Boolean) : view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
@@ -190,8 +191,10 @@ function launchGame(game,opener=document.activeElement) {
   document.querySelector('#game-title').textContent = game.title;
   updateFavorite();
   document.body.classList.add('playing'); player.showModal(); loadGame();
+  window.dispatchEvent(new CustomEvent('wacky-game-change',{detail:{id:game.id,playing:true,isGame:game.kind!=='app'&&game.kind!=='stream'}}));
 }
 async function closeGame() {
+  window.dispatchEvent(new CustomEvent('wacky-game-change',{detail:{playing:false}}));
   clearTimeout(loadTimer);
   if (document.fullscreenElement) {try {await document.exitFullscreen();} catch (_) {}}
   stage.replaceChildren(); player.close(); currentGame = null;
@@ -203,8 +206,9 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','favorites','recents','settings','apps','app-favorites','app-recents','chat','request'].includes(hash) ? hash : 'home';
+  view = ['all','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
+  window.showAccountPages(view);
   window.showChatBoard(view === 'chat');
   const requestPanel=document.querySelector('#request-panel');
   requestPanel.hidden=view!=='request';
@@ -220,12 +224,12 @@ function applyRoute() {
   document.querySelector('#sort-wrap').hidden=isAppsView();
   search.placeholder = isAppsView() ? 'Search apps…' : 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = isAppsView() ? 'Search apps' : 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request' || view === 'leaderboard';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request']]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request' && view !== 'leaderboard'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
