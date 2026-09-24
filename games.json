@@ -1704,12 +1704,6 @@
     "source": "noah"
   },
   {
-    "id": "deathrun3d",
-    "title": "Death Run 3D",
-    "url": "library/noah/games/19.html",
-    "source": "noah"
-  },
-  {
     "id": "clashroyale",
     "title": "Clash Royale",
     "url": "library/noah/games/andurdingus.html",
@@ -2334,12 +2328,6 @@
     "source": "noah"
   },
   {
-    "id": "slope",
-    "title": "Slope",
-    "url": "library/noah/games/182.html",
-    "source": "noah"
-  },
-  {
     "id": "bitlife",
     "title": "Bitlife",
     "url": "library/noah/games/180.html",
@@ -2511,6 +2499,18 @@
     "id": "radicalred",
     "title": "Pokémon Radical Red",
     "url": "https://civil-civix.github.io/really-radical-red/",
+    "source": "external"
+  },
+  {
+    "id": "gangbeasts",
+    "title": "Gang Beasts",
+    "url": "https://civil-civix.github.io/GangBeast-WebPort/",
+    "source": "external"
+  },
+  {
+    "id": "superflight",
+    "title": "Superflight",
+    "url": "https://civil-civix.github.io/superflight-webport/",
     "source": "external"
   }
 ]

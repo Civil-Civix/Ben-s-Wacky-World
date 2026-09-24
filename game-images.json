@@ -283,7 +283,6 @@
   "quakeiii": "images/noah/quakeiii.webp",
   "nubbysnumberfactory": "images/noah/nubbysnumberfactory.webp",
   "genericfightermaybe": "images/noah/genericfightermaybe.webp",
-  "deathrun3d": "images/noah/deathrun3d.webp",
   "clashroyale": "images/noah/clashroyale.webp",
   "parappatherapper": "images/noah/parappatherapper.webp",
   "hollowknight": "images/noah/hollowknight.webp",
@@ -388,7 +387,6 @@
   "chromedino": "images/noah/chromedino.webp",
   "dodgeball": "images/noah/dodgeball.webp",
   "ageofwar2": "images/noah/ageofwar2.webp",
-  "slope": "images/noah/slope.webp",
   "bitlife": "images/noah/bitlife.webp",
   "drifthunters": "images/noah/drifthunters.webp",
   "cuttherope": "images/noah/cuttherope.webp",
@@ -416,5 +414,7 @@
   "worldguessr": "images/worldguessr-custom.jpg",
   "breaklock": "images/breaklock.png",
   "fnafucn": "images/fnafucn.png",
-  "radicalred": "images/radicalred.png"
+  "radicalred": "images/radicalred.png",
+  "gangbeasts": "images/gangbeasts.png",
+  "superflight": "images/superflight.png"
 }

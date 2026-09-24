@@ -39,14 +39,14 @@ const ROOT=path.resolve(__dirname,'..'),BASE='https://civil-civix.github.io/Ben-
  await page.locator('#avatar-upload').setInputFiles({name:'profile.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});
  await page.waitForFunction(()=>document.querySelector('#account-message').textContent==='Photo updated.');
  assert((await getMe()).avatarVersion>firstAvatar);
- await page.locator('.nav-game').click();await page.locator('#search').fill('Slope');
- await page.locator('[data-game=slope]').click();await page.waitForTimeout(4500);await page.locator('#close').click();await page.waitForTimeout(600);
+ await page.locator('.nav-game').click();await page.locator('#search').fill('Gang Beasts');
+ await page.locator('[data-game=gangbeasts]').click();await page.waitForTimeout(4500);await page.locator('#close').click();await page.waitForTimeout(600);
  let user=await getMe();assert(user.playSeconds>=2&&user.playSeconds<=8,JSON.stringify(user));
  const beforeApps=user.playSeconds,starts=calls.filter(c=>c.path==='/play/start').length;
  await page.locator('.nav-apps').click();await page.locator('[data-game]').first().click();await page.waitForTimeout(1200);await page.locator('#close').click();
  assert.equal(calls.filter(c=>c.path==='/play/start').length,starts);
  assert.equal((await getMe()).playSeconds,beforeApps);
- await page.locator('.nav-game').click();await page.locator('#search').fill('Slope');await page.locator('[data-game=slope]').click();await page.waitForTimeout(1400);
+ await page.locator('.nav-game').click();await page.locator('#search').fill('Gang Beasts');await page.locator('[data-game=gangbeasts]').click();await page.waitForTimeout(1400);
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));});
  await page.waitForTimeout(700);const hiddenTime=(await getMe()).playSeconds;
  await page.waitForTimeout(1800);await page.locator('#close').click();await page.waitForTimeout(400);assert.equal((await getMe()).playSeconds,hiddenTime);

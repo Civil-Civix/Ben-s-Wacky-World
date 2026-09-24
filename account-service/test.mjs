@@ -35,8 +35,8 @@ assert.equal((await req('/me','PATCH',{username:'PlayerOne',bio:'<img src=x oner
 assert.equal((await req('/me')).data.user.owner,false);assert.equal((await req('/me')).data.user.playSeconds,0);
 assert.equal((await req('/me','PATCH',{username:'WackyBen',bio:''})).status,400);
 assert.equal((await req('/play/start','POST',{gameId:'stream-hub'})).status,400);
-const started=await req('/play/start','POST',{gameId:'slope'});assert.equal(started.status,200);
-assert.equal((await req('/play/start','POST',{gameId:'slope'})).status,409);
+const started=await req('/play/start','POST',{gameId:'gangbeasts'});assert.equal(started.status,200);
+assert.equal((await req('/play/start','POST',{gameId:'gangbeasts'})).status,409);
 db.prepare('UPDATE activity SET last_seen=? WHERE user_id=?').run(Date.now()-30000,id);
 const pulse={lease:started.data.lease,seq:1,elapsed:30000,stop:false};
 assert.equal((await req('/play/pulse','POST',pulse)).status,200);
@@ -46,7 +46,7 @@ assert.equal((await req('/play/pulse','POST',{...pulse,seq:2,elapsed:60001})).st
 db.prepare('UPDATE activity SET last_seen=?,accrued=0 WHERE user_id=?').run(Date.now()-100000,id);
 await req('/play/pulse','POST',{...pulse,seq:2,stop:true});
 assert.equal((await req('/me')).data.user.playSeconds,30);
-assert.equal((await req('/play/start','POST',{gameId:'slope'})).status,200);
+assert.equal((await req('/play/start','POST',{gameId:'gangbeasts'})).status,200);
 const board=await req('/leaderboard');assert.equal(board.status,200);assert.equal(board.data.users[0].rank,1);assert.equal(board.data.top.length,1);
 assert.equal((await req('/profiles/'+id)).data.user.bio,'<img src=x onerror=alert(1)>');
 assert.equal((await req('/me','GET',undefined,{Origin:'https://evil.example'})).status,403);
