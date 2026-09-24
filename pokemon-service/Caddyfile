@@ -1,0 +1,3 @@
+bens-pokemon.129-146-183-45.sslip.io {
+    reverse_proxy 127.0.0.1:8000
+}
