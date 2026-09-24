@@ -25,6 +25,10 @@ function connect(index) {
         const lines = String(data).split('\n');
         const room = lines[0].startsWith('>') ? lines.shift().slice(1) : '';
         for (const line of lines) {
+          if (line.startsWith('|popup|')) throw new Error(line);
+          if (index === 2 && line.startsWith('|pm|') && line.includes('|/challenge gen9randombattle|')) {
+            ws.send(`|/accept ${clients[0].name}`);
+          }
           if (line.startsWith('|challstr|')) {
             const challstr = line.slice('|challstr|'.length);
             const response = await fetch('https://play.pokemonshowdown.com/action.php', {
@@ -34,7 +38,7 @@ function connect(index) {
             if (!response.ok || assertion.startsWith(';') || assertion.length < 20) throw new Error('Guest assertion failed');
             ws.send(`|/trn ${name},0,${assertion}`);
           }
-          if (line.startsWith(`|updateuser|${name}|1|`) && !client.ready) {
+          if (line.startsWith('|updateuser|') && line.split('|')[2].trim() === name && line.split('|')[3] === '1' && !client.ready) {
             client.ready = true;
             console.log(`Guest ${index} connected`);
             resolve(client);
