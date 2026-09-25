@@ -51,6 +51,7 @@ const server = http.createServer(async (req, res) => {
       if (count > 30 || total > 120) return reply(res,429,';;Please wait a minute and reconnect.');
       const data = new URLSearchParams((await limitedBody(req,4096)).toString());
       console.info('Guest request shape', data.get('act'), [...data.keys()].join(','), (data.get('userid') || '').length, (data.get('challstr') || '').length);
+      console.info('Challenge fields', (data.get('challstr') || '').split('|').map(s => ({length:s.length,hex:/^[a-f0-9]+$/i.test(s),punctuation:s.replace(/[a-z0-9]/gi,'').slice(0,100)})));
       if (data.get('act') === 'upkeep') return reply(res,200,']{"loggedin":false}');
       if (data.get('act') !== 'getassertion' || [...data.keys()].some(k => !['act','userid','challstr'].includes(k))) return reply(res,400,';;Only temporary player names are supported.');
       if (!/^[a-z0-9]{1,18}$/.test(data.get('userid') || '') || !/^\d+\|[a-f0-9]{128,512}$/i.test(data.get('challstr') || '')) return reply(res,400,';;Invalid player request.');
