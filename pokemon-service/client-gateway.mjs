@@ -43,18 +43,20 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, origin);
     if (url.pathname === '/guest-name') {
-      res.on('finish', () => console.info('Guest endpoint HTTP', res.statusCode));
       if (req.method !== 'POST' || req.headers.origin !== origin) return reply(res,403,'Forbidden');
       const ip = req.headers['x-real-ip'] || req.socket.remoteAddress;
       const count = (rate.get(ip) || 0) + 1; rate.set(ip, count);
       const total = (rate.get('*') || 0) + 1; rate.set('*', total);
       if (count > 30 || total > 120) return reply(res,429,';;Please wait a minute and reconnect.');
       const data = new URLSearchParams((await limitedBody(req,4096)).toString());
-      console.info('Guest request shape', data.get('act'), [...data.keys()].join(','), (data.get('userid') || '').length, (data.get('challstr') || '').length);
-      console.info('Challenge fields', (data.get('challstr') || '').split('|').map(s => ({length:s.length,hex:/^[a-f0-9]+$/i.test(s),punctuation:s.replace(/[a-z0-9]/gi,'').slice(0,100)})));
       if (data.get('act') === 'upkeep') return reply(res,200,']{"loggedin":false}');
+      if (data.get('act') === 'getteams') return reply(res,200,']{"teams":[]}');
       if (data.get('act') !== 'getassertion' || [...data.keys()].some(k => !['act','userid','challstr'].includes(k))) return reply(res,400,';;Only temporary player names are supported.');
-      if (!/^[a-z0-9]{1,18}$/.test(data.get('userid') || '') || !/^\d+\|[a-f0-9]{128,512}$/i.test(data.get('challstr') || '')) return reply(res,400,';;Invalid player request.');
+      // The browser may append a client identifier. Only the server's key/challenge
+      // are required for guest assertions; do not forward the extra identifier.
+      const challenge = /^(\d+\|[a-f0-9]{256})(?:\|[a-z0-9]{1,256})?$/i.exec(data.get('challstr') || '');
+      if (!/^[a-z0-9]{1,18}$/.test(data.get('userid') || '') || !challenge) return reply(res,400,';;Invalid player request.');
+      data.set('challstr', challenge[1]);
       const upstream = await fetch('https://play.pokemonshowdown.com/action.php', {method:'POST',body:data,redirect:'error',signal:AbortSignal.timeout(10000)});
       if (!upstream.ok) throw new Error('Name service unavailable');
       const assertion = (await limitedBody(upstream.body,4096)).toString();

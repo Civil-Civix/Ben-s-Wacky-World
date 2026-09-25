@@ -37,6 +37,7 @@ menu = menu.slice(0, start) + `\toverride render() {
         <p>One server. Pick a format and battle another player.</p>
         {this.renderGames()}
         {this.renderSearchButton()}
+        <div class="bww-challenges">{this.renderMiniRooms()}</div>
         <div class="menugroup">
           <p><a class="mainmenu2 mainmenu button" href="teambuilder">Teambuilder</a></p>
           <p><a class="mainmenu3 mainmenu button" href="users">Challenge a player</a></p>
@@ -61,7 +62,8 @@ body { background: #171c32 !important; }
 #roomtab-rooms,#roomtab-lobby,#roomtab-staff,[data-href="register"],a[href="register"],a[href="login"],
 button[name="saveReplay"],button[name="uploadReplay"],button[value="/savereplay"],button[data-cmd="/savereplay"],
 a[href*="replay.pokemonshowdown"],a[href*="dex.pokemonshowdown"],a[href*="smogon.com"],
-button[data-href="options"] { display:none !important; }
+button[data-href="options"],button[data-href^="dm-"],button[data-href^="useroptions-"],.maximizebutton,.minimizebutton { display:none !important; }
+.bww-challenges { color:#222; } .bww-challenges .mini-window { margin:16px 0; }
 `);
 fs.writeFileSync(path.join(web, 'bww.js'), `
 (() => {
