@@ -364,3 +364,5 @@ body.playing #leaderboard-panel{visibility:hidden}
 #show-player-bar:hover,#show-player-bar:focus-visible{opacity:1;color:var(--accent);border-color:var(--accent);background:var(--surface)}
 
 .nav-settings[aria-current=page] .profile-avatar{color:var(--accent-ink);background:transparent;border-color:transparent}
+
+.game-card[data-game="chromedino"] img{object-position:left center}
