@@ -1,0 +1,1 @@
+window.PokiSDK=new Proxy({init:()=>Promise.resolve(),commercialBreak:()=>Promise.resolve(),rewardedBreak:()=>Promise.resolve(false),isAdBlocked:()=>true,isCommercialBreakPossible:()=>false,getURLParam:n=>new URLSearchParams(location.search).get(n)},{get:(o,k)=>k in o?o[k]:(()=>{})});

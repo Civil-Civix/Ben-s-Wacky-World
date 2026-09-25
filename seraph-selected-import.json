@@ -1,0 +1,70 @@
+{
+  "games": [
+    {
+      "id": "flappybird",
+      "files": 15,
+      "url": "library/seraph-games/flappy/index.html"
+    },
+    {
+      "id": "slope",
+      "files": 8,
+      "url": "library/seraph-games/slope/index.html"
+    },
+    {
+      "id": "tunnelrush",
+      "files": 14,
+      "url": "library/seraph-games/tunnelrush/index.html"
+    },
+    {
+      "id": "majorasmask",
+      "files": 2,
+      "url": "library/seraph-games/majorasmask/index.html"
+    },
+    {
+      "id": "dadish",
+      "files": 99,
+      "url": "library/seraph-games/dadish/index.html"
+    },
+    {
+      "id": "dadish2",
+      "files": 125,
+      "url": "library/seraph-games/dadish2/index.html"
+    },
+    {
+      "id": "dadish3",
+      "files": 178,
+      "url": "library/seraph-games/dadish3/index.html"
+    },
+    {
+      "id": "deathrun3d",
+      "files": 15,
+      "url": "library/seraph-games/deathrun3d/index.html"
+    },
+    {
+      "id": "chromedino",
+      "files": 21,
+      "url": "library/seraph-games/dinogame/index.html"
+    },
+    {
+      "id": "stack",
+      "files": 1,
+      "url": "library/seraph-games/stack/index.html"
+    },
+    {
+      "id": "snowrider3d",
+      "files": 9,
+      "url": "library/seraph-games/snowrider3d/index.html"
+    },
+    {
+      "id": "colorswitch",
+      "files": 4,
+      "url": "library/seraph-games/colorswitch/index.html"
+    },
+    {
+      "id": "stickmanhook",
+      "files": 64,
+      "url": "library/seraph-games/stickmanhook/index.html"
+    }
+  ],
+  "totalBytes": 128031846
+}

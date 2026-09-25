@@ -1,0 +1,26 @@
+bens-pokemon.129-146-183-45.sslip.io {
+    encode gzip
+    handle /showdown* {
+        reverse_proxy 127.0.0.1:8000
+    }
+    handle /guest-name {
+        reverse_proxy 127.0.0.1:8001 {
+            header_up X-Real-IP {remote_host}
+        }
+    }
+    handle {
+        root * /srv/bww-client-v1
+        header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' wss://bens-pokemon.129-146-183-45.sslip.io; font-src 'self' data:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' https://civil-civix.github.io http://127.0.0.1:4173"
+        header X-Content-Type-Options nosniff
+        @missingAssets {
+            path /sprites/* /audio/* /fx/* /data/*
+            not file {path}
+        }
+        reverse_proxy @missingAssets 127.0.0.1:8001
+        @clientRoutes {
+            not path /js/* /style/* /data/* /sprites/* /audio/* /fx/* /config/* /fonts/* /bww.* /favicon* /source.zip /LICENSE
+        }
+        rewrite @clientRoutes /index.html
+        file_server
+    }
+}

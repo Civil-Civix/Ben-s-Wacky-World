@@ -1,5 +1,6 @@
 // Two temporary guest players exercise the public TLS/WebSocket battle path.
 const endpoint = process.argv[2] || 'wss://bens-pokemon.129-146-183-45.sslip.io/showdown/websocket';
+const assertionEndpoint = process.argv[3] || 'https://play.pokemonshowdown.com/action.php';
 const clients = [];
 const suffix = Date.now().toString(36);
 let finished = false;
@@ -31,8 +32,8 @@ function connect(index) {
           }
           if (line.startsWith('|challstr|')) {
             const challstr = line.slice('|challstr|'.length);
-            const response = await fetch('https://play.pokemonshowdown.com/action.php', {
-              method: 'POST', body: new URLSearchParams({act:'getassertion', userid:name.toLowerCase(), challstr}), signal: AbortSignal.timeout(15000),
+            const response = await fetch(assertionEndpoint, {
+              method: 'POST', headers: {Origin: new URL(assertionEndpoint).origin}, body: new URLSearchParams({act:'getassertion', userid:name.toLowerCase(), challstr}), signal: AbortSignal.timeout(15000),
             });
             const assertion = await response.text();
             if (!response.ok || assertion.startsWith(';') || assertion.length < 20) throw new Error('Guest assertion failed');

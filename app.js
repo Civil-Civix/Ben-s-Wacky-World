@@ -90,7 +90,7 @@ function render() {
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Account Settings | Wacky Games"; return;}
   const query = normalize(search.value);
-  const pool = view === 'app-favorites' ? apps.filter(a=>appFavorites.has(a.id)) : view === 'app-recents' ? appRecents.map(id=>appById.get(id)).filter(Boolean) : view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
+  const pool = view === 'new' ? games.filter(game=>game.collection==='new') : view === 'app-favorites' ? apps.filter(a=>appFavorites.has(a.id)) : view === 'app-recents' ? appRecents.map(id=>appById.get(id)).filter(Boolean) : view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
   const popularity=window.WackyPopularity;
@@ -131,7 +131,7 @@ function render() {
     : (view === 'recents'||view === 'app-recents') ? 'No recent items yet. Open one to get started.'
     : 'No games available.';
   document.querySelector('#result-count').textContent = matches.length + (isAppsView() ? ' apps' : ' games');
-  const title = view === 'app-favorites' ? 'Favorite apps' : view === 'app-recents' ? 'Recent apps' : view === 'apps' ? 'Apps' : view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
+  const title = view === 'new' ? 'New games' : view === 'app-favorites' ? 'Favorite apps' : view === 'app-recents' ? 'Recent apps' : view === 'apps' ? 'Apps' : view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
   grid.setAttribute('aria-label', title);
   document.querySelector('#page-title').textContent = title;
   document.title = title + ' | Wacky Games';
@@ -219,7 +219,7 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard'].includes(hash) ? hash : 'home';
+  view = ['all','new','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
   window.showChatBoard(view === 'chat');
@@ -232,7 +232,8 @@ function applyRoute() {
   }
   document.querySelector('.collection-nav').hidden = false;
   const routes=isAppsView()?['apps','app-favorites','app-recents']:['all','favorites','recents'];
-  document.querySelectorAll('[data-view]').forEach((link,i)=>{link.dataset.view=routes[i];link.href='#'+routes[i];});
+  document.querySelectorAll('[data-view]:not([data-new-collection])').forEach((link,i)=>{link.dataset.view=routes[i];link.href='#'+routes[i];});
+  document.querySelector('[data-new-collection]').hidden=isAppsView();
   document.querySelector('.collection-nav').setAttribute('aria-label',isAppsView()?'App collections':'Game collections');
   document.querySelector('#sort-wrap').hidden=isAppsView();
   search.placeholder = isAppsView() ? 'Search apps…' : 'Search games…';

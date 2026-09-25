@@ -1,0 +1,21 @@
+[Unit]
+Description=Ben's battle client assets and guest names
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bww-client
+Group=bww-client
+ExecStart=/usr/local/bin/node /opt/bww-client/client-gateway.mjs
+Restart=on-failure
+RestartSec=5
+CacheDirectory=bww-client
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+MemoryMax=256M
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

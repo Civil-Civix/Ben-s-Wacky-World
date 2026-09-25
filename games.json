@@ -3,7 +3,8 @@
     "id": "pokemonshowdown",
     "title": "Pokémon Showdown",
     "url": "https://bens---pokemon-129---146---183---45-sslip-io.psim.us/beta",
-    "source": "external"
+    "source": "external",
+    "collection": "new"
   },
   {
     "id": "peak",
@@ -1988,8 +1989,9 @@
   {
     "id": "flappybird",
     "title": "Flappy Bird",
-    "url": "library/noah/games/239.html",
-    "source": "noah"
+    "url": "library/seraph-games/flappy/index.html",
+    "source": "seraph",
+    "collection": "new"
   },
   {
     "id": "recoil",
@@ -2108,8 +2110,9 @@
   {
     "id": "stickmanhook",
     "title": "Stickman Hook",
-    "url": "library/noah/games/216.html",
-    "source": "noah"
+    "url": "library/seraph-games/stickmanhook/index.html",
+    "source": "seraph",
+    "collection": "new"
   },
   {
     "id": "riorex",
@@ -2174,8 +2177,9 @@
   {
     "id": "snowrider3d",
     "title": "Snow Rider 3D",
-    "url": "library/noah/games/206.html",
-    "source": "noah"
+    "url": "library/seraph-games/snowrider3d/index.html",
+    "source": "seraph",
+    "collection": "new"
   },
   {
     "id": "gladihoppers",
@@ -2317,9 +2321,10 @@
   },
   {
     "id": "chromedino",
-    "title": "Chrome Dino",
-    "url": "library/noah/games/184.html",
-    "source": "noah"
+    "title": "Dino Game",
+    "url": "library/seraph-games/dinogame/index.html",
+    "source": "seraph",
+    "collection": "new"
   },
   {
     "id": "dodgeball",
@@ -2511,12 +2516,77 @@
     "id": "gangbeasts",
     "title": "Gang Beasts",
     "url": "https://civil-civix.github.io/GangBeast-WebPort/",
-    "source": "external"
+    "source": "external",
+    "collection": "new"
   },
   {
     "id": "superflight",
     "title": "Superflight",
     "url": "https://civil-civix.github.io/superflight-webport/",
-    "source": "external"
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "slope",
+    "title": "Slope",
+    "url": "library/seraph-games/slope/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "tunnelrush",
+    "title": "Tunnel Rush",
+    "url": "library/seraph-games/tunnelrush/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "majorasmask",
+    "title": "The Legend of Zelda: Majora's Mask",
+    "url": "library/seraph-games/majorasmask/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "dadish",
+    "title": "Dadish 1",
+    "url": "library/seraph-games/dadish/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "dadish2",
+    "title": "Dadish 2",
+    "url": "library/seraph-games/dadish2/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "dadish3",
+    "title": "Dadish 3",
+    "url": "library/seraph-games/dadish3/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "deathrun3d",
+    "title": "Death Run 3D",
+    "url": "library/seraph-games/deathrun3d/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "stack",
+    "title": "Stack",
+    "url": "library/seraph-games/stack/index.html",
+    "source": "seraph",
+    "collection": "new"
+  },
+  {
+    "id": "colorswitch",
+    "title": "Color Switch",
+    "url": "library/seraph-games/colorswitch/index.html",
+    "source": "seraph",
+    "collection": "new"
   }
 ]
