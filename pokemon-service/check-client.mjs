@@ -13,6 +13,10 @@ for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
   assert.match(response.headers.get('content-type'), /javascript/,resource.pathname);
 }
 assert.match(home.headers.get('content-security-policy'), /frame-src 'none'/);
+const ancestors = home.headers.get('content-security-policy').match(/frame-ancestors ([^;]+)/)?.[1].split(/\s+/);
+for (const host of ['https://civil-civix.github.io','https://sites.google.com','https://www.gstatic.com']) {
+  assert.ok(ancestors?.includes(host),`Missing embedding ancestor: ${host}`);
+}
 for (const file of ['/config/config.js','/js/client-main.js','/data/pokedex.js','/data/teambuilder-tables.js','/sprites/gen5/pikachu.png','/sprites/ani/pikachu.gif','/sprites/pokemonicons-sheet.png','/LICENSE']) {
   const r=await get(file); assert.equal(r.status,200,file); assert.ok((await r.arrayBuffer()).byteLength>50,file);
 }

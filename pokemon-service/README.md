@@ -87,6 +87,10 @@ authentication is preserved through the existing hosted client.
   loopback port 8001; cache `/var/cache/bww-client`.
 - Active proxy: `Caddyfile.selfhosted`; original config backup:
   `/home/ubuntu/Caddyfile.before-selfhosted`.
+- The Google Sites wrapper adds two ancestors: `https://sites.google.com`
+  and `https://www.gstatic.com`. Both must be present in the game's
+  `frame-ancestors` policy along with GitHub Pages, or the nested game
+  shows "refused to connect" even when it works directly on GitHub Pages.
 - On a fresh extraction of the supplied client archive, run
   `node prepare-client.mjs SOURCE`, then `node finish-client.mjs SOURCE`,
   then `npm ci` and `node build` inside SOURCE. Prepare applies once;
