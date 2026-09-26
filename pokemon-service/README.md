@@ -101,6 +101,15 @@ authentication is preserved through the existing hosted client.
   Caddy configuration. Review its fixed paths before reuse.
 - Client source and license are at `/source.zip` and `/LICENSE`. Keep
   the source archive synchronized whenever changing the served fork.
+- After `finish-client.mjs`, apply `node theme-client.mjs SOURCE` before
+  building. Keep `battle-theme.css`, `theme-bridge.js`, and the Inter font
+  and license beside that script (or use the repo's `../fonts` directory).
+  This adds the matching cards, controls, and responsive menu layout.
+- The website sends only its accent hex color and background preset to
+  the game using `postMessage`. The game validates the direct parent,
+  origin, and both values. Changes also update an already-open game.
+  Supported presets match the site: Obsidian, Midnight, Slate, and Mocha.
+  Animated site backgrounds remain paused while playing, as on the site.
 - Inspect `sudo systemctl status bww-client showdown caddy` and
   `sudo journalctl -u bww-client -n 50` for operational failures.
 - Run `node check-client.mjs` for browser resource/endpoint checks. For

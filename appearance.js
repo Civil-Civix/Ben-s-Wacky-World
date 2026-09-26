@@ -51,6 +51,7 @@
     layer.classList.toggle('still',!appearance.snow);
     document.querySelectorAll('[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
     window.setBackgroundEffect(appearance);
+    window.dispatchEvent(new Event('bww:appearance'));
     if(save) {
       try {localStorage.setItem(key,JSON.stringify(appearance));warning.hidden=true;}
       catch (_) {warning.hidden=false;}

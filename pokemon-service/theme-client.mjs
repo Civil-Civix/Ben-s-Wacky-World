@@ -40,6 +40,8 @@ fs.writeFileSync(file,text);
 const css=path.join(web,'bww.css');
 const old=fs.readFileSync(css,'utf8').split('/* BWW SITE THEME */')[0];
 fs.writeFileSync(css,old+'\n/* BWW SITE THEME */\n'+fs.readFileSync(path.join(here,'battle-theme.css'),'utf8'));
+const auto=path.join(web,'bww.js');
+fs.writeFileSync(auto,fs.readFileSync(auto,'utf8').split('/* BWW THEME BRIDGE */')[0]+'\n/* BWW THEME BRIDGE */\n'+fs.readFileSync(path.join(here,'theme-bridge.js'),'utf8'));
 fs.mkdirSync(path.join(web,'fonts'),{recursive:true});
 for (const name of ['InterVariable.woff2','Inter-LICENSE.txt']) {
   const source = fs.existsSync(path.join(here,'../fonts',name)) ? path.join(here,'../fonts',name) : path.join(here,name);

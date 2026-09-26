@@ -154,7 +154,7 @@ function loadGame() {
   frame.allowFullscreen = true;
   frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads');
   frame.src = currentGame.url;
-  frame.addEventListener('load', () => {clearTimeout(loadTimer);status.hidden = true;frame.focus();});
+  frame.addEventListener('load', () => {clearTimeout(loadTimer);status.hidden = true;sendBattleTheme();frame.focus();});
   frame.addEventListener('error', () => {
     clearTimeout(loadTimer);
     status.textContent = 'This content could not load. Try Reload, or close it and choose another game.';
@@ -166,6 +166,16 @@ function loadGame() {
     status.hidden = false;
   },30000);
 }
+const battleOrigin = 'https://bens-pokemon.129-146-183-45.sslip.io';
+function sendBattleTheme() {
+  const frame = stage.querySelector('iframe');
+  if (currentGame?.id !== 'pokemonshowdown' || !frame || new URL(frame.src).origin !== battleOrigin) return;
+  frame.contentWindow.postMessage({type:'bww:theme',accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),background:document.documentElement.dataset.background},battleOrigin);
+}
+window.addEventListener('bww:appearance',sendBattleTheme);
+window.addEventListener('message',event=>{
+  if(event.origin===battleOrigin && event.source===stage.querySelector('iframe')?.contentWindow && event.data?.type==='bww:theme-ready') sendBattleTheme();
+});
 const alternateServers={
  'pokerogue':['https://pokerogue-tuon.onrender.com/','https://pokerogue-mxyt.onrender.com/'],
  'stream-hub':['https://stream-hub-pydm.onrender.com/','https://stream-hub-zuaa.onrender.com/']
