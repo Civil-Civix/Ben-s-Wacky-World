@@ -2,11 +2,14 @@
 
 ## Current deployment status
 
-The Oracle game server is live. The site catalog opens the upstream beta
-client inside the game player; all visitors connect to this one server.
+The Oracle game server and self-hosted battle client are live. All visitors
+connect to this one server. Players receive temporary names without signing
+in. The interface keeps battles, challenges, and teams; chat inputs, account
+forms, Pokédex navigation, and replay controls are removed or hidden.
 
 - Site: https://civil-civix.github.io/Ben-s-Wacky-World/#all (search Showdown).
-- Client: https://bens---pokemon-129---146---183---45-sslip-io.psim.us/beta
+- Client: https://bens-pokemon.129-146-183-45.sslip.io/battle.html
+- Existing owner client (registered WackyBen login): https://bens---pokemon-129---146---183---45-sslip-io.psim.us/beta
 - HTTPS server: https://bens-pokemon.129-146-183-45.sslip.io
 - Administrator: registered Pokémon Showdown account `WackyBen`.
 
@@ -62,13 +65,47 @@ blocks the connection. No passwords are required or logged.
 
 ## Dependencies and limits
 
-The standard hosted client, login service, and graphics are provided by
-Pokémon Showdown; free hostname DNS is provided by sslip.io. The classic
-client blocks iframe use, so the catalog explicitly requests `/beta`.
-The supplied client archive is retained as an input, not deployed as a fork.
-Showdown accounts are separate from Ben's Wacky World website accounts.
-Players can choose the same battle format and search, or challenge someone
-on this server through Find a user.
+The supplied client is now a modified, self-hosted fork. Browser scripts,
+game data, sprites, and battle connections use the Oracle hostname.
+The guest-name service still calls the upstream Showdown assertion service
+from the server. Missing artwork/audio are fetched from a fixed upstream
+asset host and cached (512 MB limit); this is not an offline implementation.
+DNS is supplied by sslip.io. School-device/network access remains unverified.
+
+Guest names change on a full reload. Teams are stored in the browser;
+there are no cloud accounts or cloud team backups in this client. Friends
+on the same network should use Challenge a player, because Showdown's
+normal matchmaking may exclude players sharing an IP. Registered owner
+authentication is preserved through the existing hosted client.
+
+### Self-hosted client maintenance
+
+- Prepared source: `/home/ubuntu/pokemon-showdown-client-master`.
+- Public build: `/srv/bww-client-v1`; entry point `/battle.html` avoids an
+  earlier root redirect that some browsers cached.
+- Helper service: `bww-client`, code `/opt/bww-client/client-gateway.mjs`,
+  loopback port 8001; cache `/var/cache/bww-client`.
+- Active proxy: `Caddyfile.selfhosted`; original config backup:
+  `/home/ubuntu/Caddyfile.before-selfhosted`.
+- On a fresh extraction of the supplied client archive, run
+  `node prepare-client.mjs SOURCE`, then `node finish-client.mjs SOURCE`,
+  then `npm ci` and `node build` inside SOURCE. Prepare applies once;
+  finish can be repeated. Do not run prepare twice on a patched tree.
+- Upload deployment helpers to `/home/ubuntu/`, then run
+  `sudo bash /home/ubuntu/deploy-client.sh`. This stages the client,
+  refreshes the AGPL source archive, and installs the helper service and
+  Caddy configuration. Review its fixed paths before reuse.
+- Client source and license are at `/source.zip` and `/LICENSE`. Keep
+  the source archive synchronized whenever changing the served fork.
+- Inspect `sudo systemctl status bww-client showdown caddy` and
+  `sudo journalctl -u bww-client -n 50` for operational failures.
+- Run `node check-client.mjs` for browser resource/endpoint checks. For
+  the three-turn guest battle test, run this on one line:
+  `node smoke-test.mjs wss://bens-pokemon.129-146-183-45.sslip.io/showdown/websocket https://bens-pokemon.129-146-183-45.sslip.io/guest-name`.
+
+Verified September 25, 2026: two browser guests challenged, accepted,
+loaded animated Pokémon artwork, and exchanged moves; no console errors
+were recorded during that test. Automated resource and battle checks passed.
 
 No paid upgrade was performed. The instance uses Always Free-eligible
 resources rather than trial-only capacity. Oracle availability and idle
@@ -79,8 +116,8 @@ Caddyfile, both game catalogs, and the test endpoint, then reload Caddy.
 ## Handoff
 
 Goal: one shared Pokémon battle server accessible inside Ben's Wacky World.
-The server, HTTPS, owner assignment, and embedded-client integration are
-configured. Continue maintenance in the Ben's Wacky World project using
+The server, HTTPS, owner assignment, and battle-only embedded client are
+configured. Remaining user check: try the new client on the school laptop. Continue maintenance in the Ben's Wacky World project using
 this folder. Keep private keys and live user data outside the public repo.
 
 The server runs in Oracle Cloud; GitHub Pages only serves the website.

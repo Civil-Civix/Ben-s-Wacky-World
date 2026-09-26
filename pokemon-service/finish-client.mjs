@@ -4,6 +4,7 @@ import path from 'node:path';
 const web = path.join(process.argv[2], 'play.pokemonshowdown.com');
 const menu = path.join(web,'src/panel-mainmenu.tsx');
 let text = fs.readFileSync(menu,'utf8');
+text = text.replace('return PS.miniRoomList.map(roomid => {', "return PS.miniRoomList.filter(id => id.startsWith('dm-')).map(roomid => {");
 if (!text.includes('class="bww-challenges"')) text = text.replace('{this.renderSearchButton()}','{this.renderSearchButton()}\n        <div class="bww-challenges">{this.renderMiniRooms()}</div>');
 fs.writeFileSync(menu,text);
 const chat = path.join(web,'src/panel-chat.tsx');
@@ -24,3 +25,10 @@ button[data-href^="dm-"],button[data-href^="useroptions-"],.maximizebutton,.mini
 .bww-invitation {padding:10px;background:#fff}
 `;
 fs.writeFileSync(css,text);
+const auto = path.join(web,'bww.js');
+text = fs.readFileSync(auto,'utf8')
+  .replace('let naming = false;', "let namingChallenge = '';")
+  .replace('if (!PS.user.named && !naming) { naming = true; PS.user.changeName(name); }',
+    'if (!PS.user.named && namingChallenge !== PS.user.challstr) { namingChallenge = PS.user.challstr; PS.user.changeName(name); }')
+  .replace('if (PS.user.named) clearInterval(timer);','');
+fs.writeFileSync(auto,text);

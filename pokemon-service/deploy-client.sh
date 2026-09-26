@@ -20,8 +20,9 @@ PY
 chmod -R a+rX /srv/bww-client-v1
 systemctl daemon-reload
 systemctl enable --now bww-client
+systemctl restart bww-client
 caddy validate --config /home/ubuntu/Caddyfile.selfhosted --adapter caddyfile
-cp /etc/caddy/Caddyfile /home/ubuntu/Caddyfile.before-selfhosted
+test -f /home/ubuntu/Caddyfile.before-selfhosted || cp /etc/caddy/Caddyfile /home/ubuntu/Caddyfile.before-selfhosted
 install -m 644 /home/ubuntu/Caddyfile.selfhosted /etc/caddy/Caddyfile
 systemctl reload caddy
 systemctl is-active bww-client showdown caddy

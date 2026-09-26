@@ -67,7 +67,7 @@ button[data-href="options"],button[data-href^="dm-"],button[data-href^="useropti
 `);
 fs.writeFileSync(path.join(web, 'bww.js'), `
 (() => {
-  let naming = false;
+  let namingChallenge = '';
   const random = crypto.getRandomValues(new Uint32Array(2));
   const name = 'BWW' + random[0].toString(36) + random[1].toString(36).slice(0,4);
   const timer = setInterval(() => {
@@ -75,8 +75,10 @@ fs.writeFileSync(path.join(web, 'bww.js'), `
     for (const id of ['rooms','lobby','staff','news']) {
       if (PS.rooms[id]) PS.leave(id);
     }
-    if (!PS.user.named && !naming) { naming = true; PS.user.changeName(name); }
-    if (PS.user.named) clearInterval(timer);
+    if (!PS.user.named && namingChallenge !== PS.user.challstr) {
+      namingChallenge = PS.user.challstr;
+      PS.user.changeName(name);
+    }
   }, 300);
 })();
 `);

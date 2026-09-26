@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import crypto from 'node:crypto';
 const root = process.argv[2], target = process.argv[3];
 if (!root || !target) throw new Error('Usage: node stage-client.mjs SOURCE TARGET');
 const web = path.join(root,'play.pokemonshowdown.com');
@@ -26,6 +27,10 @@ let html = await fs.readFile(path.join(web,'caches/index-new.html'),'utf8');
 await fs.copyFile(path.join(web,'src/battle-log-misc.js'),path.join(target,'js/battle-log-misc.js'));
 html = html.replaceAll('/src/battle-log-misc.js','/js/battle-log-misc.js');
 html = html.replaceAll('https://play.pokemonshowdown.com/','/');
+for (const file of ['bww.css','bww.js']) {
+  const hash = crypto.createHash('sha256').update(await fs.readFile(path.join(target,file))).digest('hex').slice(0,12);
+  html = html.replaceAll(`/${file}"`, `/${file}?v=${hash}"`);
+}
 html = html.replace(/<title>.*?<\/title>/,'<title>Ben’s Pokémon Battles</title>');
 // Keep the build source links visible, with no external navigation in the menu.
 await fs.writeFile(path.join(target,'index.html'),html);
