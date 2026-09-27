@@ -4,7 +4,8 @@
     "title": "Pokémon Showdown",
     "url": "https://bens-pokemon.129-146-183-45.sslip.io/battle.html",
     "source": "external",
-    "collection": "new"
+    "collection": "new",
+    "online": true
   },
   {
     "id": "peak",
