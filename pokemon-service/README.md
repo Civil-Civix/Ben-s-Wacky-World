@@ -128,6 +128,15 @@ Caddyfile, both game catalogs, and the test endpoint, then reload Caddy.
 
 ## Handoff
 
+September 26 queue fix: run `node patch-matchmaking.mjs SERVER_SOURCE`,
+then build the server and restart Showdown. This makes Gen 9 Random Battle
+casual/unrated and permits shared-IP players and immediate rematches in
+that format only. Distinct-user checks and other ladders remain unchanged.
+Append `search` to the smoke-test command above to test two same-IP guests
+through three turns and an immediate second match. The queue requires
+another person searching the same format on this private server.
+The aligned top bar lives in `battle-theme.css` under the navigation-row comment.
+
 Goal: one shared Pokémon battle server accessible inside Ben's Wacky World.
 The server, HTTPS, owner assignment, and battle-only embedded client are
 configured. Remaining user check: try the new client on the school laptop. Continue maintenance in the Ben's Wacky World project using

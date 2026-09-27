@@ -2,16 +2,20 @@
 const endpoint = process.argv[2] || 'wss://bens-pokemon.129-146-183-45.sslip.io/showdown/websocket';
 const assertionEndpoint = process.argv[3] || 'https://play.pokemonshowdown.com/action.php';
 const clients = [];
+const mode = process.argv[4] || 'challenge';
+if (!['challenge', 'search'].includes(mode)) throw new Error('Mode must be challenge or search');
 const suffix = Date.now().toString(36);
 let finished = false;
+let round = 1;
+const results = new Set();
 const timer = setTimeout(() => finish(new Error('Battle test timed out')), 90000);
 function finish(error) {
   if (finished) return;
   finished = true;
   clearTimeout(timer);
-  for (const c of clients) c.ws.close();
+  for (const c of clients) { if (c.ws.readyState === WebSocket.OPEN) c.ws.send('|/cancelsearch'); c.ws.close(); }
   if (error) { console.error(error.message); process.exitCode = 1; }
-  else console.log('PASS: two guests connected, challenged, played three turns, and received the battle result.');
+  else console.log(`PASS: two guests connected via ${mode}, played three turns, and received the battle result${mode === 'search' ? ' twice, including an immediate rematch' : ''}.`);
 }
 function connect(index) {
   return new Promise((resolve, reject) => {
@@ -60,7 +64,20 @@ function connect(index) {
                 ws.send(`${room}|/choose default|${req.rqid}`);
               }
             }
-            if (line.startsWith('|win|') && clients[0].forfeited) finish();
+            if (line.startsWith('|win|') && clients[0].forfeited) {
+              results.add(index);
+              if (results.size === 2) {
+                if (mode === 'search' && round === 1) {
+                  round++;
+                  results.clear();
+                  for (const c of clients) {
+                    c.ws.send(`${c.room}|/leave`);
+                    c.room = ''; c.lastRequest = null; c.forfeited = false;
+                    c.ws.send('|/search gen9randombattle');
+                  }
+                } else finish();
+              }
+            }
           }
           if (line.startsWith('|nametaken|') || line.startsWith('|error|')) throw new Error(line);
         }
@@ -71,5 +88,8 @@ function connect(index) {
 try {
   const a = await connect(1);
   const b = await connect(2);
-  a.ws.send(`|/challenge ${b.name},gen9randombattle`);
+  if (mode === 'search') {
+    a.ws.send('|/search gen9randombattle');
+    b.ws.send('|/search gen9randombattle');
+  } else a.ws.send(`|/challenge ${b.name},gen9randombattle`);
 } catch (error) { finish(error); }

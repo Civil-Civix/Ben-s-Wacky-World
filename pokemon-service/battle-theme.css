@@ -101,3 +101,23 @@ button:disabled,button.disabled{opacity:.5;cursor:default}
 .teampane .teamlist em{font-style:normal;color:var(--bww-muted)}
 .teampane button[data-cmd="/newteam"]{background:var(--bww-accent)!important;color:var(--bww-ink)!important}
 @media(max-width:600px){.teampane{padding:14px!important}}
+
+/* One aligned navigation row; keep Showdown's 56px room offset intact. */
+#header.header{height:56px;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--bww-line)}
+#header.header .maintabbarbottom{display:none}
+#header.header .maintabbar{position:static;order:1;flex:1;min-width:0;height:36px;margin:0;padding:0;overflow:hidden}
+#header.header .maintabbar .inner-1,#header.header .maintabbar .inner-2{display:flex;align-items:center;width:auto;height:36px;line-height:normal;gap:8px}
+#header.header .maintabbar ul{display:flex;align-items:center;gap:8px;width:auto!important;float:none;padding:0;flex:none}
+#header.header .maintabbar li{display:flex;align-items:center;position:relative;float:none;flex:none}
+#header.header .logo{width:32px;height:32px;float:none;margin:0 4px 0 0;object-fit:contain}
+#header.header .maintabbar a.button{display:flex;align-items:center;justify-content:center;gap:7px;box-sizing:border-box;height:36px;min-width:72px;max-width:190px;margin:0;top:0;padding:0 12px;border-radius:9px!important;line-height:1.2;font-size:12px}
+#header.header .maintabbar a.button.closable{padding-right:25px}
+#header.header .maintabbar a.button i{margin:0;height:auto;flex:none;font-size:13px}
+#header.header .maintabbar a.button span{overflow:hidden;text-overflow:ellipsis}
+#header.header .maintabbar .closebutton{top:10px;right:5px}
+#header.header .overflow{position:static;order:2;flex:none;display:flex}
+#header.header .overflow .button,#header.header .userbar button.icon{box-sizing:border-box;width:36px;height:36px;margin:0;padding:0;border:1px solid var(--bww-line);border-radius:9px;background:var(--bww-panel);color:var(--bww-text);font-size:14px}
+#header.header .userbar{position:static;order:3;display:flex;align-items:center;gap:8px;flex:none;white-space:nowrap}
+#header.header .userbar .username{display:inline-flex;align-items:center;box-sizing:border-box;height:36px;padding:0 12px;border-radius:9px;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+#header.header .userbar .usernametext{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){#header.header{padding-inline:8px;gap:6px}#header.header .userbar{gap:6px}#header.header .userbar .username{max-width:120px;padding-inline:8px}#header.header .maintabbar a.button{min-width:60px;padding-inline:9px}}

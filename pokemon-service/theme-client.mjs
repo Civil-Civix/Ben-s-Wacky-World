@@ -27,7 +27,7 @@ text = text.slice(0,start) + `\toverride render() {
           <div class="bww-shortcuts">
             <a class="bww-tile" href="users"><span class="bww-icon"><i class="fa fa-crosshairs" aria-hidden /></span><span><strong>Challenge a player</strong><small>Have a friend’s name? Battle them directly.</small></span><i class="fa fa-arrow-right" aria-hidden /></a>
             <a class="bww-tile" href="teambuilder"><span class="bww-icon"><i class="fa fa-th-large" aria-hidden /></span><span><strong>Teambuilder</strong><small>Create and organize your teams.</small></span><i class="fa fa-arrow-right" aria-hidden /></a>
-            <p class="bww-tip"><i class="fa fa-info-circle" aria-hidden /> Same Wi-Fi? Use Challenge a player.</p>
+            <p class="bww-tip"><i class="fa fa-info-circle" aria-hidden /> Random battles need two people searching the same format on this server.</p>
           </div>
         </div>
         <div class="bww-active">{this.renderGames()}</div>
