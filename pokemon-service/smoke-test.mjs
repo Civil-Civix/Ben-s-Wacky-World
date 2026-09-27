@@ -60,7 +60,7 @@ function connect(index) {
             if (line === '|turn|3' && index === 1 && !client.forfeited) {
               client.forfeited = true; ws.send(`${room}|/forfeit`);
             }
-            if (line.startsWith('|request|') && !client.forfeited) {
+            if (line.startsWith('|request|') && !clients[0].forfeited) {
               const req = JSON.parse(line.slice(9) || 'null');
               if (req && !req.wait && req.rqid !== client.lastRequest) {
                 client.lastRequest = req.rqid;
@@ -82,6 +82,8 @@ function connect(index) {
               }
             }
           }
+          // A queued choice can arrive after the other guest's scripted forfeit.
+          if (line === "|error|[Invalid choice] There's nothing to choose" && clients[0].forfeited) continue;
           if (line.startsWith('|nametaken|') || line.startsWith('|error|')) throw new Error(line);
         }
       } catch (error) { reject(error); finish(error); }
