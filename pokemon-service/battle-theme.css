@@ -114,7 +114,10 @@ button:disabled,button.disabled{opacity:.5;cursor:default}
 #header.header .maintabbar a.button.closable{padding-right:25px}
 #header.header .maintabbar a.button i{margin:0;height:auto;flex:none;font-size:13px}
 #header.header .maintabbar a.button span{overflow:hidden;text-overflow:ellipsis}
-#header.header .maintabbar .closebutton{top:10px;right:5px}
+#header.header .maintabbar .closebutton{position:absolute;top:10px;right:5px;margin:0;width:17px;height:17px}
+#header.header .maintabbar a.roomtab-battle{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;width:190px;overflow:hidden;text-align:left;align-content:center;justify-items:stretch}
+#header.header .maintabbar a.roomtab-battle i.text{display:block;min-width:0;width:auto;margin:0;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:13px;text-align:left}
+#header.header .maintabbar a.roomtab-battle span{display:block;min-width:0;max-width:100%;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:12px}
 #header.header .overflow{position:static;order:2;flex:none;display:flex}
 #header.header .overflow .button,#header.header .userbar button.icon{box-sizing:border-box;width:36px;height:36px;margin:0;padding:0;border:1px solid var(--bww-line);border-radius:9px;background:var(--bww-panel);color:var(--bww-text);font-size:14px}
 #header.header .userbar{position:static;order:3;display:flex;align-items:center;gap:8px;flex:none;white-space:nowrap}

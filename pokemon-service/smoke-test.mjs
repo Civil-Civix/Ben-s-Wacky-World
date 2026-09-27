@@ -53,7 +53,10 @@ function connect(index) {
             if (challenge.challengesFrom?.[clients[0].name.toLowerCase()]) ws.send(`|/accept ${clients[0].name}`);
           }
           if (room.startsWith('battle-')) {
-            client.room = room;
+            if (line === '|init|battle') {
+              if (index === 1) console.log(`Battle room: ${room}`);
+              client.room = room;
+            }
             if (line === '|turn|3' && index === 1 && !client.forfeited) {
               client.forfeited = true; ws.send(`${room}|/forfeit`);
             }

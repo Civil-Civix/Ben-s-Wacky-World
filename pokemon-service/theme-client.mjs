@@ -6,6 +6,16 @@ const root = process.argv[2];
 if (!root) throw new Error('Usage: node theme-client.mjs CLIENT_SOURCE_DIR');
 const here = path.dirname(fileURLToPath(import.meta.url));
 const web = path.join(root,'play.pokemonshowdown.com');
+const topbar = path.join(web, 'src/panel-topbar.tsx');
+let tabs = fs.readFileSync(topbar, 'utf8');
+const oldTitle = '{icon} {roomTitle}';
+const wrappedTitle = '{icon} <span class="bww-tab-title">{roomTitle}</span>';
+if (tabs.includes(oldTitle)) {
+  tabs = tabs.replace(oldTitle, wrappedTitle);
+  fs.writeFileSync(topbar, tabs);
+} else if (!tabs.includes(wrappedTitle)) {
+  throw new Error('Top bar title template does not match');
+}
 const file = path.join(web,'src/panel-mainmenu.tsx');
 let text = fs.readFileSync(file,'utf8');
 const start = text.indexOf('\toverride render() {',text.indexOf('\trenderBackgroundCredit()'));
