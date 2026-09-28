@@ -373,3 +373,10 @@ body.playing #leaderboard-panel{visibility:hidden}
 .game-notice p+p{margin-top:8px;color:var(--accent)}
 .game-notice button{position:absolute;top:6px;right:6px;display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:24px;cursor:pointer}
 .game-notice button:hover,.game-notice button:focus-visible{color:var(--accent);background:rgb(var(--accent-rgb) / .12)}
+
+.player-actions .player-icon-button{display:grid;place-items:center;width:38px;height:38px;padding:0;flex-shrink:0}
+.player-actions #hide-player-bar{height:38px;padding:0 12px}
+#favorite[aria-pressed=true] svg{fill:currentColor}
+.game-card img{transition:transform .25s ease,filter .25s ease}
+.game-card:hover img,.game-card:focus-visible img{transform:scale(1.06);filter:brightness(.68)}
+@media(prefers-reduced-motion:reduce){.game-card img{transition:none}.game-card:hover img,.game-card:focus-visible img{transform:none}}

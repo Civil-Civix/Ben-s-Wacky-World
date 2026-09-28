@@ -2637,5 +2637,20 @@
     "source": "external",
     "collection": "new",
     "online": true
+  },
+  {
+    "id": "counterstrike",
+    "title": "Counter-Strike",
+    "url": "https://civil-civix.github.io/Global-Strike/",
+    "source": "external",
+    "collection": "new",
+    "online": true
+  },
+  {
+    "id": "tomodachilife2",
+    "title": "Tomodachi Life 2",
+    "url": "https://civil-civix.github.io/Azahar-Web/",
+    "source": "external",
+    "collection": "new"
   }
 ]

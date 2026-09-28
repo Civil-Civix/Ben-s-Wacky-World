@@ -147,7 +147,7 @@ function render() {
 }
 function updateFavorite() {
   const active = currentGame && (currentGame.kind==='app'?appFavorites:favorites).has(currentGame.id);
-  favoriteButton.textContent = active ? 'Favorited' : 'Favorite';
+  favoriteButton.setAttribute('aria-label', active ? 'Remove from favorites' : 'Add to favorites');
   favoriteButton.setAttribute('aria-pressed', String(Boolean(active)));
   favoriteButton.title = active ? 'Remove from favorites' : 'Add to favorites';
 }
@@ -304,7 +304,7 @@ fullscreen.addEventListener('click',async () => {
     status.hidden = false;
   }
 });
-document.addEventListener('fullscreenchange', () => {fullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';});
+document.addEventListener('fullscreenchange', () => {const label = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen'; fullscreen.title = label; fullscreen.setAttribute('aria-label', label);});
 window.addEventListener('hashchange',applyRoute);
 window.addEventListener('storage', event => {
   if(event.key === null || Object.values(keys).includes(event.key)) {
