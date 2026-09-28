@@ -412,7 +412,8 @@ body.messages-open{overflow:hidden}body.messages-open main{padding:0}
 @media(max-width:700px){#messages-panel{left:54px;padding:10px}}
 
 #messages-form button[type=submit]{display:grid;place-items:center;width:48px;flex-shrink:0}
-.profile-message-button{font:inherit;padding:10px 20px;border:1px solid var(--accent);border-radius:10px;color:var(--accent);background:rgb(var(--accent-rgb)/.10);cursor:pointer;transition:background .15s}
-.profile-message-button:hover{background:rgb(var(--accent-rgb)/.22)}
+.profile-message-button{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:40px;min-width:110px;margin-top:8px;padding:10px 20px;border:1px solid var(--accent);border-radius:10px;color:var(--accent);background:rgb(var(--accent-rgb)/.10);font:600 13px/1.4 Inter,Arial,sans-serif;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.profile-message-button:hover{background:rgb(var(--accent-rgb)/.22);box-shadow:0 0 0 1px rgb(var(--accent-rgb)/.15)}
+.profile-message-button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .nav-settings{position:relative}#dm-unread-badge{position:absolute;bottom:-2px;right:-3px;min-width:19px;height:19px;padding:0 4px;box-sizing:border-box;display:grid;place-items:center;border-radius:12px;background:#dc3545;color:white;border:2px solid var(--surface);font:700 11px/1 Arial,sans-serif;pointer-events:none}
 .dm-person-unread{margin-left:auto;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:2px 5px;font-size:11px}
