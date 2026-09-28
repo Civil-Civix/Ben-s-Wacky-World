@@ -8,6 +8,11 @@ const grid = document.querySelector('#game-grid');
 const search = document.querySelector('#search');
 const player = document.querySelector('#player');
 const stage = document.querySelector('#game-stage');
+const amongUsNotice = document.querySelector('#among-us-notice');
+document.querySelector('#dismiss-among-us-notice').addEventListener('click', () => {
+  amongUsNotice.hidden = true;
+  stage.querySelector('iframe')?.focus();
+});
 const status = document.querySelector('#player-status');
 const fullscreen = document.querySelector('#fullscreen');
 const favoriteButton = document.querySelector('#favorite');
@@ -200,6 +205,7 @@ function openGame(game) {
 }
 document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
 function launchGame(game,opener=document.activeElement) {
+  amongUsNotice.hidden = game.id !== 'amongus';
   setPlayerBarHidden(false);
   hidePlayerBar.hidden=game.kind==='app';
   lastLaunch=opener;
