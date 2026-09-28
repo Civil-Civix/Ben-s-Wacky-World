@@ -398,3 +398,15 @@ body.playing #leaderboard-panel{visibility:hidden}
 .nav-messages svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}
 .nav-messages:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.12)}
 .nav-messages[aria-current=page]{background:var(--accent);color:var(--accent-ink)}
+
+body.messages-open{overflow:hidden}body.messages-open main{padding:0}
+#messages-panel{position:fixed;left:64px;right:0;top:0;bottom:0;max-width:none;margin:0;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;background:var(--surface)}
+#messages-layout{flex:1;height:auto;min-height:0}#messages-panel header{flex-shrink:0}
+.message-row{position:relative;margin:0;padding:12px 80px 12px 10px;border-radius:8px;min-height:44px}.message-row:hover,.message-row:focus-within{background:rgb(var(--accent-rgb)/.07)}
+#messages-panel .message-profile{border:0;background:transparent;padding:0;font-weight:600;text-align:left;font-size:13px}#messages-panel .message-photo{align-self:flex-start;flex-shrink:0}
+#messages-panel .message-reply-button{position:absolute;right:8px;top:5px;font-size:12px;padding:5px 8px;opacity:0;pointer-events:none}
+.message-row:hover .message-reply-button,.message-row:focus-within .message-reply-button{opacity:1!important;pointer-events:auto!important}
+.message-quote{font-size:12px;color:var(--muted);border-left:2px solid var(--accent);padding-left:8px;margin-bottom:7px;overflow-wrap:anywhere}
+#messages-reply{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 12px 8px;padding:8px 12px;background:rgb(var(--accent-rgb)/.08);border-left:2px solid var(--accent);font-size:12px}#messages-reply-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#messages-panel #messages-reply-cancel{padding:0 8px;font-size:20px}
+@media(hover:none){#messages-panel .message-reply-button{opacity:1;pointer-events:auto}}
+@media(max-width:700px){#messages-panel{left:54px;padding:10px}}

@@ -1,18 +1,25 @@
 (() => {
  'use strict';
  const $=s=>document.querySelector(s),account=window.WackyAccount;
- let open=false,to=null,rows=[],generation=0,timer,peopleTimer,busy=false,oldest=null,lastPeople=0,identity=null;
+ let open=false,to=null,rows=[],generation=0,timer,peopleTimer,busy=false,oldest=null,lastPeople=0,identity=null,replyTo=null;
  const note=text=>$('#messages-status').textContent=text;
+ function setReply(message=null){replyTo=message;$('#messages-reply').hidden=!message;$('#messages-reply-text').textContent=message?'Replying to '+message.user.username+': '+message.text.slice(0,140):'';}
  const active=()=>open&&!document.hidden&&!!account.user;
+ let painted='';
  function paint(){
   rows=rows.filter(m=>m.expires>Date.now());
+  const signature=JSON.stringify(rows.map(m=>({...m,reply:m.reply?.expires<=Date.now()?{id:m.reply.id}:m.reply})));if(signature===painted)return;painted=signature;
   const log=$('#messages-log'),bottom=log.scrollHeight-log.scrollTop-log.clientHeight<90;
   const fragment=document.createDocumentFragment();
   for(const m of rows){
-   const article=document.createElement('article');article.className='message-row';
-   const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('strong'),time=document.createElement('time'),text=document.createElement('p');
+   const article=document.createElement('article');article.className='message-row';article.id='message-'+m.id;
+   const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('button'),time=document.createElement('time'),text=document.createElement('p');
    name.textContent=m.user.username+(m.user.owner?' · Owner':'');time.dateTime=new Date(m.created).toISOString();time.textContent=new Date(m.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});text.textContent=m.text;
-   head.append(name,time);content.append(head,text);article.append(account.avatar(m.user),content);fragment.append(article);
+   name.type='button';name.className='message-profile';name.addEventListener('click',()=>void account.openProfile(m.user.id));
+   const photo=document.createElement('button');photo.type='button';photo.className='message-profile message-photo';photo.setAttribute('aria-label','View '+m.user.username+' profile');photo.append(account.avatar(m.user));photo.addEventListener('click',()=>void account.openProfile(m.user.id));
+   if(m.reply){const quote=document.createElement('div');quote.className='message-quote';quote.textContent=m.reply.text&&m.reply.expires>Date.now()?m.reply.username+': '+m.reply.text.slice(0,180):'Original message expired';content.append(quote);}
+   const reply=document.createElement('button');reply.type='button';reply.className='message-reply-button';reply.textContent='↩ Reply';reply.setAttribute('aria-label','Reply to '+m.user.username);reply.addEventListener('click',()=>{setReply(m);$('#messages-text').focus();});
+   head.append(name,time);content.append(head,text);article.append(photo,content,reply);fragment.append(article);
   }
   if(!rows.length){const empty=document.createElement('p');empty.className='messages-empty';empty.textContent='No messages yet. Say hello!';fragment.append(empty);}
   log.replaceChildren(fragment);if(bottom)log.scrollTop=log.scrollHeight;
@@ -38,24 +45,26 @@
   }catch(e){if(token===generation){note(e.message);if(e.status===401){rows=[];paint();$('#messages-layout').hidden=true;$('#messages-login').hidden=false;}}}
  }
  function choose(user=null){
-  ++generation;to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
-  $('#messages-room-title').textContent=user?'@'+user.username:'Main room';$('#messages-public').setAttribute('aria-pressed',String(!to));paint();note('Loading…');void refresh();void people();
+  clearTimeout(timer);++generation;setReply();to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
+  $('#messages-room-title').textContent=user?'@'+user.username:'Main room';$('#messages-public').setAttribute('aria-pressed',String(!to));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
  }
  function sync(){
   clearTimeout(timer);++generation;
-  const id=account.user?.id||null;if(id!==identity){identity=id;to=null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='Main room';$('#messages-people').replaceChildren();paint();}
+  const id=account.user?.id||null;if(id!==identity){identity=id;setReply();to=null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='Main room';$('#messages-people').replaceChildren();paint();}
   $('#messages-login').hidden=!!id;$('#messages-layout').hidden=!id;
-  if(active()){void refresh();void people();timer=setTimeout(tick,8000);}
+  if(active()){void refresh();void people();timer=setTimeout(tick,2000);}
  }
- async function tick(){if(!active())return;const token=generation;paint();await refresh();if(token!==generation)return;if(Date.now()-lastPeople>30000)await people();if(active()&&token===generation)timer=setTimeout(tick,8000);}
- window.showMessages=value=>{open=value;$('#messages-panel').hidden=!value;sync();};
+ async function tick(){if(!active())return;const token=generation;paint();await refresh();if(token!==generation)return;if(Date.now()-lastPeople>30000)await people();if(active()&&token===generation)timer=setTimeout(tick,2000);}
+ window.WackyMessages={dm(user){if(location.hash==='#messages')choose(user);else{location.hash='messages';window.addEventListener('hashchange',()=>choose(user),{once:true});}}};
+ $('#messages-reply-cancel').addEventListener('click',()=>setReply());
+ window.showMessages=value=>{document.body.classList.toggle('messages-open',value);open=value;$('#messages-panel').hidden=!value;sync();};
  window.addEventListener('wacky-account-change',sync);document.addEventListener('visibilitychange',sync);
  $('#messages-public').addEventListener('click',()=>choose());$('#messages-older').addEventListener('click',()=>void refresh(true));
  $('#messages-search').addEventListener('input',()=>{clearTimeout(peopleTimer);peopleTimer=setTimeout(people,250);});
  $('#messages-form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy||!active())return;const text=$('#messages-text').value.trim();if(!text)return;
   const token=generation,target=to;busy=true;const button=$('#messages-form button');button.disabled=true;note('Sending…');
-  try{await account.api('/chat/messages',{method:'POST',data:{to:target,text,clientId:crypto.randomUUID()}});if(token===generation){$('#messages-text').value='';await refresh();$('#messages-log').scrollTop=$('#messages-log').scrollHeight;}}
+  try{await account.api('/chat/messages',{method:'POST',data:{to:target,text,replyTo:replyTo?.id||null,clientId:crypto.randomUUID()}});if(token===generation){setReply();$('#messages-text').value='';await refresh();$('#messages-log').scrollTop=$('#messages-log').scrollHeight;}}
   catch(e){if(token===generation)note(e.message);}finally{busy=false;button.disabled=false;}
  });
  $('#messages-text').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#messages-form').requestSubmit();}});

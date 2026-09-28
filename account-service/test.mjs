@@ -71,6 +71,16 @@ assert.equal((await req('/chat/messages','POST',{to:null,text:'Room message',cli
 assert.equal((await req('/chat/messages')).data.messages[0].user.id,'chat2');
 assert.equal((await req('/chat/messages','POST',{to:'missing',text:'x',clientId:'invalid-message-01'})).status,404);
 assert.equal((await req('/chat/messages','POST',{to:null,text:'x'.repeat(1001),clientId:'invalid-message-02'})).status,400);
+const privateId=db.prepare('SELECT id FROM chat_messages WHERE recipient=?').get('chat1').id;
+db.prepare('UPDATE chat_messages SET created=?').run(Date.now()-3000);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'leak',replyTo:privateId,clientId:'reply-leak-public-01'})).status,400);
+assert.equal((await req('/chat/messages','POST',{to:'chat0',text:'leak',replyTo:privateId,clientId:'reply-leak-dm-00001'})).status,400);
+cookie='__Host-wacky_session='+tokens[1];
+assert.equal((await req('/chat/messages','POST',{to:'chat0',text:'Valid reply',replyTo:privateId,clientId:'valid-reply-000001'})).status,201);
+assert.equal((await req('/chat/messages?to=chat0')).data.messages.at(-1).reply.id,privateId);
+db.prepare('UPDATE chat_messages SET expires=? WHERE id=?').run(Date.now()-1,privateId);
+assert.equal((await req('/chat/messages?to=chat0')).data.messages.at(-1).reply.text,null);
+console.log('PASS: replies stay in their conversation and expired quotes are hidden.');
 db.prepare('UPDATE chat_messages SET expires=?').run(Date.now()-1);
 assert.equal((await req('/chat/messages')).data.messages.length,0);
 cookie='__Host-wacky_session='+tokens[0];assert.equal((await req('/chat/messages?to=chat1')).data.messages.length,0);

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
  created INTEGER NOT NULL,
  expires INTEGER NOT NULL,
  client_id TEXT NOT NULL,
+ reply_to INTEGER,
  UNIQUE(sender,client_id)
 );
 CREATE INDEX IF NOT EXISTS chat_expiry ON chat_messages(expires);
