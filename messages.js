@@ -2,6 +2,29 @@
  'use strict';
  const $=s=>document.querySelector(s),account=window.WackyAccount;
  let open=false,to=null,rows=[],generation=0,timer,peopleTimer,busy=false,oldest=null,lastPeople=0,identity=null,replyTo=null;
+ let unreadTimer,unreadBusy=false,unreadIdentity=null,unreadCounts=new Map(),readBusy=false,readTimer;
+ const readThrough=new Map();
+ function paintUnread(){
+  const count=[...unreadCounts.values()].reduce((a,b)=>a+b,0),badge=$('#dm-unread-badge');badge.hidden=!count;badge.textContent=count>9?'9+':String(count);
+  $('.nav-settings').setAttribute('aria-label',count?'Account Settings, '+count+' unread direct messages':'Account Settings');
+  document.querySelectorAll('[data-dm-person]').forEach(b=>{const n=unreadCounts.get(b.dataset.dmPerson)||0;let tag=b.querySelector('.dm-person-unread');if(!tag){tag=document.createElement('span');tag.className='dm-person-unread';b.append(tag);}tag.hidden=!n;tag.textContent=n>9?'9+':String(n);});
+ }
+ async function refreshUnread(){
+  const id=account.user?.id||null;
+  if(id!==unreadIdentity){unreadIdentity=id;unreadCounts.clear();readThrough.clear();paintUnread();}
+  if(!id||document.hidden||unreadBusy)return;
+  unreadBusy=true;
+  try{const data=await account.api('/chat/unread');if(account.user?.id===id){unreadCounts=new Map(data.conversations.map(c=>[c.sender,c.count]));paintUnread();}}catch(e){if(e.status===401){unreadCounts.clear();paintUnread();}}finally{unreadBusy=false;}
+ }
+ function scheduleUnread(){clearTimeout(unreadTimer);void refreshUnread().finally(()=>{if(account.user&&!document.hidden)unreadTimer=setTimeout(scheduleUnread,10000);});}
+ async function markVisible(){
+  if(!active()||!to||readBusy||document.querySelector('dialog[open]'))return;
+  const log=$('#messages-log').getBoundingClientRect(),peer=to,id=account.user.id;
+  const seen=rows.filter(m=>m.user.id===peer&&m.expires>Date.now()).filter(m=>{const el=document.getElementById('message-'+m.id);if(!el)return false;const r=el.getBoundingClientRect();return r.top<log.bottom&&r.bottom>log.top;});
+  const through=Math.max(0,...seen.map(m=>m.id));if(through<=(readThrough.get(peer)||0))return;
+  readBusy=true;try{await account.api('/chat/read',{method:'POST',data:{to:peer,through}});if(account.user?.id===id){readThrough.set(peer,through);await refreshUnread();}}catch{}finally{readBusy=false;}
+ }
+ $('#messages-log').addEventListener('scroll',()=>{clearTimeout(readTimer);readTimer=setTimeout(markVisible,200);});
  const note=text=>$('#messages-status').textContent=text;
  function setReply(message=null){replyTo=message;$('#messages-reply').hidden=!message;$('#messages-reply-text').textContent=message?'Replying to '+message.user.username+': '+message.text.slice(0,140):'';}
  const active=()=>open&&!document.hidden&&!!account.user;
@@ -28,8 +51,8 @@
   if(!active())return;const token=generation,q=$('#messages-search').value;
   try{const data=await account.api('/chat/people?q='+encodeURIComponent(q));if(token!==generation||q!==$('#messages-search').value)return;
    const list=$('#messages-people');list.replaceChildren();
-   for(const user of data.users){const b=document.createElement('button'),name=document.createElement('span');b.type='button';name.textContent=user.username;b.append(account.avatar(user),name);b.setAttribute('aria-pressed',String(to===user.id));b.addEventListener('click',()=>choose(user));list.append(b);}
-   lastPeople=Date.now();
+   for(const user of data.users){const b=document.createElement('button'),name=document.createElement('span');b.type='button';b.dataset.dmPerson=user.id;name.textContent=user.username;b.append(account.avatar(user),name);b.setAttribute('aria-pressed',String(to===user.id));b.addEventListener('click',()=>choose(user));list.append(b);}
+   paintUnread();lastPeople=Date.now();
   }catch(e){if(token===generation)note(e.message);}
  }
  async function refresh(older=false){
@@ -41,15 +64,15 @@
    rows=[...new Map(rows.map(m=>[m.id,m])).values()].sort((a,b)=>a.id-b.id);paint();
    if(older)log.scrollTop=scroll+log.scrollHeight-height;
    if(older||oldest===null){oldest=rows[0]?.id||null;$('#messages-older').hidden=!result.hasMore;}
-   note('');
+   note('');void markVisible();
   }catch(e){if(token===generation){note(e.message);if(e.status===401){rows=[];paint();$('#messages-layout').hidden=true;$('#messages-login').hidden=false;}}}
  }
  function choose(user=null){
-  clearTimeout(timer);++generation;setReply();to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
+  scheduleUnread();clearTimeout(timer);++generation;setReply();to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
   $('#messages-room-title').textContent=user?'@'+user.username:'Main room';$('#messages-public').setAttribute('aria-pressed',String(!to));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
  }
  function sync(){
-  clearTimeout(timer);++generation;
+  scheduleUnread();clearTimeout(timer);++generation;
   const id=account.user?.id||null;if(id!==identity){identity=id;setReply();to=null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='Main room';$('#messages-people').replaceChildren();paint();}
   $('#messages-login').hidden=!!id;$('#messages-layout').hidden=!id;
   if(active()){void refresh();void people();timer=setTimeout(tick,2000);}

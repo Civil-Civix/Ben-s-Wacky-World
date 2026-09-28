@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'obsidian',accent:'#FFAE00',effect:'snow',speed:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'obsidian',accent:'#FFDD00',effect:'snow',speed:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
   const effects = ['none','snow','matrix','constellation','topography','starfield'];
   const backgrounds = ['midnight','obsidian','slate','mocha'];
   const root = document.documentElement;
@@ -12,7 +12,7 @@
       const saved = JSON.parse(localStorage.getItem(key) || '{}');
       return {
         background:backgrounds.includes(saved?.background) ? saved.background : defaults.background,
-        accent:/^#[0-9a-f]{6}$/i.test(saved?.accent) ? saved.accent.toUpperCase() : defaults.accent,
+        accent:/^#[0-9a-f]{6}$/i.test(saved?.accent) ? (saved.accent.toUpperCase()==='#FFAE00'?'#FFDD00':saved.accent.toUpperCase()) : defaults.accent,
         speed:Number.isFinite(saved?.speed) ? Math.max(.25,Math.min(3,saved.speed)) : 1,
         effect:effects.includes(saved?.effect) ? saved.effect : defaults.effect,
         snow:typeof saved?.snow === 'boolean' ? saved.snow : defaults.snow

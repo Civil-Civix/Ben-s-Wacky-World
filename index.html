@@ -11,30 +11,30 @@
     gtag('config', 'G-DRZ0R1NCTD');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#FFAE00">
+  <meta name="theme-color" content="#FFDD00">
   <meta name="description" content="Search and play your Wacky Games collection.">
   <title>Ben's Wacky World</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFAE00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260928-chat-replies">
+  <link rel="stylesheet" href="styles.css?v=20260928-unread">
   <script src="games.js?v=20260928-player-icons" defer></script>
   <script src="apps.js?v=20260918-5" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="chat-board.js?v=20260918-1" defer></script>
   <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="accounts.js?v=20260928-chat-replies" defer></script>
-  <script src="messages.js?v=20260928-chat-replies" defer></script>
+  <script src="accounts.js?v=20260928-unread" defer></script>
+  <script src="messages.js?v=20260928-unread" defer></script>
   <script src="app.js?v=20260928-chat-replies" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
-  <script src="appearance.js?v=20260926-battle-theme" defer></script>
+  <script src="appearance.js?v=20260928-unread" defer></script>
 </head>
 <body>
   <canvas id="theme-canvas" aria-hidden="true"></canvas>
   <div id="snow" aria-hidden="true"></div>
   <aside class="sidebar" aria-label="Main navigation">
-  <button class="nav-settings" type="button" aria-label="Account Settings" title="Account Settings"><span data-account-avatar aria-hidden="true"></span></button>
+  <button class="nav-settings" type="button" aria-label="Account Settings" title="Account Settings"><span data-account-avatar aria-hidden="true"></span><span id="dm-unread-badge" hidden aria-hidden="true"></span></button>
     <a class="nav-home" href="#home" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5.5 9v11h13V9M9 20v-7h6v7"/></svg></a>
     <button class="nav-game" aria-label="Games" aria-current="page" title="Games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg>
     </button>
@@ -50,7 +50,7 @@
     <p id="messages-login" hidden><a href="#settings">Log in to chat</a> with your existing account.</p>
     <div id="messages-layout" hidden>
       <nav class="messages-people" aria-label="Conversations"><button id="messages-public" type="button">Main room</button><label for="messages-search">Direct messages</label><input id="messages-search" placeholder="Find an account…" maxlength="20"><div id="messages-people"></div></nav>
-      <div class="messages-room"><h2 id="messages-room-title">Main room</h2><button id="messages-older" type="button" hidden>Older messages</button><div id="messages-log" aria-label="Messages" tabindex="0"></div><p id="messages-status" role="status"></p><div id="messages-reply" hidden><span id="messages-reply-text"></span><button id="messages-reply-cancel" type="button" aria-label="Cancel reply">×</button></div><form id="messages-form"><label class="sr-only" for="messages-text">Message</label><textarea id="messages-text" rows="2" maxlength="1000" placeholder="Write a message…" required></textarea><button type="submit">Send</button></form></div>
+      <div class="messages-room"><h2 id="messages-room-title">Main room</h2><button id="messages-older" type="button" hidden>Older messages</button><div id="messages-log" aria-label="Messages" tabindex="0"></div><p id="messages-status" role="status"></p><div id="messages-reply" hidden><span id="messages-reply-text"></span><button id="messages-reply-cancel" type="button" aria-label="Cancel reply">×</button></div><form id="messages-form"><label class="sr-only" for="messages-text">Message</label><textarea id="messages-text" rows="2" maxlength="1000" placeholder="Write a message…" required></textarea><button type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form></div>
     </div>
   </section>
   <section id="request-panel" hidden aria-labelledby="request-heading"><header><h1 id="request-heading">Request</h1><a href="#home">Back to home</a></header><div id="request-content"></div></section>
@@ -108,14 +108,14 @@
       </fieldset>
       <fieldset class="settings-card"><legend>Accent color</legend>
         <div class="accent-options">
-          <button type="button" class="accent-swatch" data-accent="#FFAE00" style="--swatch:#FFAE00" aria-label="Gold accent" aria-pressed="true"></button>
+          <button type="button" class="accent-swatch" data-accent="#FFDD00" style="--swatch:#FFDD00" aria-label="Yellow accent" aria-pressed="true"></button>
           <button type="button" class="accent-swatch" data-accent="#FF8018" style="--swatch:#FF8018" aria-label="Orange accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#8B7BFF" style="--swatch:#8B7BFF" aria-label="Purple accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#389AFF" style="--swatch:#389AFF" aria-label="Blue accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#FA578C" style="--swatch:#FA578C" aria-label="Pink accent" aria-pressed="false"></button>
           <button type="button" class="accent-swatch" data-accent="#20C392" style="--swatch:#20C392" aria-label="Green accent" aria-pressed="false"></button>
         </div>
-        <label class="custom-accent"><input id="custom-accent" type="color" value="#FFAE00"><span>Custom color<output id="accent-value" for="custom-accent">#FFAE00</output></span></label>
+        <label class="custom-accent"><input id="custom-accent" type="color" value="#FFDD00"><span>Custom color<output id="accent-value" for="custom-accent">#FFDD00</output></span></label>
       </fieldset>
       <fieldset class="settings-card snow-setting"><legend>Background effect</legend><div class="effect-options"><button type="button" data-effect="none" aria-pressed="false"><span class="effect-sample none" aria-hidden="true"></span>None</button><button type="button" data-effect="snow" aria-pressed="false"><span class="effect-sample snow" aria-hidden="true"></span>Falling snow</button><button type="button" data-effect="matrix" aria-pressed="false"><span class="effect-sample matrix" aria-hidden="true"></span>Matrix</button><button type="button" data-effect="constellation" aria-pressed="false"><span class="effect-sample constellation" aria-hidden="true"></span>Constellation</button><button type="button" data-effect="topography" aria-pressed="false"><span class="effect-sample topography" aria-hidden="true"></span>Topography</button><button type="button" data-effect="starfield" aria-pressed="false"><span class="effect-sample starfield" aria-hidden="true"></span>Starfield</button></div><label class="speed-setting" for="effect-speed"><span>Animation speed</span><output id="speed-value" for="effect-speed">1×</output><input id="effect-speed" type="range" min="0.25" max="3" step="0.25" value="1"><small>Slow</small><small>Fast</small></label><label class="toggle-row effect-animation"><span>Animate background<small>Effects follow your accent color and pause while playing.</small></span><input id="snow-enabled" type="checkbox" checked></label></fieldset>
     </div>

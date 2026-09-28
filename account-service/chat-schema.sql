@@ -13,3 +13,4 @@ CREATE INDEX IF NOT EXISTS chat_expiry ON chat_messages(expires);
 CREATE INDEX IF NOT EXISTS chat_sender ON chat_messages(sender,created);
 CREATE INDEX IF NOT EXISTS chat_room ON chat_messages(recipient,id);
 CREATE INDEX IF NOT EXISTS chat_dm ON chat_messages(sender,recipient,id);
+CREATE TABLE IF NOT EXISTS chat_reads (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, peer_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, last_id INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(user_id,peer_id));

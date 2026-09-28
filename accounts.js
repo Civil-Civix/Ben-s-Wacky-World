@@ -129,7 +129,7 @@
    const bio=document.createElement('p');bio.className='public-bio';bio.textContent=user.bio||'No bio yet.';
    const time=document.createElement('p');time.className='public-time';time.textContent=duration(user.playSeconds)+' total playtime';
    $('#public-profile-content').replaceChildren(avatar(user,'large'),name,badge(user),bio,time);
-   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});$('#public-profile-content').append(dm);} 
+   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});$('#public-profile-content').append(dm);} 
   }catch(error){if(generation===profileGeneration)$('#public-profile-content').textContent=error.message;}
  }
  function personRow(user,podium=false){

@@ -2,6 +2,18 @@
 export async function chat({request,url,env,me,now,body,fail,json}) {
  const path=url.pathname;
  const person=u=>({id:u.id,username:u.username,avatarVersion:u.avatar_version,owner:!!u.owner});
+ if(path==='/chat/unread'&&request.method==='GET'){
+  const rows=await env.DB.prepare(`SELECT m.sender,count(*) AS count FROM chat_messages m LEFT JOIN chat_reads r ON r.user_id=? AND r.peer_id=m.sender WHERE m.recipient=? AND m.expires>? AND m.id>COALESCE(r.last_id,0) GROUP BY m.sender`).bind(me.id,me.id,now).all();
+  return json({count:rows.results.reduce((n,r)=>n+r.count,0),conversations:rows.results});
+ }
+ if(path==='/chat/read'&&request.method==='POST'){
+  const data=await body(request);
+  if(typeof data.to!=='string'||!Number.isSafeInteger(data.through)||data.through<1)fail(400,'Invalid read receipt.');
+  const message=await env.DB.prepare('SELECT id FROM chat_messages WHERE id=? AND sender=? AND recipient=? AND expires>?').bind(data.through,data.to,me.id,now).first();
+  if(!message)fail(400,'Message unavailable.');
+  await env.DB.prepare('INSERT INTO chat_reads(user_id,peer_id,last_id) VALUES(?,?,?) ON CONFLICT(user_id,peer_id) DO UPDATE SET last_id=MAX(chat_reads.last_id,excluded.last_id)').bind(me.id,data.to,data.through).run();
+  return json({ok:true});
+ }
  if(path==='/chat/people'&&request.method==='GET'){
   const q=(url.searchParams.get('q')||'').slice(0,20).toLowerCase().replace(/[^a-z0-9_]/g,'');
   const rows=await env.DB.prepare(`SELECT u.id,u.username,u.avatar_version,u.owner,
