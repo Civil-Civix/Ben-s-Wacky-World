@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
-import worker from './worker.mjs';
+import worker,{digest} from './worker.mjs';
 const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
 const DB={
  prepare(sql){const wrapper={bind(...args){
@@ -52,4 +52,28 @@ assert.equal((await req('/profiles/'+id)).data.user.bio,'<img src=x onerror=aler
 assert.equal((await req('/me','GET',undefined,{Origin:'https://evil.example'})).status,403);
 assert.equal((await req('/login','POST',{username:'PlayerOne',password:'test-password-only'},{},{...env,AUTH_LIMIT:{limit:async()=>({success:false})}})).status,429);
 assert.equal((await req('/logout','POST',{})).status,200);assert.equal((await req('/me')).status,401);
+db.exec(readFileSync(new URL('./chat-schema.sql',import.meta.url),'utf8'));
+const tokens=['a'.repeat(64),'b'.repeat(64),'c'.repeat(64)];
+for(let i=0;i<3;i++){
+ db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created) VALUES(?,?,?,?,?,?)').run('chat'+i,'Chat'+i,'chat'+i,'salt','hash',Date.now());
+ db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').run(digest(tokens[i]),'chat'+i,Date.now()+60000);
+}
+cookie='';assert.equal((await req('/chat/messages')).status,401);
+cookie='__Host-wacky_session='+tokens[0];
+assert.equal((await req('/chat/messages','POST',{to:'chat1',text:'Private <script>text</script>',clientId:'private-message-0001'})).status,201);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'too fast',clientId:'public-message-0001'})).status,429);
+assert.equal((await req('/chat/messages','POST',{to:'chat1',text:'Private',clientId:'private-message-0001'})).status,200);
+assert.equal((await req('/chat/messages?to=chat1')).data.messages.length,1);
+assert.equal((await req('/chat/messages')).data.messages.length,0);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/chat/messages?to=chat0')).data.messages.length,1);
+cookie='__Host-wacky_session='+tokens[2];assert.equal((await req('/chat/messages?to=chat0')).data.messages.length,0);assert.equal((await req('/chat/messages?to=chat1')).data.messages.length,0);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'Room message',clientId:'public-message-0002',sender:'chat0'})).status,201);
+assert.equal((await req('/chat/messages')).data.messages[0].user.id,'chat2');
+assert.equal((await req('/chat/messages','POST',{to:'missing',text:'x',clientId:'invalid-message-01'})).status,404);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'x'.repeat(1001),clientId:'invalid-message-02'})).status,400);
+db.prepare('UPDATE chat_messages SET expires=?').run(Date.now()-1);
+assert.equal((await req('/chat/messages')).data.messages.length,0);
+cookie='__Host-wacky_session='+tokens[0];assert.equal((await req('/chat/messages?to=chat1')).data.messages.length,0);
+await worker.scheduled({},env);assert.equal(db.prepare('SELECT count(*) AS n FROM chat_messages').get().n,0);
+console.log('PASS: chat auth, DM isolation, sender identity, throttling, retry deduplication, size validation, expiry and cleanup.');
 db.close();console.log('PASS: signup/login, sessions/logout, private fields, reserved owner, profile permissions, ranking, lease exclusion, replay, idle-gap rejection and rate limiting.');

@@ -380,3 +380,21 @@ body.playing #leaderboard-panel{visibility:hidden}
 .game-card img{transition:transform .25s ease,filter .25s ease}
 .game-card:hover img,.game-card:focus-visible img{transform:scale(1.06);filter:brightness(.68)}
 @media(prefers-reduced-motion:reduce){.game-card img{transition:none}.game-card:hover img,.game-card:focus-visible img{transform:none}}
+
+#messages-panel{max-width:1150px;margin:10px auto;color:var(--text,#f5f5f5)}
+#messages-panel header h1{margin:0;font-size:28px}#messages-panel small{font-size:12px;color:var(--accent)}
+#messages-panel header p{color:var(--muted);font-size:13px}
+#messages-layout{display:grid;grid-template-columns:230px minmax(0,1fr);height:calc(100dvh - 150px);min-height:360px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+#messages-panel button,#messages-panel input,#messages-panel textarea{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px}
+#messages-panel button{cursor:pointer}#messages-panel button:hover,#messages-panel button[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
+.messages-people{padding:12px;border-right:1px solid var(--line);overflow:auto}.messages-people label{display:block;margin:20px 0 8px;font-size:13px;color:var(--muted)}
+.messages-people input,.messages-people button{width:100%;box-sizing:border-box}#messages-people button{display:flex;align-items:center;gap:9px;text-align:left;margin-top:6px;font-size:13px}#messages-people .profile-avatar{flex-shrink:0}
+.messages-room{display:flex;flex-direction:column;min-height:0;min-width:0}.messages-room h2{font-size:16px;padding:16px;margin:0;border-bottom:1px solid var(--line)}
+#messages-log{flex:1;min-height:0;overflow:auto;padding:16px}.message-row{display:flex;gap:10px;margin:0 0 18px}.message-row>div{min-width:0}.message-row .profile-avatar{flex-shrink:0}.message-row strong{font-size:13px}.message-row time{font-size:11px;color:var(--muted);margin-left:10px}.message-row p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5;margin:4px 0 0}
+#messages-status{font-size:12px;color:var(--muted);margin:0 16px 8px;min-height:16px}#messages-form{display:flex;gap:8px;padding:0 12px 12px}#messages-text{flex:1;min-width:0;resize:none}#messages-form button{color:var(--accent)}.messages-empty{color:var(--muted);font-size:14px}
+@media(max-width:650px){#messages-layout{grid-template-columns:1fr;height:calc(100dvh - 150px);grid-template-rows:150px minmax(0,1fr)}.messages-people{border-right:0;border-bottom:1px solid var(--line)}.messages-people label{margin:8px 0}#messages-people{display:flex;gap:8px}#messages-people button{width:auto;flex-shrink:0}}
+
+.nav-messages{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:13px;color:var(--muted);text-decoration:none}
+.nav-messages svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}
+.nav-messages:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.12)}
+.nav-messages[aria-current=page]{background:var(--accent);color:var(--accent-ink)}

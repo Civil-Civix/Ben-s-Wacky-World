@@ -34,3 +34,9 @@ From this directory:
 `check-browser.cjs` is a LIVE integration check using locally served frontend files and a temporary QA account. It prints the exact QA account ID for removal from D1 after the check; remove only that test user (related rows cascade). It does not push or deploy the frontend.
 Validated: live signup/login/logout and reload persistence; profile/photo upload/removal; cache refresh; game-only and hidden-tab timing; public profiles; owner badge; leaderboard search; existing catalog regression checks.
 Frontend changes take effect on GitHub Pages after the repository is pushed and its deployment finishes.
+
+
+## Chat test version
+Apply `chat-schema.sql` to the existing accounts D1 database. Deploy `chat.mjs` with the worker and keep existing secrets/bindings. The hourly `17 * * * *` trigger cleans expired chat rows; reads reject expired messages immediately at 24 hours. Original session cleanup remains enabled.
+
+`GET /chat/people?q=...` finds up to 50 accounts, recent DM contacts first. `GET /chat/messages` reads the main room; `?to=USER_ID` reads only the signed-in user's conversation with that account. `before=ID` pages older messages (100 per page). `POST /chat/messages` accepts `{to:null|USER_ID,text,clientId}`. Sender identity always comes from the session. Text is limited to 1,000 characters and one send per two seconds per account. No message text is logged. DMs are access-controlled, not end-to-end encrypted. Frontend polls every eight seconds while visible, renders plain text, and clears private state on account changes. No uploads, group creation, or moderation UI in this initial test version.

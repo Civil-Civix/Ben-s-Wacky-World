@@ -235,10 +235,11 @@ async function closeGame() {
 }
 function applyRoute() {
   const hash = location.hash.slice(1);
-  view = ['all','online','new','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard'].includes(hash) ? hash : 'home';
+  view = ['all','online','new','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard','messages'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
   window.showChatBoard(view === 'chat');
+  window.showMessages(view === 'messages');
   const requestPanel=document.querySelector('#request-panel');
   requestPanel.hidden=view!=='request';
   if(view==='request'&&!requestPanel.querySelector('iframe')){
@@ -255,12 +256,12 @@ function applyRoute() {
   document.querySelector('#sort-wrap').hidden=isAppsView();
   search.placeholder = isAppsView() ? 'Search apps…' : 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = isAppsView() ? 'Search apps' : 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request' || view === 'leaderboard';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request' || view === 'leaderboard' || view === 'messages';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request' && view !== 'leaderboard'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard']]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request' && view !== 'leaderboard' && view !== 'messages'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');

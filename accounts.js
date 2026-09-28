@@ -23,7 +23,9 @@
   if(!response.ok){const error=new Error(result.error||'Please try again.');error.status=response.status;throw error;}
   return result;
  }
+ window.WackyAccount={api,avatar,get user(){return me;}};
  function renderAccount(fill=true){
+  window.dispatchEvent(new Event('wacky-account-change'));
   document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));
   $('#account-auth').hidden=!!me;$('#account-profile').hidden=!me;
   if(me){
