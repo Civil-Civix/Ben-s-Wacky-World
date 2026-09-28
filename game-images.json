@@ -15,7 +15,7 @@
   "hyppersandbox": "images/noah/hyppersandbox.webp",
   "fnfvsshucksv2": "images/noah/fnfvsshucksv2.webp",
   "cuphead": "images/noah/cuphead.webp",
-  "yohohoio": "images/noah/yohohoio.webp",
+  "yohohoio": "images/yohohoio-20260928.png",
   "totallyaccuratebattlesimulator": "images/noah/totallyaccuratebattlesimulator.webp",
   "justshapesbeats": "images/noah/justshapesbeats.webp",
   "intospace2": "images/noah/intospace2.webp",
@@ -38,7 +38,7 @@
   "whosyourdaddy": "images/noah/whosyourdaddy.webp",
   "minecraft1121": "images/noah/minecraft1121.webp",
   "ihavenomouthandimustscream": "images/noah/ihavenomouthandimustscream.webp",
-  "cheeseroll": "images/noah/cheeseroll.webp",
+  "cheeseroll": "images/cheeseroll-20260928.png",
   "cleggycar": "images/noah/cleggycar.webp",
   "overburden": "images/noah/overburden.webp",
   "brotato": "images/noah/brotato.webp",
@@ -426,5 +426,11 @@
   "dadish3": "images/seraph/dadish3-custom.png",
   "deathrun3d": "images/seraph/deathrun3d-custom.png",
   "stack": "images/seraph/stack-custom.png",
-  "colorswitch": "images/seraph/colorswitch-custom.png"
+  "colorswitch": "images/seraph/colorswitch-custom.png",
+  "boilnoodles": "images/boilnoodles-20260928.png",
+  "amongus": "images/amongus-20260928.png",
+  "rimworld": "images/rimworld-20260928.png",
+  "swordbattle": "images/swordbattle-20260928.png",
+  "reincarnage": "images/reincarnage-20260928.png",
+  "chessformers": "images/chessformers.png"
 }

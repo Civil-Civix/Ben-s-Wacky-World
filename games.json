@@ -100,8 +100,9 @@
   {
     "id": "yohohoio",
     "title": "YoHoHo.io",
-    "url": "library/noah/games/463.html",
-    "source": "noah"
+    "url": "library/imported-20260928/yohohoio/index.html",
+    "source": "user-upload",
+    "collection": "new"
   },
   {
     "id": "totallyaccuratebattlesimulator",
@@ -237,9 +238,10 @@
   },
   {
     "id": "cheeseroll",
-    "title": "CheeseRoll",
-    "url": "library/noah/games/414.html",
-    "source": "noah"
+    "title": "Cheese Rolling",
+    "url": "https://tarotben67-ops.github.io/CHESSESEW/",
+    "source": "external",
+    "collection": "new"
   },
   {
     "id": "cleggycar",
@@ -2464,7 +2466,8 @@
     "id": "mindustry",
     "title": "Mindustry",
     "url": "library/imported-20260919/mindustry/index.html",
-    "source": "user-upload"
+    "source": "user-upload",
+    "online": true
   },
   {
     "id": "scamptonthegreat",
@@ -2590,5 +2593,49 @@
     "url": "library/seraph-games/colorswitch/index.html",
     "source": "seraph",
     "collection": "new"
+  },
+  {
+    "id": "reincarnage",
+    "title": "Reincarnage",
+    "url": "https://tarotben67-ops.github.io/Rein/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "boilnoodles",
+    "title": "Boil Noodles at Night",
+    "url": "library/imported-20260928/boilnoodles/index.html",
+    "source": "user-upload",
+    "collection": "new"
+  },
+  {
+    "id": "rimworld",
+    "title": "RimWorld",
+    "url": "https://civil-civix.github.io/Rim-world/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "chessformers",
+    "title": "Chessformer",
+    "url": "library/imported-20260928/chessformers/chessformers.html",
+    "source": "user-upload",
+    "collection": "new"
+  },
+  {
+    "id": "swordbattle",
+    "title": "Sword Battle",
+    "url": "https://wacky-sword-battle-play.onrender.com/",
+    "source": "external",
+    "collection": "new",
+    "online": true
+  },
+  {
+    "id": "amongus",
+    "title": "Among Us",
+    "url": "https://civil-civix.github.io/AmongUsPort/",
+    "source": "external",
+    "collection": "new",
+    "online": true
   }
 ]
