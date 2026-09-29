@@ -16,14 +16,15 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260928-chat-navigation">
+  <link rel="stylesheet" href="styles.css?v=20260928-ai">
   <script src="games.js?v=20260928-player-icons" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="accounts.js?v=20260928-profile-message" defer></script>
+  <script src="accounts.js?v=20260928-ai" defer></script>
   <script src="messages.js?v=20260928-chat-navigation" defer></script>
-  <script src="app.js?v=20260928-chat-navigation" defer></script>
+  <script src="ai.js?v=20260928-ai" defer></script>
+  <script src="app.js?v=20260928-ai" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
   <script src="appearance.js?v=20260928-unread" defer></script>
@@ -37,10 +38,21 @@
     <button class="nav-game" aria-label="Games" aria-current="page" title="Games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg>
     </button>
   <a class="nav-messages" href="#messages" aria-label="Chat" title="Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span id="dm-unread-badge" hidden aria-hidden="true"></span></a>
+  <a class="nav-ai" href="#ai" aria-label="AI Chat" title="AI Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5c1.2 5.3 2.7 6.8 7 8-4.3 1.2-5.8 2.7-7 8-1.2-5.3-2.7-6.8-7-8 4.3-1.2 5.8-2.7 7-8ZM18 2c.6 2.7 1.4 3.5 4 4.5-2.6 1-3.4 1.8-4 4.5-.6-2.7-1.4-3.5-4-4.5 2.6-1 3.4-1.8 4-4.5Z"/></svg></a>
   <button class="nav-stream" type="button" data-stream aria-label="Stream Hub" title="Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg></button>
   <a class="nav-leaderboard" href="#leaderboard" aria-label="Leaderboard" title="Leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg></a>
   <a class="nav-request" href="#request" aria-label="Request" title="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg></a>
   </aside>
+  <section id="ai-panel" hidden aria-labelledby="ai-title">
+    <header class="ai-heading"><div><p class="eyebrow">Powered by Mistral</p><h1 id="ai-title">AI Chat</h1></div><span id="ai-allowance" role="status"></span></header>
+    <p id="ai-login"><a href="#settings">Log in or create a profile</a> to use AI Chat.</p>
+    <div id="ai-content" hidden>
+      <div id="ai-log" aria-label="AI conversation" tabindex="0"></div>
+      <p id="ai-status" role="status"></p>
+      <form id="ai-form"><label class="sr-only" for="ai-text">Message AI Chat</label><textarea id="ai-text" rows="2" maxlength="1000" placeholder="Ask anything…" required></textarea><button id="ai-send" type="submit" aria-label="Send to AI" title="Send"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form>
+      <p class="ai-footnote">History disappears after 24 hours. Messages reset at midnight Arizona time.<br>Your messages are sent to Mistral. AI can make mistakes.</p>
+    </div>
+  </section>
   <section id="messages-panel" hidden aria-labelledby="messages-title">
     <header><h1 id="messages-title">Chat</h1><p>Messages disappear after 24 hours.</p></header>
     <p id="messages-login" hidden><a href="#settings">Log in to chat</a> with your existing account.</p>
@@ -58,6 +70,7 @@
     <div class="launch-grid" aria-label="Launch shortcuts">
       <a class="launch-tile" href="#all" aria-label="Open games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg><span>Games</span></a>
       <a class="launch-tile" href="#messages" aria-label="Open Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span>Chat</span></a>
+      <a class="launch-tile" href="#ai" aria-label="Open AI Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5c1.2 5.3 2.7 6.8 7 8-4.3 1.2-5.8 2.7-7 8-1.2-5.3-2.7-6.8-7-8 4.3-1.2 5.8-2.7 7-8ZM18 2c.6 2.7 1.4 3.5 4 4.5-2.6 1-3.4 1.8-4 4.5-.6-2.7-1.4-3.5-4-4.5 2.6-1 3.4-1.8 4-4.5Z"/></svg><span>AI Chat</span></a>
       <button class="launch-tile" type="button" data-stream aria-label="Open Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg><span>Stream Hub</span></button>
       <a class="launch-tile" href="#leaderboard" aria-label="Open leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg><span>Leaderboard</span></a>
       <a class="launch-tile" href="#request" aria-label="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>

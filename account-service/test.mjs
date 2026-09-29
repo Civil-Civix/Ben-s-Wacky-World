@@ -3,6 +3,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import worker,{digest} from './worker.mjs';
 const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
+db.exec(readFileSync(new URL('./ai-schema.sql',import.meta.url),'utf8'));
 const DB={
  prepare(sql){const wrapper={bind(...args){
   args=args.map(a=>a instanceof ArrayBuffer?new Uint8Array(a):a);

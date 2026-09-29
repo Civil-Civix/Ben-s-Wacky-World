@@ -1,3 +1,4 @@
+import {ai} from './ai.mjs';
 import {chat} from './chat.mjs';
 import {scrypt,createHmac,timingSafeEqual,randomBytes,createHash} from 'node:crypto';
 import gameIds from './game-ids.mjs';
@@ -102,6 +103,7 @@ export default {
     const token=await newSession(env,row.id,now);return json({user:publicUser(row)},200,{'Set-Cookie':cookie(token)});
    }
    const me=await session(request,env,now);
+   if(path==='/ai')return await ai({request,url,env,me,now,body,fail,json});
    if(path.startsWith('/chat/')){const response=await chat({request,url,env,me,now,body,fail,json});if(response)return response;}
    if(path==='/me'&&request.method==='GET')return json({user:publicUser(me)});
    if(path==='/logout'&&request.method==='POST'){
@@ -145,5 +147,5 @@ export default {
    return json({error:'Account service is temporarily unavailable. Please try again.'},503);
   }
  },
- async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now())]);}
+ async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM ai_requests WHERE expires<=?').bind(Date.now())]);}
 };

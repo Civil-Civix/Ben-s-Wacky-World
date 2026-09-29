@@ -16,9 +16,9 @@
   return el;
  }
  function badge(user){const b=document.createElement('span');b.className='owner-badge';b.textContent='Owner';b.hidden=!user.owner;return b;}
- async function api(path,{method='GET',data,raw,keepalive=false}={}){
+ async function api(path,{method='GET',data,raw,keepalive=false,timeout=20000}={}){
   const response=await fetch(API+path,{method,credentials:'include',headers:{'X-Wacky-Client':'1',...(raw?{'Content-Type':'image/jpeg'}:data!==undefined?{'Content-Type':'application/json'}:{})},
-   ...(raw?{body:raw}:data!==undefined?{body:JSON.stringify(data)}:{}),keepalive,signal:AbortSignal.timeout(20000)});
+   ...(raw?{body:raw}:data!==undefined?{body:JSON.stringify(data)}:{}),keepalive,signal:AbortSignal.timeout(timeout)});
   const result=await response.json();
   if(!response.ok){const error=new Error(result.error||'Please try again.');error.status=response.status;throw error;}
   return result;

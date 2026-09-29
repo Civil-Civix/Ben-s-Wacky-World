@@ -87,6 +87,7 @@ function render() {
   clearInterval(randomArtTimer);
   if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
   if (view === "request") {document.title="Request | Ben's Wacky World";return;}
+  if (view === "ai") {document.title="AI Chat | Ben\'s Wacky World";return;}
   if (view === "messages") {document.title = "Chat | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Account Settings | Wacky Games"; return;}
@@ -231,10 +232,11 @@ async function closeGame() {
 function applyRoute() {
   let hash = location.hash.slice(1);
   if(['apps','app-favorites','app-recents','chat'].includes(hash)){hash='messages';history.replaceState(null,'','#messages');}
-  view = ['all','online','new','favorites','recents','settings','request','leaderboard','messages'].includes(hash) ? hash : 'home';
+  view = ['all','online','new','favorites','recents','settings','request','leaderboard','messages','ai'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
   window.showMessages(view === 'messages');
+  window.showAI(view === 'ai');
   const requestPanel=document.querySelector('#request-panel');
   requestPanel.hidden=view!=='request';
   if(view==='request'&&!requestPanel.querySelector('iframe')){
@@ -251,12 +253,12 @@ function applyRoute() {
   document.querySelector('#sort-wrap').hidden=false;
   search.placeholder = 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'request' || view === 'leaderboard' || view === 'messages';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'request' || view === 'leaderboard' || view === 'messages' || view === 'ai';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'request' && view !== 'leaderboard' && view !== 'messages'], ['.nav-settings', settingsOpen], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages']]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'request' && view !== 'leaderboard' && view !== 'messages' && view !== 'ai'], ['.nav-settings', settingsOpen], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages'], ['.nav-ai', view === 'ai']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
