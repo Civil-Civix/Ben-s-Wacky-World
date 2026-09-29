@@ -6,7 +6,7 @@
  const readThrough=new Map();
  function paintUnread(){
   const count=[...unreadCounts.values()].reduce((a,b)=>a+b,0),badge=$('#dm-unread-badge');badge.hidden=!count;badge.textContent=count>9?'9+':String(count);
-  $('.nav-settings').setAttribute('aria-label',count?'Account Settings, '+count+' unread direct messages':'Account Settings');
+  $('.nav-messages').setAttribute('aria-label',count?'Chat, '+count+' unread direct messages':'Chat');
   document.querySelectorAll('[data-dm-person]').forEach(b=>{const n=unreadCounts.get(b.dataset.dmPerson)||0;let tag=b.querySelector('.dm-person-unread');if(!tag){tag=document.createElement('span');tag.className='dm-person-unread';b.append(tag);}tag.hidden=!n;tag.textContent=n>9?'9+':String(n);});
  }
  async function refreshUnread(){
@@ -36,6 +36,9 @@
   const fragment=document.createDocumentFragment();
   for(const m of rows){
    const article=document.createElement('article');article.className='message-row';article.id='message-'+m.id;
+   const replyAuthor=rows.find(parent=>parent.id===m.reply?.id)?.user;
+   const repliesToMe=m.reply?.userId?m.reply.userId===account.user?.id:replyAuthor?replyAuthor.id===account.user?.id:m.reply?.username===account.user?.username;
+   if(!to&&m.user.id!==account.user?.id&&m.reply?.expires>Date.now()&&repliesToMe)article.classList.add('message-reply-to-me');
    const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('button'),time=document.createElement('time'),text=document.createElement('p');
    name.textContent=m.user.username+(m.user.owner?' · Owner':'');time.dateTime=new Date(m.created).toISOString();time.textContent=new Date(m.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});text.textContent=m.text;
    name.type='button';name.className='message-profile';name.addEventListener('click',()=>void account.openProfile(m.user.id));

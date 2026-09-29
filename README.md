@@ -30,9 +30,10 @@ Known embedded ad scripts, AdSense placements, and injected ad sidebars were rem
 
 - `index.html`, `app.js`, `styles.css`: homepage, catalogs, player, and shared layout.
 - `home.js`, `appearance.js`: heading animations and saved appearance settings.
-- `games.json` / `games.js`, `apps.json` / `apps.js`: catalogs.
+- `messages.js`: Chat main room, DMs, unread badges, and reply highlighting.
+- `games.json` / `games.js`: game catalog.
 - `library/noah/games/`: supplied game pages.
-- `library/seraph-apps/`: apps and local emulator files.
+- `library/seraph-apps/storage/`: shared emulator files required by games.
 - `game-ad-guard.js`: source for the protection embedded in local game pages.
 - `game-audit-review.html`: manual review page.
 - `game-audit-results.json`, `GAME-AUDIT.md`: audit evidence and summary.

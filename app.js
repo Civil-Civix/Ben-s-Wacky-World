@@ -1,8 +1,5 @@
 'use strict';
 const games = window.WACKY_GAMES || [];
-const apps = window.WACKY_APPS || [];
-const appById = new Map(apps.map(app=>[app.id,app]));
-const isAppsView=()=>['apps','app-favorites','app-recents'].includes(view);
 const byId = new Map(games.map(game => [game.id, game]));
 const grid = document.querySelector('#game-grid');
 const search = document.querySelector('#search');
@@ -28,7 +25,7 @@ function setPlayerBarHidden(hidden, moveFocus=false) {
 hidePlayerBar.addEventListener('click',()=>setPlayerBarHidden(true,true));
 showPlayerBar.addEventListener('click',()=>setPlayerBarHidden(false,true));
 const storageNotice = document.querySelector('#storage-notice');
-const keys = {favorites:'bens-wacky-world.favorites.v1', recents:'bens-wacky-world.recents.v1',appFavorites:'bens-wacky-world.app-favorites.v1',appRecents:'bens-wacky-world.app-recents.v1'};
+const keys = {favorites:'bens-wacky-world.favorites.v1', recents:'bens-wacky-world.recents.v1'};
 let currentGame = null, lastId = null, loadTimer, savedScroll = 0;
 let imageMap = {};
 let view = 'home';
@@ -46,12 +43,11 @@ function readList(key) {
     if (raw === null) return [];
     const value = JSON.parse(raw);
     if (!Array.isArray(value)) throw new Error('Invalid saved list');
-    return [...new Set(value.filter(id => typeof id === 'string' && (key===keys.appFavorites||key===keys.appRecents?appById:byId).has(id)))];
+    return [...new Set(value.filter(id => typeof id === 'string' && byId.has(id)))];
   } catch (_) { storageWarning(); return []; }
 }
 let favorites = new Set(readList(keys.favorites));
 let recents = readList(keys.recents);
-let appFavorites=new Set(readList(keys.appFavorites)),appRecents=readList(keys.appRecents);
 function saveList(key, list) {
   try { localStorage.setItem(key, JSON.stringify(list)); }
   catch (_) { storageWarning(); }
@@ -91,21 +87,21 @@ function render() {
   clearInterval(randomArtTimer);
   if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
   if (view === "request") {document.title="Request | Ben's Wacky World";return;}
-  if (view === "chat") {document.title = "Chat board | Ben\'s Wacky World"; return;}
+  if (view === "messages") {document.title = "Chat | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Account Settings | Wacky Games"; return;}
   const query = normalize(search.value);
-  const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'app-favorites' ? apps.filter(a=>appFavorites.has(a.id)) : view === 'app-recents' ? appRecents.map(id=>appById.get(id)).filter(Boolean) : view === 'apps' ? apps : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
+  const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
   const matches = pool.filter(game => normalize(game.title).includes(query));
   const popularity=window.WackyPopularity;
   const popularSort=gameSort==='popular';
-  if(!isAppsView())matches.sort((a,b)=>
+  matches.sort((a,b)=>
     (view==='all' ? Number(Boolean(b.pinned))-Number(Boolean(a.pinned)) : 0) ||
     (popularSort && popularity.hasScores ? popularity.score(b.id)-popularity.score(a.id) : 0) ||
     (gameSort==='az'||popularSort ? a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}) : 0));
   const popularityNote=document.querySelector('#popularity-note');
-  popularityNote.hidden=isAppsView()||!popularSort||popularity.state==='ready';
+  popularityNote.hidden=!popularSort||popularity.state==='ready';
   popularityNote.textContent=popularity.state==='error' ?
     (popularity.hasScores?'Rankings could not refresh. Showing the last available ranking.':'Rankings are temporarily unavailable. Showing A–Z order.') :
     popularity.state!=='ready' ? 'Loading site-wide rankings…' :
@@ -115,8 +111,8 @@ function render() {
   for (const game of matches) {
     const card = document.createElement('button');
     card.type = 'button'; card.className = 'game-card'; card.dataset.game = game.id;
-    card.setAttribute('aria-label', (game.kind === 'app' ? 'Open ' : 'Play ') + game.title);
-    const artwork = game.kind === 'app' ? null : imageMap[game.id];
+    card.setAttribute('aria-label', 'Play ' + game.title);
+    const artwork = imageMap[game.id];
     if (typeof artwork === 'string' && artwork.startsWith('images/') && !artwork.includes('..')) {
       const img = document.createElement('img');
       img.src = artwork; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
@@ -131,12 +127,12 @@ function render() {
   grid.replaceChildren(fragment);
   const empty = document.querySelector('#empty');
   empty.hidden = matches.length > 0;
-  empty.textContent = query ? (isAppsView() ? 'No apps found. Try another name.' : 'No games found. Try another name.')
-    : (view === 'favorites'||view === 'app-favorites') ? 'No favorites yet. Open an item and select Favorite.'
-    : (view === 'recents'||view === 'app-recents') ? 'No recent items yet. Open one to get started.'
+  empty.textContent = query ? 'No games found. Try another name.'
+    : (view === 'favorites') ? 'No favorites yet. Open an item and select Favorite.'
+    : (view === 'recents') ? 'No recent items yet. Open one to get started.'
     : 'No games available.';
-  document.querySelector('#result-count').textContent = matches.length + (isAppsView() ? ' apps' : ' games');
-  const title = view === 'online' ? 'Online games' : view === 'new' ? 'New games' : view === 'app-favorites' ? 'Favorite apps' : view === 'app-recents' ? 'Recent apps' : view === 'apps' ? 'Apps' : view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
+  document.querySelector('#result-count').textContent = matches.length + ' games';
+  const title = view === 'online' ? 'Online games' : view === 'new' ? 'New games' : view === 'all' ? 'All games' : view === 'favorites' ? 'Favorites' : 'Recents';
   grid.setAttribute('aria-label', title);
   document.querySelector('#page-title').textContent = title;
   document.title = title + ' | Wacky Games';
@@ -146,7 +142,7 @@ function render() {
   });
 }
 function updateFavorite() {
-  const active = currentGame && (currentGame.kind==='app'?appFavorites:favorites).has(currentGame.id);
+  const active = currentGame && favorites.has(currentGame.id);
   favoriteButton.setAttribute('aria-label', active ? 'Remove from favorites' : 'Add to favorites');
   favoriteButton.setAttribute('aria-pressed', String(Boolean(active)));
   favoriteButton.title = active ? 'Remove from favorites' : 'Add to favorites';
@@ -207,12 +203,11 @@ document.querySelector('#server-cancel').addEventListener('click',()=>serverPick
 function launchGame(game,opener=document.activeElement) {
   amongUsNotice.hidden = game.id !== 'amongus';
   setPlayerBarHidden(false);
-  hidePlayerBar.hidden=game.kind==='app';
+  hidePlayerBar.hidden=false;
   lastLaunch=opener;
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
   favoriteButton.hidden = game.kind === 'stream';
-  if(game.kind==='app'){appRecents=[game.id,...appRecents.filter(id=>id!==game.id)];saveList(keys.appRecents,appRecents);}
-  if (game.kind !== 'app' && game.kind !== 'stream') {
+  if (game.kind !== 'stream') {
     recents = [game.id,...recents.filter(id => id !== game.id)];
     saveList(keys.recents,recents);
     void window.WackyPopularity.track(game);
@@ -220,7 +215,7 @@ function launchGame(game,opener=document.activeElement) {
   document.querySelector('#game-title').textContent = game.title;
   updateFavorite();
   document.body.classList.add('playing'); player.showModal(); loadGame();
-  window.dispatchEvent(new CustomEvent('wacky-game-change',{detail:{id:game.id,playing:true,isGame:game.kind!=='app'&&game.kind!=='stream'}}));
+  window.dispatchEvent(new CustomEvent('wacky-game-change',{detail:{id:game.id,playing:true,isGame:game.kind!=='stream'}}));
 }
 async function closeGame() {
   window.dispatchEvent(new CustomEvent('wacky-game-change',{detail:{playing:false}}));
@@ -234,11 +229,11 @@ async function closeGame() {
   (lastLaunch?.isConnected?lastLaunch:card || document.querySelector('[data-view][aria-current="page"]') || document.querySelector('.nav-home')).focus({preventScroll:true});
 }
 function applyRoute() {
-  const hash = location.hash.slice(1);
-  view = ['all','online','new','favorites','recents','settings','apps','app-favorites','app-recents','chat','request','leaderboard','messages'].includes(hash) ? hash : 'home';
+  let hash = location.hash.slice(1);
+  if(['apps','app-favorites','app-recents','chat'].includes(hash)){hash='messages';history.replaceState(null,'','#messages');}
+  view = ['all','online','new','favorites','recents','settings','request','leaderboard','messages'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
-  window.showChatBoard(view === 'chat');
   window.showMessages(view === 'messages');
   const requestPanel=document.querySelector('#request-panel');
   requestPanel.hidden=view!=='request';
@@ -248,26 +243,26 @@ function applyRoute() {
     document.querySelector('#request-content').append(frame);
   }
   document.querySelector('.collection-nav').hidden = false;
-  const routes=isAppsView()?['apps','app-favorites','app-recents']:['all','favorites','recents'];
+  const routes=['all','favorites','recents'];
   document.querySelectorAll('[data-view]:not([data-new-collection]):not([data-online-collection])').forEach((link,i)=>{link.dataset.view=routes[i];link.href='#'+routes[i];});
-  document.querySelector('[data-new-collection]').hidden=isAppsView();
-  document.querySelector('[data-online-collection]').hidden=isAppsView();
-  document.querySelector('.collection-nav').setAttribute('aria-label',isAppsView()?'App collections':'Game collections');
-  document.querySelector('#sort-wrap').hidden=isAppsView();
-  search.placeholder = isAppsView() ? 'Search apps…' : 'Search games…';
-  document.querySelector('.search-wrap .sr-only').textContent = isAppsView() ? 'Search apps' : 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'chat' || view === 'request' || view === 'leaderboard' || view === 'messages';
+  document.querySelector('[data-new-collection]').hidden=false;
+  document.querySelector('[data-online-collection]').hidden=false;
+  document.querySelector('.collection-nav').setAttribute('aria-label','Game collections');
+  document.querySelector('#sort-wrap').hidden=false;
+  search.placeholder = 'Search games…';
+  document.querySelector('.search-wrap .sr-only').textContent = 'Search games';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'request' || view === 'leaderboard' || view === 'messages';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
   document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && !isAppsView() && view !== 'chat' && view !== 'request' && view !== 'leaderboard' && view !== 'messages'], ['.nav-apps', isAppsView()], ['.nav-settings', settingsOpen], ['.nav-chat', view === 'chat'], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages']]) {
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'request' && view !== 'leaderboard' && view !== 'messages'], ['.nav-settings', settingsOpen], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   }
   search.value = '';
-  if(!isAppsView() && gameSort==='popular')void window.WackyPopularity.refresh();
+  if(gameSort==='popular')void window.WackyPopularity.refresh();
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
 document.querySelector('.nav-settings').addEventListener('click',()=>{location.hash='settings';});
@@ -278,9 +273,9 @@ document.querySelector('.nav-game').addEventListener('click', () => {
 });
 favoriteButton.addEventListener('click', () => {
   if (!currentGame || currentGame.kind==='stream') return;
-  const list=currentGame.kind==='app'?appFavorites:favorites;
+  const list=favorites;
   if(list.has(currentGame.id))list.delete(currentGame.id);else list.add(currentGame.id);
-  saveList(currentGame.kind==='app'?keys.appFavorites:keys.favorites,[...list]);updateFavorite();
+  saveList(keys.favorites,[...list]);updateFavorite();
 });
 document.querySelector('#game-sort').addEventListener('change',event=>{
  gameSort=event.target.value;if(gameSort==='popular')void window.WackyPopularity.refresh();try{localStorage.setItem('bens-wacky-world.game-sort',gameSort);}catch(_){}
@@ -310,7 +305,6 @@ window.addEventListener('hashchange',applyRoute);
 window.addEventListener('storage', event => {
   if(event.key === null || Object.values(keys).includes(event.key)) {
     favorites = new Set(readList(keys.favorites)); recents = readList(keys.recents);
-    appFavorites=new Set(readList(keys.appFavorites));appRecents=readList(keys.appRecents);
     render(); updateFavorite();
   }
 });

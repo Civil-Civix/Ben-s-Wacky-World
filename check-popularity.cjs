@@ -64,10 +64,6 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  assert.equal(await page.locator('#game-sort').inputValue(),'popular');
  await page.locator('[data-game="'+featured.id+'"]').click();await page.locator('#close').click();
  assert.equal(posts.length,1);
- await page.locator('.nav-apps').click();
- await page.locator('#popularity-note').waitFor({state:'hidden'});
- await page.locator('[data-game]').first().click();assert(await page.locator('#hide-player-bar').isHidden());await page.locator('#close').click();
- assert.equal(posts.length,1);
  await page.locator('.nav-game').click();
  await page.locator('#sort-trigger').click();await page.locator('[data-sort=az]').click();
  const az=await page.locator('[data-game]').evaluateAll(cards=>cards.map(c=>c.dataset.game));
