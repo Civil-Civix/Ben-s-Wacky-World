@@ -57,5 +57,8 @@
       "enabled": true,
       "invocation_logs": false
     }
+  },
+  "ai": {
+    "binding": "AI"
   }
 }

@@ -23,7 +23,7 @@
   <script src="popularity.js?v=20260919-popular" defer></script>
   <script src="accounts.js?v=20260928-ai" defer></script>
   <script src="messages.js?v=20260928-chat-navigation" defer></script>
-  <script src="ai.js?v=20260928-ai" defer></script>
+  <script src="ai.js?v=20260929-fallback" defer></script>
   <script src="app.js?v=20260928-ai" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
@@ -44,13 +44,13 @@
   <a class="nav-request" href="#request" aria-label="Request" title="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg></a>
   </aside>
   <section id="ai-panel" hidden aria-labelledby="ai-title">
-    <header class="ai-heading"><div><p class="eyebrow">Powered by Mistral</p><h1 id="ai-title">AI Chat</h1></div><span id="ai-allowance" role="status"></span></header>
+    <header class="ai-heading"><div><p class="eyebrow">Your everyday AI</p><h1 id="ai-title">AI Chat</h1></div><span id="ai-allowance" role="status"></span></header>
     <p id="ai-login"><a href="#settings">Log in or create a profile</a> to use AI Chat.</p>
     <div id="ai-content" hidden>
       <div id="ai-log" aria-label="AI conversation" tabindex="0"></div>
       <p id="ai-status" role="status"></p>
       <form id="ai-form"><label class="sr-only" for="ai-text">Message AI Chat</label><textarea id="ai-text" rows="2" maxlength="1000" placeholder="Ask anything…" required></textarea><button id="ai-send" type="submit" aria-label="Send to AI" title="Send"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form>
-      <p class="ai-footnote">History disappears after 24 hours. Messages reset at midnight Arizona time.<br>Your messages are sent to Mistral. AI can make mistakes.</p>
+      <p class="ai-footnote">History disappears after 24 hours. Messages reset at midnight Arizona time.<br>Messages may be sent to Groq, Cloudflare, or OpenRouter and its model providers. AI can make mistakes.</p>
     </div>
   </section>
   <section id="messages-panel" hidden aria-labelledby="messages-title">

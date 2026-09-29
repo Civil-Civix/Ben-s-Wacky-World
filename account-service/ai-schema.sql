@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS ai_requests (
  status TEXT NOT NULL CHECK(status IN ('pending','complete','failed')),
  prompt TEXT,
  answer TEXT,
+ provider TEXT,
+ model TEXT,
  created INTEGER NOT NULL,
  expires INTEGER NOT NULL,
  PRIMARY KEY(user_id,request_id)

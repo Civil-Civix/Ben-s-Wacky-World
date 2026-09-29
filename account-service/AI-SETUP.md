@@ -1,14 +1,16 @@
-# AI Chat setup
+# AI Chat provider setup
 
-AI Chat uses the existing authenticated account Worker and D1 database. The public website remains on GitHub Pages.
+Existing account Worker: bens-wacky-accounts. Frontend remains on GitHub Pages.
 
-1. Apply `ai-schema.sql` to the accounts database before deploying `worker.mjs` and `ai.mjs`.
-2. In Cloudflare, open Workers & Pages > bens-wacky-accounts > Settings > Variables and Secrets. Add a **Secret** named `MISTRAL_API_KEY` containing the Mistral API key. Save/deploy it. Never add the key to GitHub or frontend files.
-3. Optional plain variable `MISTRAL_MODEL` overrides `mistral-small-latest`.
-4. Publish the frontend through the usual GitHub workflow.
+- Add Cloudflare secrets `GROQ_API_KEY` and `OPENROUTER_API_KEY`.
+- Add Workers AI binding `AI`.
+- For an existing AI database, apply `ai-providers.sql` once; fresh installations use `ai-schema.sql`.
+- Deploy `ai.mjs` and `ai-providers.mjs` with the existing Worker modules and bindings preserved. Publish frontend changes through GitHub.
 
-The API is disabled until the secret exists. One conversation per profile. Each message and answer expires 24 hours after the message was submitted; expired rows are excluded immediately and physically removed by the hourly cleanup. This controls our live database, not provider retention or database recovery backups. Only that account can retrieve its history. Only its latest six unexpired exchanges are sent to Mistral, without profile IDs, usernames, or browser identifiers.
+Order: Groq (openai/gpt-oss-20b), Cloudflare (llama-3.1-8b-instruct-fp8-fast), OpenRouter (openrouter/free, free models only). Missing providers are skipped; errors, empty answers, quota exhaustion and 15-second timeouts trigger fallback. Successful replies show provider with the model in the label tooltip. A Cloudflare inference that times out locally may still finish remotely; its late result is ignored. Paid plan changes are not made by the app.
 
-15 user messages per account AND browser per Arizona calendar day. The browser has a signed Secure HttpOnly SameSite=None Partitioned cookie that survives logout. Clearing cookies or using a different browser bypasses the browser layer but not the same account's allowance. Shared browsers share an allowance. Atomic reservations include pending calls. Failed calls release the allowance; request IDs avoid duplicate billing on retries. One in-flight call per account. 1,000 input characters and 800 output tokens per message; 35-second provider timeout. No browser fingerprinting, IP quotas, or global daily budget in this version.
+One private conversation per profile, 24-hour message expiry. Queries immediately exclude expired messages; hourly cleanup removes expired rows from the live database, not provider retention or backups. Latest six unexpired exchanges accompany each request without usernames, account IDs, or browser identifiers. UI discloses all provider destinations.
 
-Tests: `node account-service/ai-test.mjs` uses an in-memory database and a mocked Mistral response; it does not use the real key or send real conversations. `node account-service/test.mjs` checks existing account/chat behavior.
+15 messages per account AND signed browser cookie per Arizona day, shared across all providers. Logout does not reset browser usage; clearing cookies or changing browser can bypass the browser layer. Atomic reservations and request IDs prevent concurrent overuse or duplicate retries. A successful fallback costs one allowance; all providers failing refunds it. No IP limits or global budget in this version.
+
+Run `node account-service/ai-test.mjs`, `node account-service/ai-providers-test.mjs`, and `node account-service/test.mjs`. These use mock providers and in-memory databases without real credits.

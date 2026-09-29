@@ -13,9 +13,9 @@
   const log=$('#ai-log'),fragment=document.createDocumentFragment();
   for(const turn of state?.messages||[]){
    if(turn.expires<=Date.now())continue;
-   for(const [name,text,kind] of [['You',turn.prompt,'user'],['AI Chat',turn.answer,'assistant']]){
+   for(const [name,text,kind] of [['You',turn.prompt,'user'],[turn.provider?'AI Chat · '+turn.provider:'AI Chat',turn.answer,'assistant']]){
     const row=document.createElement('article'),label=document.createElement('strong'),body=document.createElement('p');
-    row.className='ai-message ai-'+kind;label.textContent=name;body.textContent=text;row.append(label,body);fragment.append(row);
+    row.className='ai-message ai-'+kind;label.textContent=name;if(kind==='assistant'&&turn.model)label.title=turn.model;body.textContent=text;row.append(label,body);fragment.append(row);
    }
   }
   if(!fragment.childNodes.length){const empty=document.createElement('div');empty.className='ai-empty';const h=document.createElement('h2'),p=document.createElement('p');h.textContent='What’s on your mind?';p.textContent='Ask a question, brainstorm an idea, or get help figuring something out.';empty.append(h,p);fragment.append(empty);}
@@ -40,7 +40,7 @@
   const token=generation;if(!pending||pending.text!==text)pending={text,requestId:crypto.randomUUID()};
   busy=true;paint();note('Thinking…');
   try{
-   const next=await account.api('/ai',{method:'POST',data:pending,timeout:45000});if(token!==generation)return;
+   const next=await account.api('/ai',{method:'POST',data:pending,timeout:60000});if(token!==generation)return;
    state=next;pending=null;$('#ai-text').value='';note('');
   }catch(e){
    if(token!==generation)return;
