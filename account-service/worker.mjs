@@ -22,9 +22,9 @@ async function bounded(request,max=4096){
  finally{reader.releaseLock();}
  const bytes=new Uint8Array(size);let offset=0;for(const c of chunks){bytes.set(c,offset);offset+=c.length;}return bytes;
 }
-async function body(request){
+async function body(request,max=4096){
  if(request.headers.get('Content-Type')?.split(';')[0]!=='application/json')fail(415,'JSON is required.');
- try{return JSON.parse(new TextDecoder().decode(await bounded(request)));}catch(e){if(e instanceof HTTPError)throw e;fail(400,'Invalid request.');}
+ try{return JSON.parse(new TextDecoder().decode(await bounded(request,max)));}catch(e){if(e instanceof HTTPError)throw e;fail(400,'Invalid request.');}
 }
 function username(value){if(typeof value!=='string'||!/^[A-Za-z0-9_]{3,20}$/.test(value))fail(400,'Username must be 3–20 letters, numbers or underscores.');return value;}
 async function session(request,env,now){

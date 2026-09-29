@@ -9,9 +9,10 @@ async function smallJSON(response){
 
 async function deadline(task,ms){let timer;try{return await Promise.race([task,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Provider timeout')),ms);})]);}finally{clearTimeout(timer);}}
 export async function answerWithFallback(env,messages){
+ const vision=messages.some(m=>Array.isArray(m.content));
  const providers=[];
- if(env.GROQ_API_KEY)providers.push({name:'Groq',model:'openai/gpt-oss-20b',url:'https://api.groq.com/openai/v1/chat/completions',key:env.GROQ_API_KEY});
- if(env.AI)providers.push({name:'Cloudflare',model:'@cf/meta/llama-3.1-8b-instruct-fp8-fast'});
+ if(env.GROQ_API_KEY&&!vision)providers.push({name:'Groq',model:'openai/gpt-oss-20b',url:'https://api.groq.com/openai/v1/chat/completions',key:env.GROQ_API_KEY});
+ if(env.AI)providers.push({name:'Cloudflare',model:vision?'@cf/meta/llama-4-scout-17b-16e-instruct':'@cf/meta/llama-3.1-8b-instruct-fp8-fast'});
  if(env.OPENROUTER_API_KEY)providers.push({name:'OpenRouter',model:'openrouter/free',url:'https://openrouter.ai/api/v1/chat/completions',key:env.OPENROUTER_API_KEY});
  for(const provider of providers){
   try{

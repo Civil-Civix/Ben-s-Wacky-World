@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS ai_requests (
  day TEXT NOT NULL,
  status TEXT NOT NULL CHECK(status IN ('pending','complete','failed')),
  prompt TEXT,
+ attachment TEXT,
  answer TEXT,
  provider TEXT,
  model TEXT,

@@ -17,21 +17,31 @@ async function req(user=0,browser='',method='GET',data,bindings=env,origin=env.A
 const message=()=>({text:'Hello',requestId:crypto.randomUUID()});
 try{
 assert.equal((await req(null)).status,401);assert.equal((await req(0,'','GET',null,env,'https://evil.test')).status,403);
-let initial=await req();assert.equal(initial.data.remaining,15);const browser=initial.cookie;assert(browser.startsWith('__Host-wacky_ai_browser='));
+let initial=await req();assert.equal(initial.data.remaining,10);const browser=initial.cookie;assert(browser.startsWith('__Host-wacky_ai_browser='));
 assert.equal((await req(0,'','POST',message())).status,409);
 const noKey=await req(0,browser,'POST',message(),{...env,GROQ_API_KEY:''});assert.equal(noKey.status,503);assert.equal(calls,0);
 const first=message();assert.equal((await req(0,browser,'POST',first)).status,200);assert.equal((await req(0,browser,'POST',first)).status,200);assert.equal(calls,1);
 assert.equal((await req(1,browser)).data.messages.length,0);
-for(let i=1;i<15;i++)assert.equal((await req(0,browser,'POST',message())).status,200);
+for(let i=1;i<10;i++)assert.equal((await req(0,browser,'POST',message())).status,200);
 assert.equal((await req(1,browser,'POST',message())).status,429); // new account, same browser
 const fresh=(await req(0)).cookie;assert.equal((await req(0,fresh,'POST',message())).status,429); // same account, new browser
-assert.equal(calls,15);
-const other=(await req(1)).cookie;mode='fail';assert.equal((await req(1,other,'POST',message())).status,503);assert.equal((await req(1,other)).data.remaining,15);
+assert.equal(calls,10);
+const other=(await req(1)).cookie;mode='fail';assert.equal((await req(1,other,'POST',message())).status,503);assert.equal((await req(1,other)).data.remaining,10);
 mode='wait';const pending=req(1,other,'POST',message());while(!release)await new Promise(r=>setTimeout(r,1));assert.equal((await req(1,other,'POST',message())).status,409);release();mode='ok';assert.equal((await pending).status,200);
 assert.equal((await req(1,other)).data.messages.length,1);
 assert.equal((await req(1,other,'POST',{...message(),text:'x'.repeat(1001)})).status,400);
+const uploadBrowser=(await req(2)).cookie;
+assert.equal((await req(2,uploadBrowser,'POST',{...message(),attachment:{name:'notes.txt',type:'text',text:'Notes '.repeat(1000)}})).status,200);
+const uploaded=(await req(2,uploadBrowser)).data.messages[0];assert.deepEqual(uploaded.attachment,{name:'notes.txt',type:'text'});assert(!JSON.stringify(uploaded).includes('Notes Notes'));
+assert.equal((await req(1,other)).data.messages.some(m=>m.attachment),false);
+assert.equal((await req(2,uploadBrowser,'POST',{...message(),attachment:{name:'bad.png',type:'image',data:'https://example.com/image.png'}})).status,400);
+assert.equal((await req(2,uploadBrowser,'POST',{...message(),attachment:{name:'large.txt',type:'text',text:'x'.repeat(12001)}})).status,400);
+const imageEnv={...env,AI:{run:async(model,input)=>{assert(model.includes('scout'));assert(Array.isArray(input.messages.at(-1).content));return {response:'Image read'};}}};
+const imageData='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=';
+assert.equal((await req(2,uploadBrowser,'POST',{...message(),attachment:{name:'pixel.png',type:'image',data:imageData}},imageEnv)).status,200);
+console.log('PASS: text upload, metadata-only history, private attachments, bad/oversized upload rejection, vision routing.');
 assert.equal(aiDay(Date.parse('2026-09-28T06:59:59Z')),'2026-09-27');assert.equal(aiDay(Date.parse('2026-09-28T07:00:00Z')),'2026-09-28');
-db.prepare('UPDATE ai_requests SET day=?').run('2000-01-01');assert.equal((await req(0,browser)).data.remaining,15);
+db.prepare('UPDATE ai_requests SET day=?').run('2000-01-01');assert.equal((await req(0,browser)).data.remaining,10);
 db.prepare('UPDATE ai_requests SET expires=?').run(Date.now()-1);assert.equal((await req(0,browser)).data.messages.length,0);await worker.scheduled({},env);assert.equal(db.prepare('SELECT count(*) AS n FROM ai_requests').get().n,0);
-console.log('PASS: login/origin, missing key, signed browser cookie, both 15-message limits, cross-account browser limit, private history, deduplication, concurrent sends, failure refund, Arizona reset, size limits, 24-hour expiry and cleanup.');
+console.log('PASS: login/origin, missing key, signed browser cookie, both 10-response limits, cross-account browser limit, private history, deduplication, concurrent sends, failure refund, Arizona reset, size limits, 24-hour expiry and cleanup.');
 }finally{globalThis.fetch=realFetch;db.close();}
