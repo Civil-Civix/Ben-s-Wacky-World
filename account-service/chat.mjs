@@ -1,7 +1,7 @@
 // Authentication and origin checks run in worker.mjs before this handler.
 export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  const path=url.pathname;
- const person=u=>({id:u.id,username:u.username,avatarVersion:u.avatar_version,owner:!!u.owner,status:u.presence==='offline'||!(u.last_seen>now-90000)?'offline':u.presence||'online'});
+ const person=u=>({id:u.id,username:u.username,avatarVersion:u.avatar_version,owner:!!u.owner,roles:JSON.parse(u.roles||'[]'),status:u.presence==='offline'||!(u.last_seen>now-90000)?'offline':u.presence||'online'});
  if(path.startsWith('/chat/photos/')&&request.method==='GET'){
   const id=Number(path.slice('/chat/photos/'.length));if(!Number.isSafeInteger(id)||id<1)fail(404,'Photo unavailable.');
   const row=await env.DB.prepare('SELECT photo,expires FROM chat_messages WHERE id=? AND expires>? AND (recipient IS NULL OR sender=? OR recipient=?)').bind(id,now,me.id,me.id).first();
@@ -21,7 +21,7 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  }
  if(path==='/chat/people'&&request.method==='GET'){
   const q=(url.searchParams.get('q')||'').slice(0,20).toLowerCase().replace(/[^a-z0-9_]/g,'');
-  const rows=await env.DB.prepare(`SELECT u.id,u.username,u.avatar_version,u.owner,u.presence,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>?) AS last_seen,
+  const rows=await env.DB.prepare(`SELECT u.id,u.username,u.avatar_version,u.owner,u.presence,u.roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>?) AS last_seen,
    (SELECT MAX(m.id) FROM chat_messages m WHERE m.expires>? AND ((m.sender=? AND m.recipient=u.id) OR (m.recipient=? AND m.sender=u.id))) AS recent
    FROM users u WHERE u.id<>? AND instr(u.username_key,?)>0 AND (?=0 OR EXISTS(SELECT 1 FROM chat_messages c WHERE c.expires>? AND ((c.sender=? AND c.recipient=u.id) OR (c.recipient=? AND c.sender=u.id)))) ORDER BY recent DESC,u.username_key LIMIT 50`).bind(now,now,me.id,me.id,me.id,q,url.searchParams.get('conversations')==='1'?1:0,now,me.id,me.id).all();
   return json({users:rows.results.map(person)});
@@ -60,6 +60,6 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  if(!Number.isSafeInteger(before)||before<1)fail(400,'Invalid page.');
  const filter=to===null?'m.recipient IS NULL':'((m.sender=? AND m.recipient=?) OR (m.sender=? AND m.recipient=?))';
  const args=to===null?[now,before]:[now,before,me.id,to,to,me.id];
- const rows=await env.DB.prepare(`SELECT m.id,m.text,(m.photo IS NOT NULL) AS has_photo,u.presence,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>${now}) AS last_seen,m.created,m.expires,u.id AS sender,u.username,u.avatar_version,u.owner,m.reply_to,r.sender AS reply_user,r.text AS reply_text,ru.username AS reply_name,r.expires AS reply_expires FROM chat_messages m JOIN users u ON u.id=m.sender LEFT JOIN chat_messages r ON r.id=m.reply_to LEFT JOIN users ru ON ru.id=r.sender WHERE m.expires>? AND m.id<? AND ${filter} ORDER BY m.id DESC LIMIT 101`).bind(...args).all();
+ const rows=await env.DB.prepare(`SELECT m.id,m.text,(m.photo IS NOT NULL) AS has_photo,u.presence,u.roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>${now}) AS last_seen,m.created,m.expires,u.id AS sender,u.username,u.avatar_version,u.owner,m.reply_to,r.sender AS reply_user,r.text AS reply_text,ru.username AS reply_name,r.expires AS reply_expires FROM chat_messages m JOIN users u ON u.id=m.sender LEFT JOIN chat_messages r ON r.id=m.reply_to LEFT JOIN users ru ON ru.id=r.sender WHERE m.expires>? AND m.id<? AND ${filter} ORDER BY m.id DESC LIMIT 101`).bind(...args).all();
  return json({messages:rows.results.slice(0,100).reverse().map(r=>({id:r.id,text:r.text,hasPhoto:!!r.has_photo,created:r.created,expires:r.expires,reply:r.reply_to?{id:r.reply_to,userId:r.reply_expires>now?r.reply_user:null,text:r.reply_expires>now?r.reply_text:null,username:r.reply_expires>now?r.reply_name:null,expires:r.reply_expires}:null,user:person({...r,id:r.sender})})),hasMore:rows.results.length>100});
 }

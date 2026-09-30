@@ -157,4 +157,15 @@ assert.equal((await req('/game-boosts')).data.games.length,0);
 assert.equal((await req('/admin/log')).data.entries.length,9);
 cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/admin/log')).status,403);assert.equal((await req('/admin/boost','POST',{gameId:'gangbeasts',bonus:999,reason:'Unauthorized'})).status,403);
 console.log('PASS: owner-only access, no self-promotion, protected owner, mute/suspend/ban enforcement, reversal, role validation, banner validation, boosts and audit trail.');
+
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',pronouns:'they/them',favoriteGame:'gangbeasts'})).status,200);
+let profile=(await req('/profiles/chat1')).data.user;assert.equal(profile.pronouns,'they/them');assert.equal(profile.favoriteGame,'gangbeasts');
+await req('/me','PATCH',{username:'Chat1',bio:'new bio'});profile=(await req('/profiles/chat1')).data.user;assert.equal(profile.favoriteGame,'gangbeasts');assert.equal(profile.pronouns,'they/them');
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',pronouns:'x'.repeat(41)})).status,400);
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',favoriteGame:'missing-game'})).status,400);
+db.prepare('UPDATE chat_messages SET created=?').run(Date.now()-3000);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'Role label test',clientId:'role-label-test-0001'})).status,201);
+assert.equal((await req('/chat/messages')).data.messages.at(-1).user.roles[0].name,'Helper');
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',pronouns:'',favoriteGame:''})).status,200);
+console.log('PASS: pronouns/favorite persistence, omitted-field preservation, validation, clearing, and chat role labels.');
 db.close();console.log('PASS: signup/login, sessions/logout, private fields, reserved owner, profile permissions, ranking, lease exclusion, replay, idle-gap rejection and rate limiting.');

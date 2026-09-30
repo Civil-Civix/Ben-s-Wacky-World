@@ -5,7 +5,7 @@ import {scrypt,createHmac,timingSafeEqual,randomBytes,createHash} from 'node:cry
 import gameIds from './game-ids.mjs';
 const games=new Set(gameIds);
 const SESSION_AGE=180*86400000;
-const PUBLIC="id,username,bio,owner,created,play_ms,avatar_version,presence,banner_color,roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=users.id AND s.expires>CAST(strftime('%s','now') AS INTEGER)*1000) AS last_seen";
+const PUBLIC="id,username,bio,owner,created,play_ms,avatar_version,presence,banner_color,roles,pronouns,favorite_game,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=users.id AND s.expires>CAST(strftime('%s','now') AS INTEGER)*1000) AS last_seen";
 class HTTPError extends Error {constructor(status,message){super(message);this.status=status;}}
 const fail=(status,message)=>{throw new HTTPError(status,message);};
 export const digest=value=>createHash('sha256').update(value).digest('hex');
@@ -13,7 +13,7 @@ export function passwordHash(password,salt,pepper){
  const input=createHmac('sha256',pepper).update(password).digest();
  return new Promise((resolve,reject)=>scrypt(input,Buffer.from(salt,'hex'),32,{N:16384,r:8,p:5,maxmem:32*1024*1024},(error,key)=>error?reject(error):resolve(key.toString('hex'))));
 }
-function publicUser(row){return {id:row.id,username:row.username,bio:row.bio,owner:!!row.owner,created:row.created,playSeconds:Math.floor(row.play_ms/1000),avatarVersion:row.avatar_version,bannerColor:row.banner_color||'#24242c',roles:JSON.parse(row.roles||'[]'),presence:row.presence||'online',status:row.presence==='offline'||!(row.last_seen>Date.now()-90000)?'offline':row.presence||'online'};}
+function publicUser(row){return {id:row.id,username:row.username,bio:row.bio,owner:!!row.owner,created:row.created,playSeconds:Math.floor(row.play_ms/1000),avatarVersion:row.avatar_version,pronouns:row.pronouns||'',favoriteGame:row.favorite_game||'',bannerColor:row.banner_color||'#24242c',roles:JSON.parse(row.roles||'[]'),presence:row.presence||'online',status:row.presence==='offline'||!(row.last_seen>Date.now()-90000)?'offline':row.presence||'online'};}
 function permitted(user,now){if(user.banned)fail(403,'This account is banned.');if(user.suspended_until>now)fail(403,'This account is suspended until '+new Date(user.suspended_until).toISOString()+'.');}
 function cookie(token,age=SESSION_AGE/1000){return '__Host-wacky_session='+token+'; Path=/; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age='+age;}
 async function bounded(request,max=4096){
@@ -122,10 +122,12 @@ export default {
    if(path==='/me'&&request.method==='PATCH'){
     const data=await body(request),name=username(data.username),key=name.toLowerCase();
     if((me.owner&&key!=='wackyben')||(!me.owner&&key==='wackyben'))fail(400,'That username is reserved.');
+    if(data.pronouns!==undefined&&(typeof data.pronouns!=='string'||data.pronouns.length>40))fail(400,'Pronouns must be 40 characters or fewer.');
+    if(data.favoriteGame!==undefined&&(typeof data.favoriteGame!=='string'||(data.favoriteGame!==''&&!games.has(data.favoriteGame))))fail(400,'Choose a game from the catalog.');
     if(data.bannerColor!==undefined&&(typeof data.bannerColor!=='string'||!/^#[0-9a-f]{6}$/i.test(data.bannerColor)))fail(400,'Choose a valid banner color.');
     if(data.presence!==undefined&&!['online','offline','dnd'].includes(data.presence))fail(400,'Choose a valid status.');
     if(typeof data.bio!=='string'||data.bio.length>280)fail(400,'Bio must be 280 characters or fewer.');
-    try{await env.DB.prepare('UPDATE users SET username=?,username_key=?,bio=?,presence=?,banner_color=? WHERE id=?').bind(name,key,data.bio.trim(),data.presence??me.presence??'online',data.bannerColor??me.banner_color??'#24242c',me.id).run();}
+    try{await env.DB.prepare('UPDATE users SET username=?,username_key=?,bio=?,presence=?,banner_color=?,pronouns=?,favorite_game=? WHERE id=?').bind(name,key,data.bio.trim(),data.presence??me.presence??'online',data.bannerColor??me.banner_color??'#24242c',data.pronouns?.trim()??me.pronouns??'',data.favoriteGame??me.favorite_game??'',me.id).run();}
     catch(e){if(String(e).includes('UNIQUE'))fail(409,'That username is unavailable.');throw e;}
     const row=await env.DB.prepare('SELECT '+PUBLIC+' FROM users WHERE id=?').bind(me.id).first();return json({user:publicUser(row)});
    }

@@ -33,7 +33,7 @@
    $('#my-avatar').replaceChildren(avatar(me,'large'));
    $('#my-name').textContent=me.username;$('#my-badge').replaceChildren(badge(me));
    $('#my-playtime').textContent=duration(me.playSeconds);
-   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
+   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
   }
  }
  async function restore(){
@@ -64,7 +64,7 @@
  });
  $('#profile-form').addEventListener('submit',async event=>{
   event.preventDefault();const button=$('#profile-save');button.disabled=true;
-  try{me=(await api('/me',{method:'PATCH',data:{username:$('#profile-username').value.trim(),bio:$('#profile-bio').value,bannerColor:$('#profile-banner').value}})).user;renderAccount();note('Profile saved.');channel?.postMessage('changed');}
+  try{me=(await api('/me',{method:'PATCH',data:{username:$('#profile-username').value.trim(),bio:$('#profile-bio').value,bannerColor:$('#profile-banner').value,pronouns:$('#profile-pronouns').value}})).user;renderAccount();note('Profile saved.');channel?.postMessage('changed');}
   catch(error){note(error.message,true);}finally{button.disabled=false;}
  });
  $('#account-logout').addEventListener('click',async()=>{
@@ -128,16 +128,18 @@
    if(generation!==profileGeneration)return;
    $('#public-profile .public-profile-banner').style.background=user.bannerColor||'#24242c';
    const top=document.createElement('div');top.className='public-profile-top';top.append(avatar(user,'large'));
-   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});top.append(dm);}
+   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});const actions=document.createElement('div');actions.className='public-profile-buttons';const challenge=document.createElement('button');challenge.type='button';challenge.className='profile-challenge-button';challenge.textContent='Challenge';challenge.disabled=true;challenge.title='Challenges are coming soon';challenge.setAttribute('aria-label','Challenge — coming soon');actions.append(dm,challenge);top.append(actions);}
    if(me?.owner&&!user.owner){const manage=document.createElement('button');manage.type='button';manage.className='profile-message-button';manage.textContent='Manage';manage.addEventListener('click',()=>{profileDialog.close();window.WackyAdmin?.open(user.username);});top.append(manage);}
    const name=document.createElement('h2');name.id='public-profile-name';name.textContent=user.username;
    const identity=document.createElement('div');identity.className='public-profile-identity';identity.append(name,badge(user));
    const roles=document.createElement('div');roles.className='profile-roles';for(const role of user.roles||[]){const pill=document.createElement('span');pill.className='profile-role';pill.textContent=role.name;if(/^#[0-9a-f]{6}$/i.test(role.color))pill.style.setProperty('--role-color',role.color);roles.append(pill);}
+   const pronouns=document.createElement('p');pronouns.className='public-pronouns';pronouns.textContent=user.pronouns||'';pronouns.hidden=!user.pronouns;
    const status=document.createElement('p');status.className='public-profile-status';status.textContent=user.status==='online'?'Online':user.status==='dnd'?'Do not disturb':'Offline';
    const bio=document.createElement('p');bio.className='public-bio';bio.textContent=user.bio||'No bio yet.';
    const details=document.createElement('dl');details.className='public-profile-details';
    for(const [label,value] of [['Total playtime',duration(user.playSeconds)],['Joined',Number.isFinite(user.created)?new Date(user.created).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'—']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;details.append(dt,dd);}
-   $('#public-profile-content').replaceChildren(top,identity,status,roles,bio,details);
+   const favorite=document.createElement('div');favorite.className='public-favorite-game';const favoriteGame=(window.WACKY_GAMES||[]).find(g=>g.id===user.favoriteGame);if(favoriteGame){const label=document.createElement('small'),title=document.createElement('strong');label.textContent='Favorite game';title.textContent=favoriteGame.title;favorite.append(label,title);}else favorite.hidden=true;
+   $('#public-profile-content').replaceChildren(top,identity,pronouns,status,roles,bio,favorite,details);
   }catch(error){if(generation===profileGeneration)$('#public-profile-content').textContent=error.message;}
  }
  function personRow(user,podium=false){
@@ -168,6 +170,13 @@
   if(view==='leaderboard')void loadBoard();
   if(view==='settings')renderAccount();
  };
+ const favoriteSelect=$('#profile-favorite-game');
+ for(const game of [...(window.WACKY_GAMES||[])].sort((a,b)=>a.title.localeCompare(b.title))){const option=document.createElement('option');option.value=game.id;option.textContent=game.title;favoriteSelect.append(option);}
+ favoriteSelect.addEventListener('change',async()=>{
+  if(!me)return;const id=me.id,favoriteGame=favoriteSelect.value;favoriteSelect.disabled=true;
+  try{const current=(await api('/me')).user;if(me?.id!==id)return;const result=await api('/me',{method:'PATCH',data:{username:current.username,bio:current.bio,favoriteGame}});if(me?.id!==id)return;me=result.user;renderAccount(false);note('Favorite game saved.');channel?.postMessage('changed');}
+  catch(error){if(me?.id===id){favoriteSelect.value=me.favoriteGame||'';note(error.message,true);}}finally{favoriteSelect.disabled=false;}
+ });
  $('#profile-banner').addEventListener('input',e=>{$('#profile-banner-preview').style.backgroundColor=e.target.value;});
  const statusPicker=$('#status-picker');let statusTarget='profile-presence';
  document.querySelectorAll('[data-status-target]').forEach(button=>button.addEventListener('click',()=>{statusTarget=button.dataset.statusTarget;document.querySelectorAll('[data-status-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.statusChoice===(me?.presence||'online'))));statusPicker.showModal();}));
