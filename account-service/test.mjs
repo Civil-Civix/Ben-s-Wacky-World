@@ -128,4 +128,33 @@ db.prepare('UPDATE chat_messages SET expires=? WHERE id=?').run(Date.now()-1,pho
 cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/chat/photos/'+photoMsg.id)).status,404);
 console.log('PASS: presence preferences, stale heartbeat, conversations-only sidebar, photo-only messages, photo privacy and expiry.');
 
+
+// Only an immutable server-owned owner flag grants moderation privileges.
+cookie='__Host-wacky_session='+tokens[1];
+assert.equal((await req('/admin/users')).status,403);
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',owner:true,bannerColor:'#123abc',roles:[{name:'Admin',color:'#ffffff'}]})).status,200);
+assert.equal((await req('/me')).data.user.owner,false);
+assert.equal((await req('/profiles/chat1')).data.user.bannerColor,'#123abc');
+assert.deepEqual((await req('/profiles/chat1')).data.user.roles,[]);
+assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',bannerColor:'url(evil)'})).status,400);
+db.prepare('UPDATE users SET owner=1 WHERE id=?').run('chat0');cookie='__Host-wacky_session='+tokens[0];
+assert.equal((await req('/admin/users')).status,200);
+const action=async(type,extra={})=>req('/admin/users/chat1','POST',{action:type,reason:'Automated test',hours:1,...extra});
+assert.equal((await req('/admin/users/chat0','POST',{action:'ban',reason:'test'})).status,403);
+assert.equal((await action('mute')).status,200);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/chat/messages','POST',{to:null,text:'muted',clientId:'muted-admin-test-01'})).status,403);assert.equal((await req('/chat/messages')).status,200);
+cookie='__Host-wacky_session='+tokens[0];assert.equal((await action('unmute')).status,200);assert.equal((await action('suspend')).status,200);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/ai')).status,403);assert.equal((await req('/presence','POST',{})).status,403);
+cookie='__Host-wacky_session='+tokens[0];assert.equal((await action('unsuspend')).status,200);assert.equal((await action('ban')).status,200);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/chat/messages')).status,403);
+cookie='__Host-wacky_session='+tokens[0];assert.equal((await action('unban')).status,200);assert.equal((await action('roles',{roles:[{name:'Helper',color:'#00aabb'}]})).status,200);
+assert.equal((await req('/profiles/chat1')).data.user.roles[0].name,'Helper');
+assert.equal((await action('roles',{roles:[{name:'Bad',color:'red; color: white'}]})).status,400);
+assert.equal((await req('/admin/boost','POST',{gameId:'gangbeasts',bonus:250,reason:'Test boost'})).status,200);
+assert.equal((await req('/game-boosts')).data.games[0].bonus,250);
+assert.equal((await req('/admin/boost','POST',{gameId:'gangbeasts',bonus:0,reason:'Remove test boost'})).status,200);
+assert.equal((await req('/game-boosts')).data.games.length,0);
+assert.equal((await req('/admin/log')).data.entries.length,9);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/admin/log')).status,403);assert.equal((await req('/admin/boost','POST',{gameId:'gangbeasts',bonus:999,reason:'Unauthorized'})).status,403);
+console.log('PASS: owner-only access, no self-promotion, protected owner, mute/suspend/ban enforcement, reversal, role validation, banner validation, boosts and audit trail.');
 db.close();console.log('PASS: signup/login, sessions/logout, private fields, reserved owner, profile permissions, ranking, lease exclusion, replay, idle-gap rejection and rate limiting.');

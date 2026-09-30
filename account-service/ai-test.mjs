@@ -40,6 +40,13 @@ const imageEnv={...env,AI:{run:async(model,input)=>{assert(model.includes('scout
 const imageData='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=';
 assert.equal((await req(2,uploadBrowser,'POST',{...message(),attachment:{name:'pixel.png',type:'image',data:imageData}},imageEnv)).status,200);
 console.log('PASS: text upload, metadata-only history, private attachments, bad/oversized upload rejection, vision routing.');
+db.prepare('UPDATE users SET owner=1 WHERE id=?').run('user0');
+assert.equal((await req(0,browser)).data.unlimited,true);
+for(let i=0;i<32;i++)assert.equal((await req(0,browser,'POST',message())).status,200);
+assert.equal((await req(0,browser)).data.messages.length,30);
+assert.equal((await req(1,browser)).data.remaining,9); // only User1's own previous response counts
+console.log('PASS: owner bypasses both daily quotas without consuming other accounts browser allowance.');
+db.prepare('UPDATE users SET owner=0 WHERE id=?').run('user0');
 assert.equal(aiDay(Date.parse('2026-09-28T06:59:59Z')),'2026-09-27');assert.equal(aiDay(Date.parse('2026-09-28T07:00:00Z')),'2026-09-28');
 db.prepare('UPDATE ai_requests SET day=?').run('2000-01-01');assert.equal((await req(0,browser)).data.remaining,10);
 db.prepare('UPDATE ai_requests SET expires=?').run(Date.now()-1);assert.equal((await req(0,browser)).data.messages.length,0);await worker.scheduled({},env);assert.equal(db.prepare('SELECT count(*) AS n FROM ai_requests').get().n,0);

@@ -16,15 +16,16 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260929-settings-profile">
+  <link rel="stylesheet" href="styles.css?v=20260929-owner-banner">
   <script src="games.js?v=20260928-player-icons" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
-  <script src="popularity.js?v=20260919-popular" defer></script>
-  <script src="accounts.js?v=20260929-settings-profile" defer></script>
+  <script src="popularity.js?v=20260929-owner-banner" defer></script>
+  <script src="accounts.js?v=20260929-owner-banner" defer></script>
+  <script src="admin.js?v=20260929-owner" defer></script>
   <script src="messages.js?v=20260929-chat-photos-presence" defer></script>
   <script src="ai-files.js?v=20260929-upload" defer></script>
-  <script src="ai.js?v=20260929-ai-layout" defer></script>
+  <script src="ai.js?v=20260929-owner-banner" defer></script>
   <script src="app.js?v=20260928-ai" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260918-7" defer></script>
@@ -58,7 +59,7 @@
     <header><h1 id="messages-title">Chat</h1><p>Messages disappear after 24 hours.</p></header>
     <p id="messages-login" hidden><a href="#settings">Log in to chat</a> with your existing account.</p>
     <div id="messages-layout" hidden>
-      <nav class="messages-people" aria-label="Conversations"><h2 class="messages-sidebar-title">Messages</h2><button id="messages-public" type="button">Main room</button><div class="messages-section-heading"><span>Direct messages</span><button id="messages-new" type="button" aria-label="Start a direct message" title="Start a direct message">+</button></div><div id="messages-people"></div><div class="chat-self"><div id="chat-self-avatar"></div><div class="chat-self-info"><strong id="chat-self-name"></strong><label class="sr-only" for="chat-presence">Your chat status</label><select id="chat-presence"><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select></div><p id="chat-presence-note" role="status"></p></div></nav>
+      <nav class="messages-people" aria-label="Conversations"><h2 class="messages-sidebar-title">Messages</h2><button id="messages-public" type="button">Main room</button><div class="messages-section-heading"><span>Direct messages</span><button id="messages-new" type="button" aria-label="Start a direct message" title="Start a direct message">+</button></div><div id="messages-people"></div><div class="chat-self"><div id="chat-self-avatar"></div><div class="chat-self-info"><strong id="chat-self-name"></strong><label class="sr-only" for="chat-presence">Your chat status</label><button type="button" class="status-trigger" data-status-target="chat-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="chat-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select></div><p id="chat-presence-note" role="status"></p></div></nav>
       <div class="messages-room"><h2 id="messages-room-title">Main room</h2><button id="messages-older" type="button" hidden>Older messages</button><div id="messages-log" aria-label="Messages" tabindex="0"></div><p id="messages-status" role="status"></p><div id="messages-reply" hidden><span id="messages-reply-text"></span><button id="messages-reply-cancel" type="button" aria-label="Cancel reply">×</button></div><div id="messages-attachment" hidden><img alt="Photo preview"><span></span><button id="messages-remove-photo" type="button" aria-label="Remove photo">×</button></div><input id="messages-photo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><form id="messages-form"><button id="messages-attach" type="button" aria-label="Attach photo" title="Attach photo">+</button><label class="sr-only" for="messages-text">Message</label><textarea id="messages-text" rows="2" maxlength="1000" placeholder="Write a message…"></textarea><button type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form></div>
     </div>
   </section>
@@ -110,15 +111,15 @@
       </div>
       <div id="account-profile" hidden>
         <div class="my-profile-heading"><div id="my-avatar"></div><strong id="my-name"></strong><span id="my-badge"></span></div>
-        <section class="profile-status-section" aria-label="Availability"><label for="profile-presence">Your status</label><select id="profile-presence"><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select><p>Changes save automatically. Do not disturb hides chat badges.</p></section><div class="photo-actions"><label class="photo-upload">Upload photo<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="avatar-remove">Remove photo</button></div>
+        <div class="photo-actions"><label class="photo-upload">Upload photo<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="avatar-remove">Remove photo</button></div><section class="profile-status-section" aria-label="Availability"><label for="profile-presence">Your status</label><button type="button" class="status-trigger" data-status-target="profile-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="profile-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select><p>Changes save automatically. Do not disturb hides chat badges.</p></section>
         <div class="playtime-summary"><span>Total game playtime</span><strong id="my-playtime">0h 0m</strong><small id="playtime-state">Open a game to start counting.</small></div>
         <form id="profile-form"><h3 class="settings-section-title">Profile details</h3>
           <label>Username<input id="profile-username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required autocomplete="username" spellcheck="false"></label>
-          <label>Bio<textarea id="profile-bio" maxlength="280" rows="3" placeholder="A little about you…"></textarea></label>
+          <label class="banner-color-control">Banner color<input id="profile-banner" type="color" value="#24242c"><span id="profile-banner-preview" aria-hidden="true"></span></label><label>Bio<textarea id="profile-bio" maxlength="280" rows="3" placeholder="A little about you…"></textarea></label>
 
           <button id="profile-save" class="account-primary" type="submit">Save profile</button>
         </form>
-        <div class="account-actions"><button type="button" id="my-public-profile">View public profile</button><button type="button" id="account-logout">Log out</button></div>
+        <button id="admin-open" type="button" class="admin-open" hidden>Admin tools</button><div class="account-actions"><button type="button" id="my-public-profile">View public profile</button><button type="button" id="account-logout">Log out</button></div>
       </div>
       <p id="account-message" role="status" aria-live="polite"></p>
     </section><div class="appearance-column"><h2>Appearance</h2>
@@ -155,6 +156,9 @@
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>
     <p id="leaderboard-status" role="status"></p><div id="leaderboard-list" aria-label="All players"></div><button type="button" id="leaderboard-more" hidden>Load more</button>
   </section>
+  <dialog id="status-picker" aria-labelledby="status-picker-title"><h2 id="status-picker-title">Set your status</h2><button type="button" data-status-choice="online"><i class="status-dot" data-status="online"></i><span><strong>Online</strong><small>Let people know you are here.</small></span></button><button type="button" data-status-choice="dnd"><i class="status-dot" data-status="dnd"></i><span><strong>Do not disturb</strong><small>Receive messages without notification badges.</small></span></button><button type="button" data-status-choice="offline"><i class="status-dot" data-status="offline"></i><span><strong>Appear offline</strong><small>Browse and chat without appearing online.</small></span></button><form method="dialog"><button>Cancel</button></form></dialog>
+  <dialog id="admin-panel" aria-labelledby="admin-heading"><header><div><h2 id="admin-heading">Admin tools</h2><p>Owner access · WackyBen</p></div><form method="dialog"><button>Close</button></form></header><p id="admin-status" role="status"></p><div class="admin-columns"><section><h3>Accounts</h3><label class="sr-only" for="admin-search">Find an account</label><input id="admin-search" placeholder="Search usernames" maxlength="20"><div id="admin-users"></div></section><section id="admin-detail"><p>Select an account to manage it.</p></section></div><section class="admin-boost"><h3>Game popularity</h3><p>Set bonus points added to the regular 30-day score. Set 0 to remove a bonus.</p><form id="admin-boost-form"><label>Game<input id="admin-game" list="admin-games" required placeholder="Type a game name"><datalist id="admin-games"></datalist></label><label>Bonus points<input id="admin-bonus" type="number" min="0" max="1000000" value="0" required></label><label>Reason<input id="admin-boost-reason" maxlength="280" required></label><button>Save bonus</button></form><div id="admin-boosts"></div></section><section class="admin-audit"><h3>Recent admin activity</h3><div id="admin-log"></div></section></dialog>
+  <dialog id="admin-confirm" aria-labelledby="admin-confirm-title"><h2 id="admin-confirm-title">Confirm action</h2><p id="admin-confirm-text"></p><form method="dialog"><button value="cancel">Cancel</button><button value="apply" class="admin-danger">Apply</button></form></dialog>
   <dialog id="dm-picker" aria-labelledby="dm-picker-title"><h2 id="dm-picker-title">Start a direct message</h2><label for="messages-search">Find someone</label><input id="messages-search" placeholder="Search usernames" maxlength="20" autocomplete="off"><p>Type at least two letters.</p><div id="dm-picker-results" aria-live="polite"></div><form method="dialog"><button>Cancel</button></form></dialog>
   <dialog id="public-profile" aria-label="Public profile"><div class="public-profile-banner" aria-hidden="true"></div><div id="public-profile-content"></div><footer class="public-profile-footer"><button id="public-profile-close" type="button" aria-label="Close profile">Close</button></footer></dialog>
   <dialog id="server-picker" aria-labelledby="server-heading"><h2 id="server-heading">Choose a server</h2><p>Choose a server to continue.</p><div id="server-choices"></div><button type="button" id="server-cancel">Cancel</button></dialog>

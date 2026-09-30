@@ -24,10 +24,10 @@
  function paint(){
   const signedIn=!!account.user;
   $('#ai-login').hidden=signedIn;$('#ai-content').hidden=!signedIn;
-  $('#ai-send').disabled=!signedIn||busy||reading||!state?.enabled||state.remaining<1;
-  $('#ai-text').disabled=!signedIn||busy||reading||!state?.enabled||state.remaining<1;
+  $('#ai-send').disabled=!signedIn||busy||reading||!state?.enabled||(!state.unlimited&&state.remaining<1);
+  $('#ai-text').disabled=!signedIn||busy||reading||!state?.enabled||(!state.unlimited&&state.remaining<1);
   $('#ai-attach').disabled=$('#ai-send').disabled;$('#ai-file-remove').disabled=busy;$('#ai-attachment').hidden=!attachment;$('#ai-file-name').textContent=attachment?.name||'';
-  $('#ai-allowance').textContent=state?state.remaining+' / '+(state.limit||10)+' responses left today':'Checking your allowance…';
+  $('#ai-allowance').textContent=state?(state.unlimited?'Unlimited responses · Owner':state.remaining+' / '+(state.limit||10)+' responses left today'):'Checking your allowance…';
   if(!signedIn)return;
   const log=$('#ai-log'),scroll=log.scrollTop,atBottom=log.scrollHeight-log.scrollTop-log.clientHeight<90,fragment=document.createDocumentFragment();
   for(const turn of state?.messages||[]){
@@ -55,7 +55,7 @@
  window.addEventListener('wacky-account-change',sync);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&open){paint();void refresh();}});
  $('#ai-form').addEventListener('submit',async event=>{
-  event.preventDefault();const text=$('#ai-text').value.trim();if(busy||reading||!account.user||!state?.enabled||state.remaining<1||!text)return;
+  event.preventDefault();const text=$('#ai-text').value.trim();if(busy||reading||!account.user||!state?.enabled||(!state.unlimited&&state.remaining<1)||!text)return;
   const token=generation;if(!pending||pending.text!==text)pending={text,attachment,requestId:crypto.randomUUID()};
   busy=true;paint();note('Thinking…');
   try{

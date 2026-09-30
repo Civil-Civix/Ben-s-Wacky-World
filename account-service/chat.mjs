@@ -34,6 +34,7 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  if(to!==null&&(typeof to!=='string'||to.length>64||to===me.id))fail(400,'Choose another account.');
  if(to!==null&&!await env.DB.prepare('SELECT id FROM users WHERE id=?').bind(to).first())fail(404,'Account not found.');
  if(request.method==='POST'){
+  if(me.muted_until>now)fail(403,'You are muted until '+new Date(me.muted_until).toISOString()+'.');
   if(typeof data.text!=='string'||data.text.length>1000||(!data.text.trim()&&!data.photo))fail(400,'Write a message or attach a photo.');
   let photo=null;
   if(data.photo!=null){

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users(
  id TEXT PRIMARY KEY, username TEXT NOT NULL, username_key TEXT NOT NULL UNIQUE,
  salt TEXT NOT NULL, password_hash TEXT NOT NULL, bio TEXT NOT NULL DEFAULT '',
  owner INTEGER NOT NULL DEFAULT 0 CHECK(owner IN (0,1)), created INTEGER NOT NULL,
- play_ms INTEGER NOT NULL DEFAULT 0 CHECK(play_ms>=0), avatar_version INTEGER NOT NULL DEFAULT 0, presence TEXT NOT NULL DEFAULT 'online'
+ play_ms INTEGER NOT NULL DEFAULT 0 CHECK(play_ms>=0), avatar_version INTEGER NOT NULL DEFAULT 0, presence TEXT NOT NULL DEFAULT 'online',banner_color TEXT NOT NULL DEFAULT '#24242c',roles TEXT NOT NULL DEFAULT '[]',muted_until INTEGER NOT NULL DEFAULT 0,suspended_until INTEGER NOT NULL DEFAULT 0,banned INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS users_ranking ON users(play_ms DESC,username_key);
 CREATE TABLE IF NOT EXISTS sessions(
@@ -19,3 +19,6 @@ CREATE TRIGGER IF NOT EXISTS credit_playtime AFTER UPDATE ON activity WHEN NEW.a
 BEGIN UPDATE users SET play_ms=play_ms+NEW.accrued WHERE id=NEW.user_id; END;
 
 CREATE INDEX IF NOT EXISTS sessions_presence ON sessions(user_id,last_seen);
+
+CREATE TABLE IF NOT EXISTS admin_log(id INTEGER PRIMARY KEY AUTOINCREMENT,actor TEXT NOT NULL,target TEXT NOT NULL,action TEXT NOT NULL,details TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS game_boosts(game_id TEXT PRIMARY KEY,bonus INTEGER NOT NULL CHECK(bonus>=0),updated INTEGER NOT NULL);

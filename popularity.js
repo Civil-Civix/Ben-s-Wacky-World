@@ -29,6 +29,7 @@
           if(!Number.isSafeInteger(row.plays)||row.plays<0)throw new Error('Invalid count');
           next.set(row.id,row.plays);
         }
+        try{const boostResponse=await fetch('https://bens-wacky-accounts.mr-ellis1009.workers.dev/game-boosts',{signal:AbortSignal.timeout(5000),credentials:'omit'});if(boostResponse.ok){const boosts=await boostResponse.json();for(const row of boosts.games||[])if(validIds.has(row.id)&&Number.isSafeInteger(row.bonus)&&row.bonus>=0)next.set(row.id,(next.get(row.id)||0)+row.bonus);}}catch{}
         scores=next;state='ready';lastFetched=Date.now();
       } catch (_) { state='error'; }
       finally { loading=null;changed(); }
@@ -56,6 +57,6 @@
     } catch (_) { /* A ranking outage must never prevent playing. */ }
     finally { pending.delete(game.id); }
   }
-  window.WackyPopularity={refresh,track,get state(){return state;},get hasScores(){return scores!==null;},
+  window.WackyPopularity={refresh,track,invalidate(){lastFetched=0;return refresh();},get state(){return state;},get hasScores(){return scores!==null;},
     score(id){return scores?.get(id)||0;}};
 })();
