@@ -179,3 +179,8 @@ and print their IDs for explicit database cleanup afterward. They do not clean
 up automatically. The browser check requires Playwright (`PLAYWRIGHT_PATH` may
 point to an installed package) and Microsoft Edge. Run from the repository root.
 Do not run against production routinely.
+
+Menu restoration: format selection, team selection, battle options, Teambuilder,
+and the native Challenge a Player menu are restored on profile-battle.html.
+Only site-profile invitation matchmaking is fixed to Gen 9 Random Battle.
+Profile authentication now adds a status line instead of replacing the menu.
