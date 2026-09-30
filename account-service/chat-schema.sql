@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
  expires INTEGER NOT NULL,
  client_id TEXT NOT NULL,
  reply_to INTEGER,
+ photo TEXT,
  UNIQUE(sender,client_id)
 );
 CREATE INDEX IF NOT EXISTS chat_expiry ON chat_messages(expires);

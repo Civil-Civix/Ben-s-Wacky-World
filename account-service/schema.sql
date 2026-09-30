@@ -3,11 +3,11 @@ CREATE TABLE IF NOT EXISTS users(
  id TEXT PRIMARY KEY, username TEXT NOT NULL, username_key TEXT NOT NULL UNIQUE,
  salt TEXT NOT NULL, password_hash TEXT NOT NULL, bio TEXT NOT NULL DEFAULT '',
  owner INTEGER NOT NULL DEFAULT 0 CHECK(owner IN (0,1)), created INTEGER NOT NULL,
- play_ms INTEGER NOT NULL DEFAULT 0 CHECK(play_ms>=0), avatar_version INTEGER NOT NULL DEFAULT 0
+ play_ms INTEGER NOT NULL DEFAULT 0 CHECK(play_ms>=0), avatar_version INTEGER NOT NULL DEFAULT 0, presence TEXT NOT NULL DEFAULT 'online'
 );
 CREATE INDEX IF NOT EXISTS users_ranking ON users(play_ms DESC,username_key);
 CREATE TABLE IF NOT EXISTS sessions(
- token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires INTEGER NOT NULL
+ token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires INTEGER NOT NULL, last_seen INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires);
 CREATE TABLE IF NOT EXISTS avatars(user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, data BLOB NOT NULL);
@@ -17,3 +17,5 @@ CREATE TABLE IF NOT EXISTS activity(
 );
 CREATE TRIGGER IF NOT EXISTS credit_playtime AFTER UPDATE ON activity WHEN NEW.accrued>0
 BEGIN UPDATE users SET play_ms=play_ms+NEW.accrued WHERE id=NEW.user_id; END;
+
+CREATE INDEX IF NOT EXISTS sessions_presence ON sessions(user_id,last_seen);

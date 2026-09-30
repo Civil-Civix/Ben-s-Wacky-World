@@ -4,7 +4,7 @@ import {scrypt,createHmac,timingSafeEqual,randomBytes,createHash} from 'node:cry
 import gameIds from './game-ids.mjs';
 const games=new Set(gameIds);
 const SESSION_AGE=180*86400000;
-const PUBLIC='id,username,bio,owner,created,play_ms,avatar_version';
+const PUBLIC="id,username,bio,owner,created,play_ms,avatar_version,presence,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=users.id AND s.expires>CAST(strftime('%s','now') AS INTEGER)*1000) AS last_seen";
 class HTTPError extends Error {constructor(status,message){super(message);this.status=status;}}
 const fail=(status,message)=>{throw new HTTPError(status,message);};
 export const digest=value=>createHash('sha256').update(value).digest('hex');
@@ -12,7 +12,7 @@ export function passwordHash(password,salt,pepper){
  const input=createHmac('sha256',pepper).update(password).digest();
  return new Promise((resolve,reject)=>scrypt(input,Buffer.from(salt,'hex'),32,{N:16384,r:8,p:5,maxmem:32*1024*1024},(error,key)=>error?reject(error):resolve(key.toString('hex'))));
 }
-function publicUser(row){return {id:row.id,username:row.username,bio:row.bio,owner:!!row.owner,created:row.created,playSeconds:Math.floor(row.play_ms/1000),avatarVersion:row.avatar_version};}
+function publicUser(row){return {id:row.id,username:row.username,bio:row.bio,owner:!!row.owner,created:row.created,playSeconds:Math.floor(row.play_ms/1000),avatarVersion:row.avatar_version,presence:row.presence||'online',status:row.presence==='offline'||!(row.last_seen>Date.now()-90000)?'offline':row.presence||'online'};}
 function cookie(token,age=SESSION_AGE/1000){return '__Host-wacky_session='+token+'; Path=/; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age='+age;}
 async function bounded(request,max=4096){
  if(Number(request.headers.get('Content-Length'))>max)fail(413,'Upload is too large.');
@@ -30,7 +30,7 @@ function username(value){if(typeof value!=='string'||!/^[A-Za-z0-9_]{3,20}$/.tes
 async function session(request,env,now){
  const token=/(?:^|;\s*)__Host-wacky_session=([a-f0-9]{64})(?:;|$)/.exec(request.headers.get('Cookie')||'')?.[1];
  if(!token)fail(401,'Please log in.');
- const row=await env.DB.prepare('SELECT users.*,sessions.token_hash FROM sessions JOIN users ON users.id=sessions.user_id WHERE token_hash=? AND expires>?').bind(digest(token),now).first();
+ const row=await env.DB.prepare('SELECT users.*,sessions.token_hash,sessions.last_seen FROM sessions JOIN users ON users.id=sessions.user_id WHERE token_hash=? AND expires>?').bind(digest(token),now).first();
  if(!row)fail(401,'Please log in again.');return row;
 }
 async function newSession(env,id,now){
@@ -38,7 +38,7 @@ async function newSession(env,id,now){
  await env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').bind(digest(token),id,now+SESSION_AGE).run();
  return token;
 }
-export function validJPEG(bytes){
+export function validJPEG(bytes,maxDimension=256){
  if(bytes.length<4||bytes[0]!==255||bytes[1]!==216||bytes[bytes.length-2]!==255||bytes[bytes.length-1]!==217)return false;
  let p=2;
  while(p+4<=bytes.length){
@@ -47,7 +47,7 @@ export function validJPEG(bytes){
   const length=(bytes[p]<<8)|bytes[p+1];if(length<2||p+length>bytes.length)return false;
   if([192,193,194].includes(marker)){
    const height=(bytes[p+3]<<8)|bytes[p+4],width=(bytes[p+5]<<8)|bytes[p+6];
-   return length>=8&&width>0&&width<=256&&height>0&&height<=256;
+   return length>=8&&width>0&&width<=maxDimension&&height>0&&height<=maxDimension;
   }p+=length;
  }return false;
 }
@@ -104,7 +104,11 @@ export default {
    }
    const me=await session(request,env,now);
    if(path==='/ai')return await ai({request,url,env,me,now,body,fail,json});
-   if(path.startsWith('/chat/')){const response=await chat({request,url,env,me,now,body,fail,json});if(response)return response;}
+   if(path.startsWith('/chat/')){const response=await chat({request,url,env,me,now,body,fail,json,validJPEG});if(response)return response;}
+   if(path==='/presence'&&request.method==='POST'){
+    await env.DB.prepare('UPDATE sessions SET last_seen=? WHERE token_hash=?').bind(now,me.token_hash).run();
+    return json({presence:me.presence||'online',status:me.presence==='offline'?'offline':me.presence||'online'});
+   }
    if(path==='/me'&&request.method==='GET')return json({user:publicUser(me)});
    if(path==='/logout'&&request.method==='POST'){
     await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(me.token_hash).run();
@@ -113,8 +117,9 @@ export default {
    if(path==='/me'&&request.method==='PATCH'){
     const data=await body(request),name=username(data.username),key=name.toLowerCase();
     if((me.owner&&key!=='wackyben')||(!me.owner&&key==='wackyben'))fail(400,'That username is reserved.');
+    if(data.presence!==undefined&&!['online','offline','dnd'].includes(data.presence))fail(400,'Choose a valid status.');
     if(typeof data.bio!=='string'||data.bio.length>280)fail(400,'Bio must be 280 characters or fewer.');
-    try{await env.DB.prepare('UPDATE users SET username=?,username_key=?,bio=? WHERE id=?').bind(name,key,data.bio.trim(),me.id).run();}
+    try{await env.DB.prepare('UPDATE users SET username=?,username_key=?,bio=?,presence=? WHERE id=?').bind(name,key,data.bio.trim(),data.presence??me.presence??'online',me.id).run();}
     catch(e){if(String(e).includes('UNIQUE'))fail(409,'That username is unavailable.');throw e;}
     const row=await env.DB.prepare('SELECT '+PUBLIC+' FROM users WHERE id=?').bind(me.id).first();return json({user:publicUser(row)});
    }

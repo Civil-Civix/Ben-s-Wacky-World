@@ -96,4 +96,36 @@ assert.equal((await req('/chat/messages')).data.messages.length,0);
 cookie='__Host-wacky_session='+tokens[0];assert.equal((await req('/chat/messages?to=chat1')).data.messages.length,0);
 await worker.scheduled({},env);assert.equal(db.prepare('SELECT count(*) AS n FROM chat_messages').get().n,0);
 console.log('PASS: chat auth, DM isolation, sender identity, throttling, retry deduplication, size validation, expiry and cleanup.');
+
+// Presence is per session; old heartbeats and explicit invisibility stay offline.
+cookie='__Host-wacky_session='+tokens[0];
+assert.equal((await req('/presence','POST',{})).status,200);
+assert.equal((await req('/profiles/chat0')).data.user.status,'online');
+assert.equal((await req('/me','PATCH',{username:'Chat0',bio:'',presence:'dnd'})).status,200);
+assert.equal((await req('/profiles/chat0')).data.user.status,'dnd');
+assert.equal((await req('/me','PATCH',{username:'Chat0',bio:'',presence:'offline'})).status,200);
+assert.equal((await req('/profiles/chat0')).data.user.status,'offline');
+await req('/me','PATCH',{username:'Chat0',bio:'',presence:'online'});
+db.prepare('UPDATE sessions SET last_seen=? WHERE user_id=?').run(Date.now()-91000,'chat0');
+assert.equal((await req('/profiles/chat0')).data.user.status,'offline');
+assert.equal((await req('/me','PATCH',{username:'Chat0',bio:'',presence:'bogus'})).status,400);
+assert.equal((await req('/chat/people?conversations=1')).data.users.length,0);
+assert.equal((await req('/chat/people?q=chat')).data.users.length,2);
+// Minimal JPEG header fixture: enough for dimensions validation without external files.
+const photo='data:image/jpeg;base64,'+Buffer.from([255,216,255,192,0,8,8,0,32,0,32,1,255,217]).toString('base64');
+assert.equal((await req('/chat/messages','POST',{to:'chat1',text:'',photo,clientId:'photo-message-00001'})).status,201);
+const photoMsg=(await req('/chat/messages?to=chat1')).data.messages[0];
+assert.equal(photoMsg.hasPhoto,true);assert(!JSON.stringify(photoMsg).includes('base64'));
+assert.equal((await req('/chat/people?conversations=1')).data.users[0].id,'chat1');
+assert.equal((await req('/chat/photos/'+photoMsg.id)).data.photo,photo);
+cookie='__Host-wacky_session='+tokens[1];
+assert.equal((await req('/chat/photos/'+photoMsg.id)).status,200);
+cookie='__Host-wacky_session='+tokens[2];
+assert.equal((await req('/chat/photos/'+photoMsg.id)).status,404);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'',photo:'data:image/svg+xml;base64,AA==',clientId:'invalid-photo-00001'})).status,400);
+assert.equal((await req('/chat/messages','POST',{to:null,text:'',photo:'x'.repeat(110001),clientId:'oversize-photo-0001'})).status,413);
+db.prepare('UPDATE chat_messages SET expires=? WHERE id=?').run(Date.now()-1,photoMsg.id);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/chat/photos/'+photoMsg.id)).status,404);
+console.log('PASS: presence preferences, stale heartbeat, conversations-only sidebar, photo-only messages, photo privacy and expiry.');
+
 db.close();console.log('PASS: signup/login, sessions/logout, private fields, reserved owner, profile permissions, ranking, lease exclusion, replay, idle-gap rejection and rate limiting.');
