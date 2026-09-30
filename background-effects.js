@@ -41,7 +41,7 @@
   }
   ctx.globalAlpha=1;
  }
- function paused(){return document.hidden||document.body.classList.contains('playing');}
+ function paused(){return document.hidden||document.body.classList.contains('playing')||document.body.classList.contains('messages-open')||!document.querySelector('#ai-panel').hidden;}
  function tick(now){raf=0;if(paused()||!animate||effect==='none'||effect==='snow')return;
   if(now-last>=32){draw(Math.min((now-last)/1000,.06));last=now;}
   raf=requestAnimationFrame(tick);
@@ -49,7 +49,7 @@
  function sync(){cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
  window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect;effect=settings.effect;color=settings.accent;animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
- document.addEventListener('visibilitychange',sync);window.addEventListener('resize',()=>{resize();sync();});
+ document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();
 })();
 

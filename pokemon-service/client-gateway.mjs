@@ -5,7 +5,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 const origin = 'https://bens-pokemon.129-146-183-45.sslip.io';
 const cache = process.env.BWW_CACHE || '/var/cache/bww-client';
-const types = {'.png':'image/png','.gif':'image/gif','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.mp3':'audio/mpeg','.ogg':'audio/ogg','.js':'text/javascript','.css':'text/css','.woff':'font/woff','.woff2':'font/woff2','.ico':'image/x-icon'};
+const types = {'.png':'image/png','.gif':'image/gif','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.wav':'audio/wav','.mp3':'audio/mpeg','.ogg':'audio/ogg','.js':'text/javascript','.css':'text/css','.woff':'font/woff','.woff2':'font/woff2','.ico':'image/x-icon'};
 await fs.mkdir(cache, {recursive:true});
 let used = 0, downloads = 0;
 for (const file of await fs.readdir(cache)) used += (await fs.stat(path.join(cache, file))).size;

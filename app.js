@@ -56,7 +56,8 @@ function normalize(text) {
   return text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-let randomArtTimer;
+const searchTitles=new Map(games.map(game=>[game.id,normalize(game.title)]));
+let randomArtTimer,randomArtObserver;
 const randomMotion=matchMedia('(prefers-reduced-motion: reduce)');
 function makeRandomCard(){
  const card=document.createElement('button');
@@ -64,7 +65,8 @@ function makeRandomCard(){
  const img=document.createElement('img');img.alt='';img.decoding='async';
  const label=document.createElement('span');label.textContent='Random game';
  card.append(img,label);
- const art=games.map(g=>imageMap[g.id]).filter(p=>typeof p==='string'&&p.startsWith('images/')&&!p.includes('..'));
+ const art=games.map(g=>imageMap[g.id]).filter(p=>typeof p==='string'&&p.startsWith('images/')&&!p.includes('..')).slice(0,8);
+ let visible=false;randomArtObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;});randomArtObserver.observe(card);
  let previous=-1;
  function changeArt(){
   if(!art.length)return;
@@ -76,7 +78,7 @@ function makeRandomCard(){
  img.addEventListener('load',()=>{img.hidden=false;});
  changeArt();
  randomArtTimer=setInterval(()=>{
-  if(!document.hidden&&!document.body.classList.contains('playing')&&!randomMotion.matches&&card.isConnected)changeArt();
+  if(visible&&!document.hidden&&!document.body.classList.contains('playing')&&!randomMotion.matches&&!navigator.connection?.saveData&&card.isConnected)changeArt();
  },1800);
  card.addEventListener('click',()=>openGame(games[Math.floor(Math.random()*games.length)]));
  return card;
@@ -84,7 +86,7 @@ function makeRandomCard(){
 
 
 function render() {
-  clearInterval(randomArtTimer);
+  clearInterval(randomArtTimer);randomArtObserver?.disconnect();
   if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
   if (view === "request") {document.title="Request | Ben's Wacky World";return;}
   if (view === "ai") {document.title="AI Chat | Ben\'s Wacky World";return;}
@@ -94,7 +96,7 @@ function render() {
   const query = normalize(search.value);
   const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
-  const matches = pool.filter(game => normalize(game.title).includes(query));
+  const matches = pool.filter(game => searchTitles.get(game.id).includes(query));
   const popularity=window.WackyPopularity;
   const popularSort=gameSort==='popular';
   matches.sort((a,b)=>
@@ -269,7 +271,7 @@ function applyRoute() {
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
 document.querySelector('.nav-settings').addEventListener('click',()=>{location.hash='settings';});
-search.addEventListener('input',render);
+let searchTimer;search.addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,100);});
 document.querySelector('.nav-game').addEventListener('click', () => {
   if (location.hash !== '#all') location.hash = 'all';
   else {search.value = '';render();window.scrollTo({top:0,behavior:'instant'});}
@@ -313,7 +315,7 @@ window.addEventListener('storage', event => {
 });
 window.addEventListener('popularitychange',()=>{if(gameSort==='popular')render();});
 applyRoute();
-fetch('./game-images.json', {cache:'no-store'}).then(response => {
+fetch('./game-images.json?v=20260930').then(response => {
   if(!response.ok) throw new Error('Image map unavailable');
   return response.json();
 }).then(map => {

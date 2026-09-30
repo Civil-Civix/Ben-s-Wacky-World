@@ -1,6 +1,6 @@
 import {createRequire} from 'node:module';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'playwright');
-import {readFileSync,existsSync} from 'node:fs';import path from 'node:path';import {randomBytes} from 'node:crypto';
+import {readFileSync,existsSync,mkdirSync} from 'node:fs';import path from 'node:path';import {randomBytes} from 'node:crypto';
 const api='https://bens-wacky-accounts.mr-ellis1009.workers.dev',host='https://civil-civix.github.io',game='https://bens-pokemon.129-146-183-45.sslip.io';
 const browser=await chromium.launch({headless:true,channel:'msedge'}),players=[],errors=[];
 try{
@@ -24,5 +24,13 @@ for(const p of players){await p.page.waitForFunction(()=>document.querySelector(
 for(const p of players){const frame=await p.page.waitForEvent('framenavigated',{predicate:f=>f.url().includes('/profile-battle.html'),timeout:1000}).catch(()=>p.page.frames().find(f=>f.url().includes('/profile-battle.html')));if(!frame)throw Error('No game frame');p.frame=frame;await frame.waitForFunction(()=>typeof PS!=='undefined'&&PS.user.named,{timeout:30000});await frame.waitForFunction(()=>Object.keys(PS.rooms).some(id=>id.startsWith('battle-')),{timeout:30000});console.log('Browser battle connected: '+p.username);}
 for(const p of players){const peer=players.find(x=>x!==p);await p.frame.waitForFunction(name=>document.body.innerText.includes(name),peer.username);}
 await players[0].frame.evaluate(()=>{const id=Object.keys(PS.rooms).find(x=>x.startsWith('battle-'));PS.send('/forfeit',id);});
+await players[0].page.evaluate(()=>WackyBattleGame.close());
+await players[0].page.evaluate(()=>location.hash='settings');await players[0].page.locator('#account-profile').waitFor({state:'visible'});
+mkdirSync('.audit-evidence',{recursive:true});await players[0].page.screenshot({path:'.audit-evidence/settings-polish.png',fullPage:true});
+for(const width of [1365,390]){
+ await players[0].page.setViewportSize({width,height:900});
+ for(const route of ['home','all','settings','messages','ai']){await players[0].page.evaluate(hash=>location.hash=hash,route);await players[0].page.waitForTimeout(150);const overflow=await players[0].page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);if(overflow)throw Error('Horizontal overflow: '+route+' at '+width);}
+}
+console.log('PASS: five main pages fit desktop and mobile widths.');
 console.log('Browser errors: '+JSON.stringify(errors));if(errors.length)throw Error('Browser errors detected');console.log('PASS: profile challenge, acceptance, embedded authentication, battle start and profile names.');
 }finally{await browser.close();}

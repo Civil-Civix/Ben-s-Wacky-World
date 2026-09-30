@@ -145,3 +145,37 @@ this folder. Keep private keys and live user data outside the public repo.
 The server runs in Oracle Cloud; GitHub Pages only serves the website.
 No Showdown runtime, configuration secrets, or SSH keys belong in the
 public GitHub Pages content.
+
+
+## Profile battles — September 30, 2026
+
+The site now opens `/profile-battle.html`. Existing `/battle.html` remains
+available for the old frontend during rollout. Profile challenges use Gen 9
+6v6 Random Battle: invite, accept/decline, then automatically join the same game.
+The new client signs in using the site's existing authenticated profile.
+A stable internal ID avoids username collisions; the client displays profile names.
+
+The account Worker includes `battle.mjs`; apply `battle-schema.sql` before
+publishing that module and the updated `worker.mjs`. Tickets expire in 60 seconds,
+are bound to the connection challenge, and can be consumed only once. Invitations
+expire after two minutes. An accepted invitation has 90 seconds to connect.
+Banned/suspended users cannot obtain or redeem tickets. Existing connected
+battles are not forcibly disconnected by a later site moderation change.
+
+Server patch: `node patch-profiles.mjs SERVER_SOURCE`, then build and restart.
+`deploy-profiles.sh` backs up the touched files and updates client/source.zip.
+Set `CLIENT_ONLY=1` for client changes without rebuilding/restarting Showdown.
+It expects helpers uploaded to `/home/ubuntu/`; inspect its fixed paths first.
+The gateway now serves WAV audio, including the challenge notification sound.
+
+Checks: account/AI/provider suites passed; two temporary site profiles completed
+three battle turns. Two real browser sessions accepted a profile challenge,
+authenticated inside the iframe, entered the same battle, and displayed profile
+names. All temporary accounts from these checks were removed. The notification
+WAV initially returned 404; its corrected endpoint returned 200.
+
+`profile-smoke-test.mjs` and `profile-browser-test.mjs` create disposable accounts
+and print their IDs for explicit database cleanup afterward. They do not clean
+up automatically. The browser check requires Playwright (`PLAYWRIGHT_PATH` may
+point to an installed package) and Microsoft Edge. Run from the repository root.
+Do not run against production routinely.
