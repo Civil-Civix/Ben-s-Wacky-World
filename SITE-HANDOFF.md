@@ -39,3 +39,19 @@ one challenge with another person. Largest future loading opportunity: several
 older PNG cards (Gang Beasts ~1.97 MB, Among Us ~1.58 MB, Yohoho ~1.27 MB) could
 have separately optimized thumbnails. Original artwork has not been modified.
 Continue in this same repository/project for further optimization.
+
+
+## Account / Basic Settings split
+Account now opens account-dialog from the top-left avatar or home Account tile.
+Guests see login/sign-up (with password confirmation); signed-in users see the
+profile editor and live preview. Existing profile/status/favorite/admin features
+remain. Basic Settings uses a separate gear next to Account and contains
+Appearance/background controls. Request navigation and its form were removed;
+there are still eight home tiles and eight sidebar entries. Old #request links
+return home, while #account opens the dialog. Login links in Chat/AI and the
+Showdown login requirement now open this dialog.
+Changed frontend files: index.html, accounts.js, app.js, styles.css.
+Mocked browser checks passed for signup validation, persistence, profile saves,
+status, admin access, logout, returning to the underlying page, and desktop/mobile
+widths. No real user data or backend changes were needed. Publish these changes
+through the usual manual GitHub push.

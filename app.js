@@ -88,11 +88,10 @@ function makeRandomCard(){
 function render() {
   clearInterval(randomArtTimer);randomArtObserver?.disconnect();
   if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
-  if (view === "request") {document.title="Request | Ben's Wacky World";return;}
   if (view === "ai") {document.title="AI Chat | Ben\'s Wacky World";return;}
   if (view === "messages") {document.title = "Chat | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
-  if (view === "settings") {document.title = "Account Settings | Wacky Games"; return;}
+  if (view === "settings") {document.title = "Basic Settings | Ben's Wacky World"; return;}
   const query = normalize(search.value);
   const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
@@ -206,7 +205,7 @@ function openGame(game) {
 }
 document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
 function launchGame(game,opener=document.activeElement) {
-  if(game.id==='pokemonshowdown'&&!window.WackyAccount?.user){location.hash='settings';return;}
+  if(game.id==='pokemonshowdown'&&!window.WackyAccount?.user){window.WackyAccount.open();return;}
   amongUsNotice.hidden = game.id !== 'amongus';
   setPlayerBarHidden(false);
   hidePlayerBar.hidden=false;
@@ -236,19 +235,13 @@ async function closeGame() {
 }
 function applyRoute() {
   let hash = location.hash.slice(1);
+  const openAccount=hash==='account';if(openAccount||hash==='request'){hash='home';history.replaceState(null,'','#home');}
   if(['apps','app-favorites','app-recents','chat'].includes(hash)){hash='messages';history.replaceState(null,'','#messages');}
-  view = ['all','online','new','favorites','recents','settings','request','leaderboard','messages','ai'].includes(hash) ? hash : 'home';
+  view = ['all','online','new','favorites','recents','settings','leaderboard','messages','ai'].includes(hash) ? hash : 'home';
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
   window.showMessages(view === 'messages');
   window.showAI(view === 'ai');
-  const requestPanel=document.querySelector('#request-panel');
-  requestPanel.hidden=view!=='request';
-  if(view==='request'&&!requestPanel.querySelector('iframe')){
-    const frame=document.createElement('iframe');frame.title='Request a game or feature';
-    frame.src='https://docs.google.com/forms/d/e/1FAIpQLScLnhJjGnEV3kSKwBuLGhv1XNpWtFYBgr0Q42Pzk_tzSrw0FA/viewform?embedded=true';
-    document.querySelector('#request-content').append(frame);
-  }
   document.querySelector('.collection-nav').hidden = false;
   const routes=['all','favorites','recents'];
   document.querySelectorAll('[data-view]:not([data-new-collection]):not([data-online-collection])').forEach((link,i)=>{link.dataset.view=routes[i];link.href='#'+routes[i];});
@@ -258,21 +251,20 @@ function applyRoute() {
   document.querySelector('#sort-wrap').hidden=false;
   search.placeholder = 'Search games…';
   document.querySelector('.search-wrap .sr-only').textContent = 'Search games';
-  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'request' || view === 'leaderboard' || view === 'messages' || view === 'ai';
+  document.querySelector('#catalog').hidden = settingsOpen || view === 'home' || view === 'leaderboard' || view === 'messages' || view === 'ai';
   document.querySelector('#home-panel').hidden = view !== 'home';
   if (view === 'home') window.startHomeTitle();
   document.querySelector('#settings-panel').hidden = !settingsOpen;
-  document.querySelector('.nav-settings').toggleAttribute('data-active', settingsOpen);
-  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'request' && view !== 'leaderboard' && view !== 'messages' && view !== 'ai'], ['.nav-settings', settingsOpen], ['.nav-request', view === 'request'], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages'], ['.nav-ai', view === 'ai']]) {
+  document.querySelector('.nav-basic').toggleAttribute('data-active', settingsOpen);
+  for (const [selector, active] of [['.nav-home', view === 'home'], ['.nav-game', !settingsOpen && view !== 'home' && view !== 'leaderboard' && view !== 'messages' && view !== 'ai'], ['.nav-basic', settingsOpen], ['.nav-leaderboard', view === 'leaderboard'], ['.nav-messages', view === 'messages'], ['.nav-ai', view === 'ai']]) {
     const button = document.querySelector(selector);
     if (active) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   }
   search.value = '';
   if(gameSort==='popular')void window.WackyPopularity.refresh();
-  render(); window.scrollTo({top:0,behavior:'instant'});
+  render(); window.scrollTo({top:0,behavior:'instant'});if(openAccount)window.WackyAccount.open();
 }
-document.querySelector('.nav-settings').addEventListener('click',()=>{location.hash='settings';});
 let searchTimer;search.addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,100);});
 document.querySelector('.nav-game').addEventListener('click', () => {
   if (location.hash !== '#all') location.hash = 'all';

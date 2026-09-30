@@ -23,17 +23,36 @@
   if(!response.ok){const error=new Error(result.error||'Please try again.');error.status=response.status;throw error;}
   return result;
  }
- window.WackyAccount={api,avatar,openProfile,get user(){return me;}};
+ window.WackyAccount={api,avatar,openProfile,open:openAccount,get user(){return me;}};
+ const accountDialog=$('#account-dialog');
+ function openAccount(){renderAccount();note('');if(!accountDialog.open)accountDialog.showModal();$('.nav-settings').setAttribute('data-active','');if(!me)$('#auth-username').focus();}
+ document.querySelectorAll('[data-open-account]').forEach(button=>button.addEventListener('click',e=>{e.preventDefault();openAccount();}));
+ $('#account-dialog-close').addEventListener('click',()=>accountDialog.close());
+ document.querySelectorAll('[data-close-account]').forEach(button=>button.addEventListener('click',()=>accountDialog.close()));
+ accountDialog.addEventListener('close',()=>{$('#auth-password').value='';$('#auth-confirm').value='';$('.nav-settings').removeAttribute('data-active');});
+ function previewProfile(){
+  if(!me)return;
+  $('#my-name').textContent=$('#profile-username').value||me.username;
+  $('#account-preview-banner').style.backgroundColor=$('#profile-banner').value;
+  $('#account-preview-pronouns').textContent=$('#profile-pronouns').value;
+  $('#account-preview-bio').textContent=$('#profile-bio').value||'No bio yet.';
+  const favorite=(window.WACKY_GAMES||[]).find(g=>g.id===$('#profile-favorite-game').value);
+  $('#account-preview-favorite').textContent=favorite?'Favorite game · '+favorite.title:'';
+  const roles=$('#account-preview-roles');roles.replaceChildren();for(const role of me.roles||[]){const pill=document.createElement('span');pill.className='profile-role';pill.textContent=role.name;if(/^#[0-9a-f]{6}$/i.test(role.color))pill.style.setProperty('--role-color',role.color);roles.append(pill);}
+ }
+ $('#profile-form').addEventListener('input',previewProfile);
  function renderAccount(fill=true){
   window.dispatchEvent(new Event('wacky-account-change'));
   document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));
-  $('#account-auth').hidden=!!me;$('#account-profile').hidden=!me;
+  $('#account-auth').hidden=!!me;$('#account-profile').hidden=!me;accountDialog.dataset.signedIn=String(!!me);
+  $('#account-dialog-title').textContent=me?'Account Settings':mode==='login'?'Welcome back':'Create your account';
   if(me){
    paintStatus();
    $('#my-avatar').replaceChildren(avatar(me,'large'));
    $('#my-name').textContent=me.username;$('#my-badge').replaceChildren(badge(me));
    $('#my-playtime').textContent=duration(me.playSeconds);
    if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
+   previewProfile();
   }
  }
  async function restore(){
@@ -48,16 +67,20 @@
   $('#auth-password').minLength=mode==='login'?1:8;
   $('#signup-notice').hidden=mode!=='signup';$('#no-recovery').required=mode==='signup';
   document.querySelectorAll('[data-auth-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.authMode===mode)));
+  $('#auth-confirm-label').hidden=mode!=='signup';$('#auth-confirm').required=mode==='signup';$('#auth-confirm').value='';$('#auth-confirm').setCustomValidity('');
+  $('#account-dialog-title').textContent=mode==='login'?'Welcome back':'Create your account';
+  $('#auth-description').textContent=mode==='login'?'Log in to save your playtime, chat, and use Ben AI.':'Create a profile to save your playtime and join the Wacky crowd.';
+  $('#auth-switch-label').textContent=mode==='login'?'Need an account?':'Already have an account?';$('#auth-switch').textContent=mode==='login'?'Sign up':'Log in';$('#auth-switch').dataset.authMode=mode==='login'?'signup':'login';
   $('#auth-password').value='';note('');
  }
  document.querySelectorAll('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>changeMode(b.dataset.authMode)));
  $('#auth-form').addEventListener('submit',async event=>{
-  event.preventDefault();++authGeneration;const button=$('#auth-submit');button.disabled=true;note('Signing in…');
+  event.preventDefault();if(mode==='signup'&&$('#auth-password').value!==$('#auth-confirm').value){note('Passwords do not match.',true);$('#auth-confirm').focus();return;}++authGeneration;const button=$('#auth-submit');button.disabled=true;note('Signing in…');
   try{
    const result=await api('/'+mode,{method:'POST',data:{username:$('#auth-username').value.trim(),password:$('#auth-password').value,noRecovery:$('#no-recovery').checked}});
    // Verify persistence rather than pretending a blocked cookie signed the user in.
    me=(await api('/me')).user;
-   $('#auth-password').value='';sessionReady=true;renderAccount();note(mode==='signup'?'Account created. Welcome!':'Welcome back!');
+   $('#auth-password').value='';$('#auth-confirm').value='';sessionReady=true;renderAccount();note(mode==='signup'?'Account created. Welcome!':'Welcome back!');
    channel?.postMessage('changed');syncTimer();
   }catch(error){note(error.status===401?'Login could not be kept, or your credentials are incorrect. Check your username/password and allow this site’s sign-in cookies.':error.message,true);}
   finally{button.disabled=false;}
@@ -168,7 +191,6 @@
  window.showAccountPages=view=>{
   $('#leaderboard-panel').hidden=view!=='leaderboard';
   if(view==='leaderboard')void loadBoard();
-  if(view==='settings')renderAccount();
  };
  const favoriteSelect=$('#profile-favorite-game');
  for(const game of [...(window.WACKY_GAMES||[])].sort((a,b)=>a.title.localeCompare(b.title))){const option=document.createElement('option');option.value=game.id;option.textContent=game.title;favoriteSelect.append(option);}

@@ -491,3 +491,62 @@ body.messages-open .snowflake,body:has(#ai-panel:not([hidden])) .snowflake{anima
 @media(prefers-reduced-motion:reduce){.launch-tile,.game-card{transition:none}}
 
 @media(max-width:700px){.catalog-controls{width:100%;min-width:0}.collection-nav{width:100%;max-width:100%;flex-wrap:wrap;justify-content:center;gap:6px}.collection-nav a{padding:8px 10px;font-size:12px}#sort-wrap{margin:4px 0 0;max-width:100%}.search-area{height:auto;min-height:170px;padding-block:24px;gap:16px}.search-wrap{flex-shrink:0}}
+
+/* Account dialogs and separate Basic Settings. */
+.nav-basic{flex:none;width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:13px;background:transparent;color:var(--muted);text-decoration:none}
+.nav-basic svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-basic:hover{color:var(--accent);background:rgb(var(--accent-rgb)/.12)}.nav-basic[aria-current=page]{background:var(--accent);color:var(--accent-ink)}
+body:has(#account-dialog[open]){overflow:hidden}
+#account-dialog{width:min(920px,calc(100vw - 40px));max-width:none;max-height:88dvh;margin:auto;padding:0;border-radius:20px;background:var(--panel);color:var(--text,#f5f5f5);box-shadow:0 24px 100px #0008;overflow:hidden}
+#account-dialog[open]{display:flex;flex-direction:column}
+#account-dialog::backdrop{background:#0009;backdrop-filter:blur(5px)}
+#account-dialog[data-signed-in=false]{width:min(420px,calc(100vw - 32px));overflow:auto;padding:30px}
+.account-dialog-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:24px;border-bottom:1px solid var(--line);flex:none}
+.account-dialog-header h2{font-size:22px;letter-spacing:-.5px;margin:6px 0 0}
+.account-brand{font-size:12px;font-weight:700;color:var(--muted);margin:0}.account-brand span{color:var(--accent)}
+#account-dialog .account-close{border:0;background:transparent;font-size:25px;line-height:1;padding:5px 8px;color:var(--muted)}#account-dialog .account-close:hover{color:var(--text,#fff);background:rgb(var(--accent-rgb)/.1)}
+#account-dialog[data-signed-in=false] .account-dialog-header{padding:0;border:0;margin-bottom:20px}
+#account-dialog[data-signed-in=false] .account-brand{font-size:15px;margin-bottom:26px;color:var(--text,#fff)}
+#account-auth{max-width:none}#account-auth .account-intro{font-size:13px;margin:0 0 22px}
+#account-auth form{gap:15px}#account-auth label:not(.check-label){font-size:12px;color:var(--muted)}
+#account-auth input:not([type=checkbox]){min-height:46px;background:var(--surface);color:var(--text,#fff)}
+#account-auth .account-primary{min-height:46px}.auth-switch{text-align:center;font-size:13px;margin:20px 0 16px}
+#account-auth .auth-switch button{border:0;background:none;color:var(--accent);font-weight:650;padding:4px}.auth-switch span{color:var(--muted)}
+#account-auth .account-hint{font-size:11px;text-align:center;margin:10px 0;color:var(--muted)}
+#account-dialog .account-back{display:block;margin:14px auto 0;border:0;background:transparent;color:var(--muted);font-size:12px}
+#account-dialog #account-profile{display:grid;grid-template-columns:minmax(0,1fr) 290px;grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:0;min-height:0;overflow:hidden;padding:0;margin:0}
+.account-editor{padding:24px;overflow:auto;min-height:0;border-right:1px solid var(--line)}
+.account-photo-setting{margin-bottom:24px}.account-photo-setting h3{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 12px}
+#account-dialog .photo-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+#account-dialog #profile-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:0;border:0;gap:18px}
+#account-dialog #profile-form>label{font-size:12px;min-width:0}
+#account-dialog #profile-form>label:has(#profile-bio),#account-dialog .banner-color-control{grid-column:1/-1}
+#account-dialog #profile-form textarea{min-height:98px;resize:vertical}
+#account-dialog #profile-form input[type=color]{padding:4px;width:48px;height:40px}
+#account-dialog .banner-color-control #profile-banner-preview{left:60px;bottom:0;height:40px;border-radius:10px}
+#account-dialog .profile-preferences{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+#account-dialog .profile-status-section{padding:0;border:0;background:none;margin:0;min-width:0}
+#account-dialog .profile-status-section>label{display:block;font-size:12px;margin-bottom:8px}
+#account-dialog .profile-status-section p,#account-dialog .favorite-game-setting small{font-size:10px;line-height:1.5;margin:8px 0 0;color:var(--muted)}
+#account-dialog .favorite-game-setting{margin:0;gap:8px;min-width:0}
+.account-preview{padding:24px 18px;min-width:0;min-height:0;overflow:auto}
+.preview-label{text-transform:uppercase;letter-spacing:.08em;font-size:10px;font-weight:700;color:var(--muted);margin:0 0 10px}
+.account-preview-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+#account-preview-banner{height:100px;background:#24242c}
+.account-preview-content{padding:0 16px 16px;overflow-wrap:anywhere}
+#account-dialog #my-avatar{margin-top:-38px;margin-bottom:12px;position:relative}
+#account-dialog #my-avatar .profile-avatar{width:76px;height:76px;box-shadow:0 0 0 5px var(--surface)}
+#account-dialog #my-name{display:block;font-size:20px;font-weight:750;margin:0 0 7px}
+#account-dialog #my-badge{display:block}#account-dialog .owner-badge[hidden]{display:none}
+#account-preview-pronouns{font-size:12px;color:var(--muted);margin:8px 0}
+#account-preview-bio{font-size:13px;line-height:1.6;white-space:pre-wrap;padding-top:12px;margin:12px 0;border-top:1px solid var(--line)}
+#account-preview-favorite{font-size:11px;line-height:1.5;color:var(--accent)}
+#account-dialog .playtime-summary{margin:14px 0 0;padding:14px 0 0;border-top:1px solid var(--line);border-bottom:0;text-align:left}
+#account-dialog .playtime-summary strong{font-size:18px;margin:6px 0}#account-dialog .playtime-summary small{font-size:10px;line-height:1.5}
+#account-dialog #my-public-profile,#account-dialog #admin-open{width:100%;margin:14px 0 0;font-size:12px}
+.account-editor-footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-top:1px solid var(--line)}
+#account-dialog #profile-save{min-width:135px}#account-dialog #account-logout{color:#f58b91}
+#account-dialog #account-message{margin:0;padding:10px 24px;font-size:12px;flex:none;border-top:1px solid var(--line)}#account-dialog #account-message:empty{display:none}
+#account-dialog[data-signed-in=false] #account-message{padding:12px 0 0;margin-top:12px}
+#settings-panel .settings-layout{display:block}#settings-panel .appearance-column{max-width:1200px}
+@media(max-width:700px){#account-dialog{width:calc(100vw - 24px);max-height:92dvh}#account-dialog #account-profile{display:block;overflow:auto}.account-editor{border:0;padding:20px}.account-preview{padding:0 20px 20px;overflow:visible}.account-dialog-header{padding:20px}.account-editor-footer{position:sticky;bottom:0;background:var(--panel);padding:14px 20px}#account-dialog .profile-preferences{grid-template-columns:minmax(0,1fr)}#account-dialog #profile-form{grid-template-columns:minmax(0,1fr)}.account-preview-card{max-width:400px;margin:auto}.account-preview .preview-label{max-width:400px;margin:0 auto 12px}#account-dialog[data-signed-in=false]{padding:24px}}

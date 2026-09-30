@@ -16,17 +16,17 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260930-polish">
+  <link rel="stylesheet" href="styles.css?v=20260930-account-dialog">
   <script src="games.js?v=20260930-profile-battles" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="popularity.js?v=20260929-owner-banner" defer></script>
-  <script src="accounts.js?v=20260930-profile-battles" defer></script>
+  <script src="accounts.js?v=20260930-account-dialog" defer></script>
   <script src="admin.js?v=20260929-settings-rows" defer></script>
   <script src="messages.js?v=20260929-profile-extras" defer></script>
   <script src="ai-files.js?v=20260929-upload" defer></script>
   <script src="ai.js?v=20260929-owner-banner" defer></script>
-  <script src="app.js?v=20260930-battle-cache" defer></script>
+  <script src="app.js?v=20260930-account-dialog" defer></script>
   <script src="battles.js?v=20260930-polish" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260930-polish" defer></script>
@@ -36,19 +36,19 @@
   <canvas id="theme-canvas" aria-hidden="true"></canvas>
   <div id="snow" aria-hidden="true"></div>
   <aside class="sidebar" aria-label="Main navigation">
-  <button class="nav-settings" type="button" aria-label="Account Settings" title="Account Settings"><span data-account-avatar aria-hidden="true"></span></button>
-    <a class="nav-home" href="#home" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5.5 9v11h13V9M9 20v-7h6v7"/></svg></a>
+  <button class="nav-settings" data-open-account type="button" aria-label="Account Settings" title="Account Settings"><span data-account-avatar aria-hidden="true"></span></button>
+    <a class="nav-basic" href="#settings" aria-label="Basic Settings" title="Basic Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.4-2 .9-2.2-.7-2 3.4L4 10.7v2.6l-1.8 1.7 2 3.4 2.2-.7 2 .9L9 21h6l.6-2.4 2-.9 2.2.7 2-3.4-1.8-1.7v-2.6L21.8 9l-2-3.4-2.2.7-2-.9L15 3Z"/><circle cx="12" cy="12" r="3"/></svg></a>
+  <a class="nav-home" href="#home" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5.5 9v11h13V9M9 20v-7h6v7"/></svg></a>
     <button class="nav-game" aria-label="Games" aria-current="page" title="Games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7h9c2.2 0 3.2 1.5 3.8 3.8l1.2 5.1c.6 2.6-1.8 4.1-3.5 2.4l-2.2-2.2H8.2L6 18.3c-1.7 1.7-4.1.2-3.5-2.4l1.2-5.1C4.3 8.5 5.3 7 7.5 7Z"/><path d="M7.5 9.8v4.4M5.3 12h4.4"/><circle cx="16" cy="11" r=".7"/><circle cx="18" cy="13" r=".7"/></svg>
     </button>
   <a class="nav-messages" href="#messages" aria-label="Chat" title="Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h7"/></svg><span id="dm-unread-badge" hidden aria-hidden="true"></span></a>
   <a class="nav-ai" href="#ai" aria-label="AI Chat" title="AI Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5c1.2 5.3 2.7 6.8 7 8-4.3 1.2-5.8 2.7-7 8-1.2-5.3-2.7-6.8-7-8 4.3-1.2 5.8-2.7 7-8ZM18 2c.6 2.7 1.4 3.5 4 4.5-2.6 1-3.4 1.8-4 4.5-.6-2.7-1.4-3.5-4-4.5 2.6-1 3.4-1.8 4-4.5Z"/></svg></a>
   <button class="nav-stream" type="button" data-stream aria-label="Stream Hub" title="Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg></button>
   <a class="nav-leaderboard" href="#leaderboard" aria-label="Leaderboard" title="Leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg></a>
-  <a class="nav-request" href="#request" aria-label="Request" title="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg></a>
   </aside>
   <section id="ai-panel" hidden aria-labelledby="ai-title">
     <header class="ai-heading"><div><p class="eyebrow">Your everyday AI</p><h1 id="ai-title">AI Chat</h1></div><span id="ai-allowance" role="status"></span></header>
-    <p id="ai-login"><a href="#settings">Log in or create a profile</a> to use AI Chat.</p>
+    <p id="ai-login"><a href="#account" data-open-account>Log in or create a profile</a> to use AI Chat.</p>
     <div id="ai-content" hidden>
       <div id="ai-log" aria-label="AI conversation" tabindex="0"></div>
       <p id="ai-status" role="status"></p>
@@ -58,13 +58,12 @@
   </section>
   <section id="messages-panel" hidden aria-labelledby="messages-title">
     <header><h1 id="messages-title">Chat</h1><p>Messages disappear after 24 hours.</p></header>
-    <p id="messages-login" hidden><a href="#settings">Log in to chat</a> with your existing account.</p>
+    <p id="messages-login" hidden><a href="#account" data-open-account>Log in to chat</a> with your existing account.</p>
     <div id="messages-layout" hidden>
       <nav class="messages-people" aria-label="Conversations"><h2 class="messages-sidebar-title">Messages</h2><button id="messages-public" type="button">Main room</button><div class="messages-section-heading"><span>Direct messages</span><button id="messages-new" type="button" aria-label="Start a direct message" title="Start a direct message">+</button></div><div id="messages-people"></div><div class="chat-self"><div id="chat-self-avatar"></div><div class="chat-self-info"><strong id="chat-self-name"></strong><label class="sr-only" for="chat-presence">Your chat status</label><button type="button" class="status-trigger" data-status-target="chat-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="chat-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select></div><p id="chat-presence-note" role="status"></p></div></nav>
       <div class="messages-room"><h2 id="messages-room-title">Main room</h2><button id="messages-older" type="button" hidden>Older messages</button><div id="messages-log" aria-label="Messages" tabindex="0"></div><p id="messages-status" role="status"></p><div id="messages-reply" hidden><span id="messages-reply-text"></span><button id="messages-reply-cancel" type="button" aria-label="Cancel reply">×</button></div><div id="messages-attachment" hidden><img alt="Photo preview"><span></span><button id="messages-remove-photo" type="button" aria-label="Remove photo">×</button></div><input id="messages-photo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><form id="messages-form"><button id="messages-attach" type="button" aria-label="Attach photo" title="Attach photo">+</button><label class="sr-only" for="messages-text">Message</label><textarea id="messages-text" rows="2" maxlength="1000" placeholder="Write a message…"></textarea><button type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form></div>
     </div>
   </section>
-  <section id="request-panel" hidden aria-labelledby="request-heading"><header><h1 id="request-heading">Request</h1><a href="#home">Back to home</a></header><div id="request-content"></div></section>
   <section id="home-panel" aria-labelledby="home-heading">
     <div class="home-heading-group">
     <h1 class="home-title" id="home-heading" aria-label="Ben's Wacky World"><span class="title-reserve" aria-hidden="true">Ben's Wacky World</span><span id="typed-title" aria-hidden="true">Ben's Wacky World</span></h1>
@@ -76,9 +75,9 @@
       <a class="launch-tile" href="#ai" aria-label="Open AI Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5c1.2 5.3 2.7 6.8 7 8-4.3 1.2-5.8 2.7-7 8-1.2-5.3-2.7-6.8-7-8 4.3-1.2 5.8-2.7 7-8ZM18 2c.6 2.7 1.4 3.5 4 4.5-2.6 1-3.4 1.8-4 4.5-.6-2.7-1.4-3.5-4-4.5 2.6-1 3.4-1.8 4-4.5Z"/></svg><span>AI Chat</span></a>
       <button class="launch-tile" type="button" data-stream aria-label="Open Stream Hub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2 12H7L5 10ZM9 11l1 10m5-10-1 10M5 10C1 8 3 4 6 5 5 1 10 0 12 4c2-4 7-3 6 1 3-1 5 3 1 5"/><path d="M8 7h.01M15 6h.01"/></svg><span>Stream Hub</span></button>
       <a class="launch-tile" href="#leaderboard" aria-label="Open leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0V3ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 13v6M8 21h8M9 19h6"/></svg><span>Leaderboard</span></a>
-      <a class="launch-tile" href="#request" aria-label="Request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16c0-2-3-3.5-3-7a7 7 0 0 1 14 0c0 3.5-3 5-3 7M8 16h8M9 19h6M10 22h4M12 12v4M9.5 9.5 12 12l2.5-2.5"/></svg><span>Request</span></a>
       <a class="launch-tile" href="https://sites.google.com/stu.tempeunion.org/bens-wack-world/home" target="_blank" rel="noopener noreferrer" aria-label="Ben's Wacky Site (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="20" text-anchor="middle" style="font-family:Inter,Arial,sans-serif;font-size:24px;font-weight:800;fill:currentColor;stroke:none">W</text></svg><span>Ben's Wacky Site</span></a>
-      <a class="launch-tile" href="#settings" aria-label="Open Account Settings"><span data-account-avatar aria-hidden="true"></span><span>Account Settings</span></a>
+      <a class="launch-tile" href="#account" data-open-account aria-label="Open Account Settings"><span data-account-avatar aria-hidden="true"></span><span>Account Settings</span></a>
+      <a class="launch-tile" href="#settings" aria-label="Open Basic Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.4-2 .9-2.2-.7-2 3.4L4 10.7v2.6l-1.8 1.7 2 3.4 2.2-.7 2 .9L9 21h6l.6-2.4 2-.9 2.2.7 2-3.4-1.8-1.7v-2.6L21.8 9l-2-3.4-2.2.7-2-.9L15 3Z"/><circle cx="12" cy="12" r="3"/></svg><span>Basic Settings</span></a>
     </div>
   </section>
   <main id="catalog" hidden>
@@ -96,32 +95,8 @@
     <noscript><p class="empty">Enable JavaScript to search and play games.</p></noscript>
   </main>
   <section id="settings-panel" aria-labelledby="appearance-heading" hidden>
-    <header class="settings-heading"><div><p class="eyebrow">Make yourself at home</p><h1 id="appearance-heading">Account Settings</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
-    <div class="settings-layout">    <section class="account-card" aria-labelledby="account-heading">
-      <h2 id="account-heading">Your profile</h2>
-      <p class="account-intro">Make it yours. Keep your playtime.</p>
-      <div id="account-auth">
-        <div class="auth-tabs" aria-label="Account access"><button type="button" data-auth-mode="login" aria-pressed="true">Log in</button><button type="button" data-auth-mode="signup" aria-pressed="false">Create account</button></div>
-        <form id="auth-form">
-          <label>Username<input id="auth-username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required spellcheck="false"></label>
-          <label>Password<input id="auth-password" type="password" autocomplete="current-password" maxlength="128" required></label>
-          <label id="signup-notice" class="check-label" hidden><input id="no-recovery" type="checkbox"><span>I understand there is no password recovery. If I forget it, I lose access.</span></label>
-          <button id="auth-submit" class="account-primary" type="submit">Log in</button>
-        </form>
-        <p class="account-hint">Your profile and total playtime are public. This browser keeps you signed in.</p>
-      </div>
-      <div id="account-profile" hidden><div class="profile-overview"><div class="my-profile-heading"><div id="my-avatar"></div><strong id="my-name"></strong><span id="my-badge"></span></div>
-        <div class="photo-actions"><label class="photo-upload">Upload photo<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="avatar-remove">Remove photo</button></div><div class="playtime-summary"><span>Total game playtime</span><strong id="my-playtime">0h 0m</strong><small id="playtime-state">Open a game to start counting.</small></div>
-        </div><form id="profile-form"><h3 class="settings-section-title">Profile details</h3>
-          <label>Username<input id="profile-username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required autocomplete="username" spellcheck="false"></label>
-          <label>Pronouns<input id="profile-pronouns" maxlength="40" placeholder="e.g. they/them" autocomplete="off"></label><label class="banner-color-control">Banner color<input id="profile-banner" type="color" value="#24242c"><span id="profile-banner-preview" aria-hidden="true"></span></label><label>Bio<textarea id="profile-bio" maxlength="280" rows="3" placeholder="A little about you…"></textarea></label>
-
-          <button id="profile-save" class="account-primary" type="submit">Save profile</button>
-        </form><div class="profile-preferences"><section class="profile-status-section" aria-label="Availability"><label for="profile-presence">Your status</label><button type="button" class="status-trigger" data-status-target="profile-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="profile-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select><p>Changes save automatically. Do not disturb hides chat badges.</p></section>
-        <section class="favorite-game-setting"><label for="profile-favorite-game">Favorite game</label><select id="profile-favorite-game"><option value="">None selected</option></select><small>Shown on your profile · saves automatically</small></section><button id="admin-open" type="button" class="admin-open" hidden>Admin tools</button><div class="account-actions"><button type="button" id="my-public-profile">View public profile</button><button type="button" id="account-logout">Log out</button></div>
-      </div></div>
-      <p id="account-message" role="status" aria-live="polite"></p>
-    </section><div class="appearance-column"><h2>Appearance</h2>
+    <header class="settings-heading"><div><p class="eyebrow">Make yourself at home</p><h1 id="appearance-heading">Basic Settings</h1></div><div class="theme-preview" aria-hidden="true"><i></i><span></span><b></b></div></header>
+    <div class="settings-layout"><div class="appearance-column"><h2>Appearance</h2>
     <div class="appearance-grid">
       <fieldset class="settings-card"><legend>Background</legend>
         <div class="background-options">
@@ -155,6 +130,40 @@
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>
     <p id="leaderboard-status" role="status"></p><div id="leaderboard-list" aria-label="All players"></div><button type="button" id="leaderboard-more" hidden>Load more</button>
   </section>
+  <dialog id="account-dialog" class="account-card" aria-labelledby="account-dialog-title" data-signed-in="false">
+    <header class="account-dialog-header"><div><p class="account-brand">Ben’s <span>Wacky World</span></p><h2 id="account-dialog-title">Welcome back</h2></div><button id="account-dialog-close" class="account-close" type="button" aria-label="Close account settings">×</button></header>
+    <div id="account-auth">
+      <p id="auth-description" class="account-intro">Log in to save your playtime, chat, and use Ben AI.</p>
+      <form id="auth-form">
+        <label>Username<input id="auth-username" placeholder="Username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required spellcheck="false"></label>
+        <label>Password<input id="auth-password" placeholder="Password" type="password" autocomplete="current-password" maxlength="128" required></label>
+        <label id="auth-confirm-label" hidden>Confirm password<input id="auth-confirm" placeholder="Confirm password" type="password" autocomplete="new-password" maxlength="128"></label>
+        <label id="signup-notice" class="check-label" hidden><input id="no-recovery" type="checkbox"><span>I understand there is no password recovery. If I forget it, I lose access.</span></label>
+        <button id="auth-submit" class="account-primary" type="submit">Log in</button>
+      </form>
+      <p class="auth-switch"><span id="auth-switch-label">Need an account?</span> <button id="auth-switch" type="button" data-auth-mode="signup">Sign up</button></p>
+      <p class="account-hint">Your profile and total playtime are public.</p>
+      <button type="button" class="account-back" data-close-account>Back to site</button>
+    </div>
+    <div id="account-profile" hidden>
+      <div class="account-editor">
+        <section class="account-photo-setting"><h3 class="settings-section-title">Profile picture</h3><div class="photo-actions"><label class="photo-upload">Upload photo<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="avatar-remove">Remove photo</button></div></section>
+        <form id="profile-form">
+          <label>Username<input id="profile-username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required autocomplete="username" spellcheck="false"></label>
+          <label>Pronouns<input id="profile-pronouns" maxlength="40" placeholder="e.g. they/them" autocomplete="off"></label>
+          <label class="banner-color-control">Banner color<input id="profile-banner" type="color" value="#24242c"><span id="profile-banner-preview" aria-hidden="true"></span></label>
+          <label>Bio<textarea id="profile-bio" maxlength="280" rows="3" placeholder="A little about you…"></textarea></label>
+        </form>
+        <div class="profile-preferences">
+          <section class="profile-status-section" aria-label="Availability"><label for="profile-presence">Your status</label><button type="button" class="status-trigger" data-status-target="profile-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="profile-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select><p>Saves automatically. Do not disturb hides chat badges.</p></section>
+          <section class="favorite-game-setting"><label for="profile-favorite-game">Favorite game</label><select id="profile-favorite-game"><option value="">None selected</option></select><small>Shown on your profile · saves automatically</small></section>
+        </div>
+      </div>
+      <aside class="account-preview" aria-label="Profile preview"><p class="preview-label">What others see</p><div class="account-preview-card"><div id="account-preview-banner"></div><div class="account-preview-content"><div id="my-avatar"></div><strong id="my-name"></strong><span id="my-badge"></span><p id="account-preview-pronouns"></p><div id="account-preview-roles" class="profile-roles"></div><p id="account-preview-bio"></p><p id="account-preview-favorite"></p><div class="playtime-summary"><span>Total game playtime</span><strong id="my-playtime">0h 0m</strong><small id="playtime-state">Open a game to start counting.</small></div></div></div><button type="button" id="my-public-profile">View public profile</button><button id="admin-open" type="button" class="admin-open" hidden>Admin tools</button></aside>
+      <footer class="account-editor-footer"><button type="button" id="account-logout">Log out</button><button id="profile-save" class="account-primary" type="submit" form="profile-form">Save profile</button></footer>
+    </div>
+    <p id="account-message" role="status" aria-live="polite"></p>
+  </dialog>
   <dialog id="status-picker" aria-labelledby="status-picker-title"><h2 id="status-picker-title">Set your status</h2><button type="button" data-status-choice="online"><i class="status-dot" data-status="online"></i><span><strong>Online</strong><small>Let people know you are here.</small></span></button><button type="button" data-status-choice="dnd"><i class="status-dot" data-status="dnd"></i><span><strong>Do not disturb</strong><small>Receive messages without notification badges.</small></span></button><button type="button" data-status-choice="offline"><i class="status-dot" data-status="offline"></i><span><strong>Appear offline</strong><small>Browse and chat without appearing online.</small></span></button><form method="dialog"><button>Cancel</button></form></dialog>
   <dialog id="admin-panel" aria-labelledby="admin-heading"><header><div><h2 id="admin-heading">Admin tools</h2><p>Owner access · WackyBen</p></div><form method="dialog"><button>Close</button></form></header><nav class="admin-tabs" aria-label="Admin sections"><button type="button" data-admin-tab="people" aria-pressed="true">People</button><button type="button" data-admin-tab="games" aria-pressed="false">Games</button><button type="button" data-admin-tab="activity" aria-pressed="false">Activity</button></nav><p id="admin-status" role="status"></p><div class="admin-columns" data-admin-section="people"><section><h3>Accounts</h3><label class="sr-only" for="admin-search">Find an account</label><input id="admin-search" placeholder="Search usernames" maxlength="20"><div id="admin-users"></div></section><section id="admin-detail"><p>Select an account to manage it.</p></section></div><section class="admin-boost" data-admin-section="games" hidden><h3>Game popularity</h3><p>Set bonus points added to the regular 30-day score. Set 0 to remove a bonus.</p><form id="admin-boost-form"><label>Game<input id="admin-game" list="admin-games" required placeholder="Type a game name"><datalist id="admin-games"></datalist></label><label>Bonus points<input id="admin-bonus" type="number" min="0" max="1000000" value="0" required></label><label>Reason<input id="admin-boost-reason" maxlength="280" required></label><button>Save bonus</button></form><div id="admin-boosts"></div></section><section class="admin-audit" data-admin-section="activity" hidden><h3>Recent admin activity</h3><div id="admin-log"></div></section></dialog>
   <dialog id="admin-confirm" aria-labelledby="admin-confirm-title"><h2 id="admin-confirm-title">Confirm action</h2><p id="admin-confirm-text"></p><form method="dialog"><button value="cancel">Cancel</button><button value="apply" class="admin-danger">Apply</button></form></dialog>
