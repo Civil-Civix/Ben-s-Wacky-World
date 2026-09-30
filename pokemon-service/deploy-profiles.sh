@@ -44,6 +44,8 @@ if 'handle /profile-battle.html {' not in s:
         file_server
     }
     handle /guest-name {""")
+s=s.replace('    handle /profile-battle.html {\n', '    handle /profile-battle.html {\n        header Cache-Control "no-store"\n') if 'handle /profile-battle.html {\n        header Cache-Control' not in s else s
+s=s.replace('    handle /bww-profile* {\n', '    handle /bww-profile* {\n        header Cache-Control "no-store"\n') if 'handle /bww-profile* {\n        header Cache-Control' not in s else s
 p.write_text(s.replace("BWW_POLICY",policy))
 PYCODE
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile

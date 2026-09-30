@@ -157,7 +157,9 @@ function loadGame() {
   frame.allow = 'autoplay; fullscreen; gamepad; clipboard-write';
   frame.allowFullscreen = true;
   frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads');
-  frame.src = currentGame.url;
+  const gameURL=new URL(currentGame.url,location.href);
+  if(currentGame.id==='pokemonshowdown')gameURL.searchParams.set('launch',Date.now().toString());
+  frame.src = gameURL.href;
   frame.addEventListener('load', () => {clearTimeout(loadTimer);status.hidden = true;sendBattleTheme();frame.focus();});
   frame.addEventListener('error', () => {
     clearTimeout(loadTimer);
