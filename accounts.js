@@ -29,6 +29,7 @@
   document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));
   $('#account-auth').hidden=!!me;$('#account-profile').hidden=!me;
   if(me){
+   paintStatus();
    $('#my-avatar').replaceChildren(avatar(me,'large'));
    $('#my-name').textContent=me.username;$('#my-badge').replaceChildren(badge(me));
    $('#my-playtime').textContent=duration(me.playSeconds);
@@ -63,7 +64,7 @@
  });
  $('#profile-form').addEventListener('submit',async event=>{
   event.preventDefault();const button=$('#profile-save');button.disabled=true;
-  try{me=(await api('/me',{method:'PATCH',data:{username:$('#profile-username').value.trim(),bio:$('#profile-bio').value,presence:$('#profile-presence').value}})).user;renderAccount();note('Profile saved.');channel?.postMessage('changed');}
+  try{me=(await api('/me',{method:'PATCH',data:{username:$('#profile-username').value.trim(),bio:$('#profile-bio').value}})).user;renderAccount();note('Profile saved.');channel?.postMessage('changed');}
   catch(error){note(error.message,true);}finally{button.disabled=false;}
  });
  $('#account-logout').addEventListener('click',async()=>{
@@ -125,11 +126,15 @@
   try{
    const user=(await api('/profiles/'+encodeURIComponent(id))).user;
    if(generation!==profileGeneration)return;
+   const top=document.createElement('div');top.className='public-profile-top';top.append(avatar(user,'large'));
+   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});top.append(dm);}
    const name=document.createElement('h2');name.id='public-profile-name';name.textContent=user.username;
+   const identity=document.createElement('div');identity.className='public-profile-identity';identity.append(name,badge(user));
+   const status=document.createElement('p');status.className='public-profile-status';status.textContent=user.status==='online'?'Online':user.status==='dnd'?'Do not disturb':'Offline';
    const bio=document.createElement('p');bio.className='public-bio';bio.textContent=user.bio||'No bio yet.';
-   const time=document.createElement('p');time.className='public-time';time.textContent=duration(user.playSeconds)+' total playtime';
-   $('#public-profile-content').replaceChildren(avatar(user,'large'),name,badge(user),bio,time);
-   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});$('#public-profile-content').append(dm);} 
+   const details=document.createElement('dl');details.className='public-profile-details';
+   for(const [label,value] of [['Total playtime',duration(user.playSeconds)],['Joined',Number.isFinite(user.created)?new Date(user.created).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'—']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;details.append(dt,dd);}
+   $('#public-profile-content').replaceChildren(top,identity,status,bio,details);
   }catch(error){if(generation===profileGeneration)$('#public-profile-content').textContent=error.message;}
  }
  function personRow(user,podium=false){
@@ -160,10 +165,22 @@
   if(view==='leaderboard')void loadBoard();
   if(view==='settings')renderAccount();
  };
+ let statusBusy=false;
+ function paintStatus(){
+  if(!me)return;for(const id of ['profile-presence','chat-presence']){$('#'+id).value=me.presence||'online';$('#'+id).disabled=statusBusy;}
+  $('#chat-self-avatar').replaceChildren(avatar(me));$('#chat-self-name').textContent=me.username;
+ }
+ async function changeStatus(value){
+  if(!me||statusBusy)return;const id=me.id;statusBusy=true;paintStatus();$('#chat-presence-note').textContent='';
+  try{const current=(await api('/me')).user;if(me?.id!==id)return;const result=await api('/me',{method:'PATCH',data:{username:current.username,bio:current.bio,presence:value}});if(me?.id!==id)return;me=result.user;renderAccount(false);note('Status updated.');channel?.postMessage('changed');}
+  catch(error){note(error.message,true);$('#chat-presence-note').textContent=error.message;}
+  finally{statusBusy=false;paintStatus();}
+ }
+ for(const id of ['profile-presence','chat-presence'])$('#'+id).addEventListener('change',e=>void changeStatus(e.target.value));
  let presenceBusy=false;
  async function heartbeat(){
   if(!me||presenceBusy)return;const id=me.id;presenceBusy=true;
-  try{const state=await api('/presence',{method:'POST',data:{}});if(me?.id===id){const changed=me.presence!==state.presence;me={...me,...state};document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));$('#my-avatar').replaceChildren(avatar(me,'large'));if(changed)window.dispatchEvent(new Event('wacky-account-change'));}}
+  try{const state=await api('/presence',{method:'POST',data:{}});if(me?.id===id){const changed=me.presence!==state.presence;me={...me,...state};document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));$('#my-avatar').replaceChildren(avatar(me,'large'));paintStatus();if(changed)window.dispatchEvent(new Event('wacky-account-change'));}}
   catch{}finally{presenceBusy=false;}
  }
  window.addEventListener('wacky-account-change',()=>void heartbeat());
