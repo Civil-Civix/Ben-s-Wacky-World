@@ -1,3 +1,4 @@
+import {battle,verifyBattle} from './battle.mjs';
 import {admin} from './admin.mjs';
 import {ai} from './ai.mjs';
 import {chat} from './chat.mjs';
@@ -61,11 +62,12 @@ export default {
   const cors=origin===env.ALLOWED_ORIGIN?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Vary':'Origin'}:publicGet?{'Access-Control-Allow-Origin':'*'}:{};
   const json=(data,status=200,extra={})=>Response.json(data,{status,headers:{...cors,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});
   try{
-   if(!publicGet&&origin!==env.ALLOWED_ORIGIN)fail(403,'Origin not allowed.');
+   if(path!=='/battle/verify'&&!publicGet&&origin!==env.ALLOWED_ORIGIN)fail(403,'Origin not allowed.');
    if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'GET, POST, PATCH, DELETE, PUT, OPTIONS','Access-Control-Allow-Headers':'Content-Type, X-Wacky-Client','Access-Control-Max-Age':'86400'}});
    if(request.method!=='GET'&&request.headers.get('X-Wacky-Client')!=='1')fail(403,'Invalid client.');
    const ip=digest(now.toString().slice(0,5)+':'+(request.headers.get('CF-Connecting-IP')||'unknown'));
    if(!(await env.REQUEST_LIMIT.limit({key:ip})).success)fail(429,'Too many requests. Please try again in a minute.');
+   if(path==='/battle/verify')return await verifyBattle({request,env,now,body,fail,json});
    if(path==='/game-boosts'&&request.method==='GET'){const rows=await env.DB.prepare('SELECT game_id AS id,bonus FROM game_boosts WHERE bonus>0').all();return json({games:rows.results});}
    if(path==='/leaderboard'&&request.method==='GET'){
     const q=(url.searchParams.get('q')||'').slice(0,20).toLowerCase().replace(/[^a-z0-9_]/g,'');
@@ -108,6 +110,7 @@ export default {
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
    if(path.startsWith('/admin/'))return await admin({request,url,env,me,now,body,fail,json,games});
+   if(path.startsWith('/battle/'))return await battle({request,url,env,me,now,body,fail,json});
    if(path==='/ai')return await ai({request,url,env,me,now,body,fail,json});
    if(path.startsWith('/chat/')){const response=await chat({request,url,env,me,now,body,fail,json,validJPEG});if(response)return response;}
    if(path==='/presence'&&request.method==='POST'){
@@ -160,5 +163,5 @@ export default {
    return json({error:'Account service is temporarily unavailable. Please try again.'},503);
   }
  },
- async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM ai_requests WHERE expires<=?').bind(Date.now())]);}
+ async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM battle_tickets WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM battle_invites WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM ai_requests WHERE expires<=?').bind(Date.now())]);}
 };

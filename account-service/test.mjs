@@ -168,4 +168,15 @@ assert.equal((await req('/chat/messages','POST',{to:null,text:'Role label test',
 assert.equal((await req('/chat/messages')).data.messages.at(-1).user.roles[0].name,'Helper');
 assert.equal((await req('/me','PATCH',{username:'Chat1',bio:'',pronouns:'',favoriteGame:''})).status,200);
 console.log('PASS: pronouns/favorite persistence, omitted-field preservation, validation, clearing, and chat role labels.');
+
+const ids=['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222'];
+for(let i=0;i<2;i++){db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created) VALUES(?,?,?,?,?,?)').run(ids[i],'BattleTest'+i,'battletest'+i,'salt','hash',Date.now());db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').run(digest(String(i+4).repeat(64)),ids[i],Date.now()+86400000);}
+cookie='__Host-wacky_session='+ '4'.repeat(64);const challenge='a'.repeat(256);
+const ticket=await req('/battle/session','POST',{challenge});assert.equal(ticket.status,200);assert.equal(ticket.data.name,'bww'+ids[0].replaceAll('-',''));
+const payload={token:ticket.data.token,challenge,userid:ticket.data.name};assert.equal((await req('/battle/verify','POST',{...payload,challenge:'b'.repeat(256)})).status,401);assert.equal((await req('/battle/verify','POST',payload)).status,200);assert.equal((await req('/battle/verify','POST',payload)).status,401);
+const invitation=await req('/battle/invites','POST',{to:ids[1]});assert.equal(invitation.status,201);assert.equal((await req('/battle/invites/'+invitation.data.id,'POST',{action:'accept'})).status,409);
+cookie='__Host-wacky_session='+tokens[1];assert.equal((await req('/battle/invites/'+invitation.data.id,'POST',{action:'accept'})).status,409);
+cookie='__Host-wacky_session='+ '5'.repeat(64);assert.equal((await req('/battle/invites')).data.invites[0].outgoing,false);assert.equal((await req('/battle/invites/'+invitation.data.id,'POST',{action:'accept'})).status,200);assert.equal((await req('/battle/invites/'+invitation.data.id,'POST',{action:'accept'})).status,409);
+const ticket2=await req('/battle/session','POST',{challenge});db.prepare('UPDATE users SET banned=1 WHERE id=?').run(ids[1]);assert.equal((await req('/battle/verify','POST',{token:ticket2.data.token,challenge,userid:ticket2.data.name})).status,401);
+console.log('PASS: profile-linked battle tickets, challenge binding, replay rejection, invitation privacy/acceptance and banned-account rejection.');
 db.close();console.log('PASS: signup/login, sessions/logout, private fields, reserved owner, profile permissions, ranking, lease exclusion, replay, idle-gap rejection and rate limiting.');

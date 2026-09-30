@@ -202,6 +202,7 @@ function openGame(game) {
 }
 document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
 function launchGame(game,opener=document.activeElement) {
+  if(game.id==='pokemonshowdown'&&!window.WackyAccount?.user){location.hash='settings';return;}
   amongUsNotice.hidden = game.id !== 'amongus';
   setPlayerBarHidden(false);
   hidePlayerBar.hidden=false;
@@ -318,3 +319,5 @@ fetch('./game-images.json', {cache:'no-store'}).then(response => {
 }).then(map => {
   if(map && typeof map === 'object' && !Array.isArray(map)) {imageMap = map; render();}
 }).catch(() => { /* Artwork is optional; blank cards remain usable. */ });
+
+window.WackyBattleGame={open(){const game=games.find(g=>g.id==='pokemonshowdown');if(game)openGame(game);},close:closeGame};
