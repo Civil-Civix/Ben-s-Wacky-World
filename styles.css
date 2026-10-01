@@ -618,3 +618,5 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 
 /* Slightly larger seasonal icons; keep candy corn at its existing size. */
 :is(.nav-game,.nav-messages,.nav-ai,.nav-basic,.launch-tile:not([data-stream]))>.halloween-nav-icon{transform:scale(1.15);overflow:visible}
+
+#messages-poke{margin-top:8px;flex-shrink:0}

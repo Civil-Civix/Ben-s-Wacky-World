@@ -65,7 +65,8 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  if(request.method==='POST')data=await body(request,110000);
  else if(request.method!=='GET')return null;
  const target=request.method==='POST'?data.to:(url.searchParams.get('to')||null);
- const group=typeof target==='string'&&target.startsWith('group:')?target.slice(6):null,to=group!==null?null:target;
+ const room=target==='room:poke'?'poke':'world';
+ const group=typeof target==='string'&&target.startsWith('group:')?target.slice(6):null,to=group!==null||target==='room:poke'?null:target;
  if(group!==null&&!await member(group))fail(404,'Group unavailable.');
  if(to!==null&&(typeof to!=='string'||to.length>64||to===me.id))fail(400,'Choose another account.');
  if(to!==null&&!await env.DB.prepare('SELECT id FROM users WHERE id=?').bind(to).first())fail(404,'Account not found.');
@@ -83,19 +84,19 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
   const replyId=data.replyTo??null;
   if(replyId!==null){
    if(!Number.isSafeInteger(replyId)||replyId<1)fail(400,'Invalid reply.');
-   const parent=await env.DB.prepare('SELECT sender,recipient,group_id FROM chat_messages WHERE id=? AND expires>?').bind(replyId,now).first();
-   const allowed=parent&&(group!==null?parent.group_id===group:parent.group_id===null&&(to===null?parent.recipient===null:((parent.sender===me.id&&parent.recipient===to)||(parent.sender===to&&parent.recipient===me.id))));
+   const parent=await env.DB.prepare('SELECT sender,recipient,group_id,room FROM chat_messages WHERE id=? AND expires>?').bind(replyId,now).first();
+   const allowed=parent&&(group!==null?parent.group_id===group:parent.group_id===null&&(to===null?parent.recipient===null&&parent.room===room:((parent.sender===me.id&&parent.recipient===to)||(parent.sender===to&&parent.recipient===me.id))));
    if(!allowed)fail(400,'That message is unavailable in this conversation.');
   }
-  const result=await env.DB.prepare(`INSERT INTO chat_messages(sender,recipient,text,created,expires,client_id,reply_to,photo,group_id)
-   SELECT ?,?,?,?,?,?,?,?,? WHERE (? IS NULL OR EXISTS(SELECT 1 FROM chat_group_members WHERE group_id=? AND user_id=?)) AND NOT EXISTS(SELECT 1 FROM chat_messages WHERE sender=? AND created>?)`).bind(me.id,to,data.text.trim()||'Photo',now,now+86400000,data.clientId,replyId,photo,group,group,group,me.id,me.id,now-2000).run();
+  const result=await env.DB.prepare(`INSERT INTO chat_messages(sender,recipient,text,created,expires,client_id,reply_to,photo,group_id,room)
+   SELECT ?,?,?,?,?,?,?,?,?,? WHERE (? IS NULL OR EXISTS(SELECT 1 FROM chat_group_members WHERE group_id=? AND user_id=?)) AND NOT EXISTS(SELECT 1 FROM chat_messages WHERE sender=? AND created>?)`).bind(me.id,to,data.text.trim()||'Photo',now,now+86400000,data.clientId,replyId,photo,group,room,group,group,me.id,me.id,now-2000).run();
   if(!result.meta.changes)fail(429,'Wait two seconds before sending another message.');
   return json({ok:true},201);
  }
  const before=Number(url.searchParams.get('before'))||Number.MAX_SAFE_INTEGER;
  if(!Number.isSafeInteger(before)||before<1)fail(400,'Invalid page.');
- const filter=group!==null?'m.group_id=?':to===null?'m.group_id IS NULL AND m.recipient IS NULL':'m.group_id IS NULL AND ((m.sender=? AND m.recipient=?) OR (m.sender=? AND m.recipient=?))';
- const args=group!==null?[now,before,group]:to===null?[now,before]:[now,before,me.id,to,to,me.id];
+ const filter=group!==null?'m.group_id=?':to===null?'m.group_id IS NULL AND m.recipient IS NULL AND m.room=?':'m.group_id IS NULL AND ((m.sender=? AND m.recipient=?) OR (m.sender=? AND m.recipient=?))';
+ const args=group!==null?[now,before,group]:to===null?[now,before,room]:[now,before,me.id,to,to,me.id];
  const rows=await env.DB.prepare(`SELECT m.id,m.text,(m.photo IS NOT NULL) AS has_photo,u.presence,u.roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>${now}) AS last_seen,m.created,m.expires,u.id AS sender,u.username,u.avatar_version,u.owner,m.reply_to,r.sender AS reply_user,r.text AS reply_text,ru.username AS reply_name,r.expires AS reply_expires FROM chat_messages m JOIN users u ON u.id=m.sender LEFT JOIN chat_messages r ON r.id=m.reply_to LEFT JOIN users ru ON ru.id=r.sender WHERE m.expires>? AND m.id<? AND ${filter} ORDER BY m.id DESC LIMIT 101`).bind(...args).all();
  return json({messages:rows.results.slice(0,100).reverse().map(r=>({id:r.id,text:r.text,hasPhoto:!!r.has_photo,created:r.created,expires:r.expires,reply:r.reply_to?{id:r.reply_to,userId:r.reply_expires>now?r.reply_user:null,text:r.reply_expires>now?r.reply_text:null,username:r.reply_expires>now?r.reply_name:null,expires:r.reply_expires}:null,user:person({...r,id:r.sender})})),hasMore:rows.results.length>100});
 }

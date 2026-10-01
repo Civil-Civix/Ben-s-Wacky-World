@@ -50,3 +50,9 @@ Apply `chat-schema.sql` to the existing accounts D1 database. Deploy `chat.mjs` 
 - Do not roll back to a pre-group chat handler after groups contain messages: older public-room queries do not exclude group rows.
 - Verification: `node group-test.mjs` and `node test.mjs`. Local browser check: `.audit-evidence/group-ui-check.cjs` from repository root with PLAYWRIGHT_PATH configured.
 - Rollout complete October 1: user explicitly approved production deployment; schema applied and Worker deployed (a509b7b76c0940f2936bf9b3f4c7997d). All nine bindings, including secrets, preserved. Read-only production checks: groups requires login (401), leaderboard healthy (200), published website contains group and emoji controls.
+
+
+## Public rooms
+World chat is the renamed original main room (existing history preserved). PokéChat uses `to:"room:poke"` on message reads/posts and is available to every authenticated account. Reply validation keeps public rooms separate. Photos and the 24-hour expiry are unchanged.
+
+`public-rooms.sql` has already been applied to the existing D1 database; do not rerun. Backend deployed October 1 with explicit user approval (3e188e5accb947c397e002640d87a95b). All nine bindings and secrets preserved. Production checks: unauthenticated PokéChat returns 401; leaderboard returns 200. Frontend files are ready for the user to push.

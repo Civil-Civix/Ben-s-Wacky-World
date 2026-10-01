@@ -7,6 +7,7 @@
  let selectedPerson=null,attachment=null,photoReading=false,photoGeneration=0,searchGeneration=0;
  const picker=$('#dm-picker'),groupPicker=$('#group-picker'),emojiPicker=$('#emoji-picker');
  const groupMembers=new Map();let groupSearchToken=0,groupSearchTimer,groupCreating=false;
+ const isPublic=()=>!to||to==='room:poke';
  const isGroup=()=>!!to?.startsWith('group:');
  function groupButton(group){const b=document.createElement('button');b.type='button';b.dataset.dmPerson='group:'+group.id;b.textContent=group.name+' · '+group.count;b.setAttribute('aria-pressed',String(to===b.dataset.dmPerson));b.addEventListener('click',()=>choose({id:b.dataset.dmPerson,username:group.name,group:true}));return b;}
  function paintGroupSelection(){
@@ -76,7 +77,7 @@
  }
  function scheduleUnread(){clearTimeout(unreadTimer);void refreshUnread().finally(()=>{if(account.user&&!document.hidden)unreadTimer=setTimeout(scheduleUnread,10000);});}
  async function markVisible(){
-  if(!active()||!to||readBusy||document.querySelector('dialog[open]'))return;
+  if(!active()||isPublic()||readBusy||document.querySelector('dialog[open]'))return;
   const log=$('#messages-log').getBoundingClientRect(),peer=to,id=account.user.id;
   const seen=rows.filter(m=>(peer.startsWith('group:')?m.user.id!==id:m.user.id===peer)&&m.expires>Date.now()).filter(m=>{const el=document.getElementById('message-'+m.id);if(!el)return false;const r=el.getBoundingClientRect();return r.top<log.bottom&&r.bottom>log.top;});
   const through=Math.max(0,...seen.map(m=>m.id));if(through<=(readThrough.get(peer)||0))return;
@@ -96,7 +97,7 @@
    const article=document.createElement('article');article.className='message-row';article.id='message-'+m.id;
    const replyAuthor=rows.find(parent=>parent.id===m.reply?.id)?.user;
    const repliesToMe=m.reply?.userId?m.reply.userId===account.user?.id:replyAuthor?replyAuthor.id===account.user?.id:m.reply?.username===account.user?.username;
-   if((!to||isGroup())&&m.user.id!==account.user?.id&&m.reply?.expires>Date.now()&&repliesToMe)article.classList.add('message-reply-to-me');
+   if((isPublic()||isGroup())&&m.user.id!==account.user?.id&&m.reply?.expires>Date.now()&&repliesToMe)article.classList.add('message-reply-to-me');
    const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('button'),time=document.createElement('time'),text=document.createElement('p');
    name.textContent=m.user.username+(m.user.owner?' · Owner':'');time.dateTime=new Date(m.created).toISOString();time.textContent=new Date(m.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});text.textContent=m.text;
    name.type='button';name.className='message-profile';name.addEventListener('click',()=>void account.openProfile(m.user.id));
@@ -111,7 +112,7 @@
  async function people(){
   if(!active())return;const token=generation;
   try{const [data,groupData]=await Promise.all([account.api('/chat/people?conversations=1'),account.api('/chat/groups')]);if(token!==generation)return;
-   const users=data.users;if(selectedPerson&&!selectedPerson.group&&!users.some(u=>u.id===selectedPerson.id))users.unshift(selectedPerson);
+   const users=data.users;if(selectedPerson&&!selectedPerson.group&&!selectedPerson.room&&!users.some(u=>u.id===selectedPerson.id))users.unshift(selectedPerson);
    const list=$('#messages-people');list.replaceChildren(...users.map(personButton));
    if(!users.length){const p=document.createElement('p');p.className='messages-empty';p.textContent='No direct messages yet';list.append(p);}
    const groups=$('#messages-groups');groups.replaceChildren(...groupData.groups.map(groupButton));if(!groupData.groups.length){const p=document.createElement('p');p.className='messages-empty';p.textContent='No groups yet';groups.append(p);}
@@ -133,11 +134,11 @@
  }
  function choose(user=null){
   scheduleUnread();clearTimeout(timer);++generation;setReply();clearPhoto();selectedPerson=user;to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
-  $('#messages-room-title').textContent=user?(user.group?'':'@')+user.username:'Main room';$('#messages-leave-group').hidden=!user?.group;$('#messages-public').setAttribute('aria-pressed',String(!to));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
+  $('#messages-room-title').textContent=user?(user.group||user.room?'':'@')+user.username:'World chat';$('#messages-leave-group').hidden=!user?.group;$('#messages-public').setAttribute('aria-pressed',String(!to));$('#messages-poke').setAttribute('aria-pressed',String(to==='room:poke'));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
  }
  function sync(){
   scheduleUnread();clearTimeout(timer);++generation;
-  const id=account.user?.id||null;if(id!==identity){identity=id;setReply();clearPhoto();photoCache.clear();selectedPerson=null;picker.close();groupPicker.close();emojiPicker.close();$('#group-leave-picker').close();groupMembers.clear();++groupSearchToken;$('#messages-groups').replaceChildren();$('#messages-leave-group').hidden=true;to=null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='Main room';$('#messages-people').replaceChildren();paint();}
+  const id=account.user?.id||null;if(id!==identity){identity=id;setReply();clearPhoto();photoCache.clear();selectedPerson=null;picker.close();groupPicker.close();emojiPicker.close();$('#group-leave-picker').close();groupMembers.clear();++groupSearchToken;$('#messages-groups').replaceChildren();$('#messages-leave-group').hidden=true;to=null;$('#messages-public').setAttribute('aria-pressed','true');$('#messages-poke').setAttribute('aria-pressed','false');rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='World chat';$('#messages-people').replaceChildren();paint();}
   $('#messages-login').hidden=!!id;$('#messages-layout').hidden=!id;
   if(active()){void refresh();void people();timer=setTimeout(tick,2000);}
  }
@@ -146,7 +147,7 @@
  $('#messages-reply-cancel').addEventListener('click',()=>setReply());
  window.showMessages=value=>{document.body.classList.toggle('messages-open',value);open=value;$('#messages-panel').hidden=!value;sync();};
  window.addEventListener('wacky-account-change',sync);document.addEventListener('visibilitychange',sync);
- $('#messages-public').addEventListener('click',()=>choose());$('#messages-older').addEventListener('click',()=>void refresh(true));
+ $('#messages-public').addEventListener('click',()=>choose());$('#messages-poke').addEventListener('click',()=>choose({id:'room:poke',username:'PokéChat',room:true}));$('#messages-older').addEventListener('click',()=>void refresh(true));
  $('#messages-search').addEventListener('input',()=>{clearTimeout(peopleTimer);peopleTimer=setTimeout(searchPeople,250);});
  $('#messages-form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy||photoReading||!active())return;const text=$('#messages-text').value.trim();if(!text&&!attachment)return;

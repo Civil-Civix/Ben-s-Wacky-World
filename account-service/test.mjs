@@ -55,6 +55,7 @@ assert.equal((await req('/login','POST',{username:'PlayerOne',password:'test-pas
 assert.equal((await req('/logout','POST',{})).status,200);assert.equal((await req('/me')).status,401);
 db.exec(readFileSync(new URL('./chat-schema.sql',import.meta.url),'utf8'));
 db.exec(readFileSync(new URL('./group-schema.sql',import.meta.url),'utf8'));
+db.exec(readFileSync(new URL('./public-rooms.sql',import.meta.url),'utf8'));
 const tokens=['a'.repeat(64),'b'.repeat(64),'c'.repeat(64)];
 for(let i=0;i<3;i++){
  db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created) VALUES(?,?,?,?,?,?)').run('chat'+i,'Chat'+i,'chat'+i,'salt','hash',Date.now());

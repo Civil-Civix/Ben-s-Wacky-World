@@ -3,7 +3,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {chat} from './chat.mjs';
 const db=new DatabaseSync(':memory:');
-for(const file of ['schema.sql','chat-schema.sql','group-schema.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
+for(const file of ['schema.sql','chat-schema.sql','group-schema.sql','public-rooms.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
 const DB={prepare(sql){const make=(args=[])=>({bind(...a){return make(a)},async first(){return db.prepare(sql).get(...args)||null},async all(){return {results:db.prepare(sql).all(...args)}},async run(){return {meta:db.prepare(sql).run(...args)}}});return make()},async batch(items){db.exec('BEGIN');try{const result=[];for(const s of items)result.push(await s.run());db.exec('COMMIT');return result}catch(e){db.exec('ROLLBACK');throw e}}};
 for(const id of ['a','b','c','outsider'])db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created) VALUES(?,?,?,?,?,?)').run(id,id,id,'s','h',1);
 let now=Date.now(),sequence=0;
@@ -33,3 +33,13 @@ assert.equal((await req('b','/chat/messages?to='+to)).status,404);assert.equal((
 now+=86400001;assert.equal((await req('a','/chat/messages?to='+to)).data.messages.length,0);assert.equal((await req('a','/chat/photos/'+message.id)).status,404);assert.equal((await req('c','/chat/unread')).data.count,0);
 await req('a','/chat/groups/'+group+'/leave','POST',{});await req('c','/chat/groups/'+group+'/leave','POST',{});assert.equal(db.prepare('SELECT COUNT(*) AS n FROM chat_groups WHERE id=?').get(group).n,0);
 console.log('PASS: group creation, membership, outsider/left-member message and photo denial, public/DM isolation, cross-room replies, unread receipts, mute enforcement, 24h expiry, empty-group cleanup.');
+
+now+=3000;assert.equal((await post('a',null,'World message')).status,201);
+now+=3000;assert.equal((await post('a','room:poke','Poké message')).status,201);
+const world=(await req('outsider','/chat/messages')).data.messages,poke=(await req('outsider','/chat/messages?to=room:poke')).data.messages;
+assert.deepEqual(world.map(m=>m.text),['World message']);assert.deepEqual(poke.map(m=>m.text),['Poké message']);
+assert.equal((await post('b',null,'Wrong room',{replyTo:poke[0].id})).status,400);
+assert.equal((await post('b','room:poke','Wrong room',{replyTo:world[0].id})).status,400);
+assert.equal((await post('b','room:poke','Right room',{replyTo:poke[0].id})).status,201);
+assert.equal((await post('outsider','room:unknown','No')).status,404);
+console.log('PASS: public rooms are open to accounts but keep separate history and reply boundaries.');

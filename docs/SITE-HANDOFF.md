@@ -94,3 +94,10 @@ through the usual manual GitHub push.
 - Tool paths updated for repository-root access and new report/preview locations. Main README refreshed to describe the current site; images guide link updated.
 - Runtime website files, game library/assets, service code, and Start Local.cmd paths remain unchanged. Ignored local evidence/backups retained.
 - Verified move inventory, report/image content equality, JavaScript/Python syntax, tool report paths, page asset links and a mocked website regression check. Ready for user review/push.
+
+
+## October 1: World chat and PokéChat
+- Renamed Main room to World chat, preserving its messages. Added PokéChat as a second public room for signed-in accounts. Both support photos, replies, emoji, highlighting and 24-hour expiry.
+- Updated index.html, messages.js, styles.css, account-service/chat.mjs, group-test.mjs and test.mjs. Added account-service/public-rooms.sql.
+- Backend/regression tests and mocked browser room-switching/send/history checks passed. D1 migration applied successfully.
+- User explicitly approved production deployment; Worker deployed successfully (3e188e5accb947c397e002640d87a95b), preserving all nine bindings and secrets. Unauthenticated PokéChat returns 401; leaderboard returns 200. Do not rerun the migration. Frontend still needs the user to push; published page does not yet contain PokéChat.
