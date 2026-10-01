@@ -484,8 +484,8 @@ textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px so
 #ai-form{border-radius:18px}.ai-heading{border-bottom:1px solid var(--line);margin-bottom:8px}
 #public-profile .public-profile-buttons button{min-height:40px}
 #admin-panel .admin-tabs button{min-height:40px}
-body.messages-open #snow,body:has(#ai-panel:not([hidden])) #snow{visibility:hidden}
-body.messages-open .snowflake,body:has(#ai-panel:not([hidden])) .snowflake{animation-play-state:paused}
+body.messages-open #snow{visibility:hidden}
+body.messages-open .snowflake{animation-play-state:paused}
 @media(max-width:1150px){#account-profile{grid-template-columns:190px minmax(0,1fr)}#profile-form{padding-right:0}.profile-preferences{grid-column:1/-1}}
 @media(max-width:720px){#account-profile{grid-template-columns:minmax(0,1fr);gap:20px}#profile-form{padding:20px 0 0;grid-template-columns:minmax(0,1fr)}#profile-form .banner-color-control{grid-column:auto}.launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:40px;gap:12px}.launch-tile{aspect-ratio:1.3;font-size:13px}.game-grid{gap:12px}.game-card{contain-intrinsic-size:auto 110px}.settings-layout{gap:22px}}
 @media(prefers-reduced-motion:reduce){.launch-tile,.game-card{transition:none}}
@@ -574,3 +574,11 @@ body:has(#account-dialog[open]){overflow:hidden}
 
 .snowflake{background:var(--effect-color,var(--accent))}
 :root[data-background=snow] .snowflake{opacity:min(1,calc(var(--opacity)*1.65));filter:none;box-shadow:none}
+
+/* Background effects remain visible in the AI chat gutters. */
+body.ai-open #ai-panel{background:transparent}
+body.ai-open .ai-heading{background:var(--page)}
+body.ai-open #theme-canvas,body.ai-open #snow{
+ mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
+ -webkit-mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
+}

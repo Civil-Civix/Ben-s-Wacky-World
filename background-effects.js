@@ -84,13 +84,23 @@
   }
   ctx.globalAlpha=Math.min(1,(1)*(light?1.65:1));
  }
- function paused(){return document.hidden||document.body.classList.contains('playing')||document.body.classList.contains('messages-open')||!document.querySelector('#ai-panel').hidden;}
+ function paused(){return document.hidden||document.body.classList.contains('playing')||document.body.classList.contains('messages-open');}
  function tick(now){raf=0;if(paused()||!animate||effect==='none'||effect==='snow')return;
   if(now-last>=32){draw(Math.min((now-last)/1000,.06));last=now;}
   raf=requestAnimationFrame(tick);
  }
- function sync(){cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow';effect=settings.effect;color=settings.effectColor||settings.accent;ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
+ function updateChatMask(){
+  const panel=document.querySelector('#ai-panel');
+  if(panel.hidden)return;
+  const content=document.querySelector('#ai-content'),bounds=content.getBoundingClientRect(),panelBounds=panel.getBoundingClientRect();
+  const width=bounds.width||Math.min(820,panelBounds.width),center=(panelBounds.left+panelBounds.right)/2;
+  const left=bounds.width?bounds.left:center-width/2,right=bounds.width?bounds.right:center+width/2;
+  document.documentElement.style.setProperty('--chat-effect-left',left+'px');
+  document.documentElement.style.setProperty('--chat-effect-right',right+'px');
+ }
+ new ResizeObserver(updateChatMask).observe(document.querySelector('#ai-content'));
+ function sync(){updateChatMask();cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
+ window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;color=settings.effectColor||settings.accent;ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();

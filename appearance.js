@@ -38,7 +38,7 @@
     root.style.setProperty('--accent',appearance.accent);
     const rgb = appearance.accent.slice(1).match(/../g).map(x=>parseInt(x,16));
     root.style.setProperty('--accent-rgb',rgb.join(' '));
-    const effectColor=appearance.background==='snow' ? '#'+rgb.map(v=>Math.round(v*.5).toString(16).padStart(2,'0')).join('') : appearance.accent;
+    const effectColor=appearance.background==='snow' && appearance.effect!=='cherry-blossom' ? '#'+rgb.map(v=>Math.round(v*.5).toString(16).padStart(2,'0')).join('') : appearance.accent;
     root.style.setProperty('--effect-color',effectColor);
     document.querySelector('#effect-amount').value=appearance.amount;
     document.querySelector('#amount-value').textContent=Number(appearance.amount.toFixed(2))+'×';
