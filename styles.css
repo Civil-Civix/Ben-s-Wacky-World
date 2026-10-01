@@ -191,7 +191,7 @@ body::before{background:rgb(var(--accent-rgb)/.022)}
 .snowflake{animation-duration:calc(var(--duration)/var(--effect-speed))}
 .speed-setting{display:grid;grid-template-columns:1fr auto;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
 .speed-setting output{color:var(--accent-text,var(--accent));font-variant-numeric:tabular-nums}
-#effect-speed{grid-column:1/-1;width:100%;margin:0;accent-color:var(--accent);cursor:pointer}
+#effect-speed,#effect-amount{grid-column:1/-1;width:100%;margin:0;accent-color:var(--accent);cursor:pointer}
 .speed-setting small{color:var(--muted)}.speed-setting small:last-child{text-align:right}
 
 .home-quote{margin:26px auto 0;max-width:760px;min-height:1.6em;color:var(--muted);font-size:16px;line-height:1.6;opacity:0;transition:opacity .6s ease;overflow-wrap:anywhere}
@@ -557,7 +557,7 @@ body:has(#account-dialog[open]){overflow:hidden}
 :root[data-background=snow] .home-title,:root[data-background=snow] .home-quote,:root[data-background=snow] .settings-heading,:root[data-background=snow] .appearance-column>h2,:root[data-background=snow] .settings-footer,:root[data-background=snow] .ai-heading,:root[data-background=snow] #messages-panel>header{color:#263746}
 :root[data-background=snow] .settings-heading .eyebrow,:root[data-background=snow] .home-quote{color:#405566}
 .background-sample.moss{background-color:#304d36}.background-sample.snow{background-color:#dfe8ee}
-.sidebar .nav-basic{margin-top:auto}
+.sidebar .nav-basic{margin-top:0}
 .effect-sample.casino,.effect-sample.cherry-blossom,.effect-sample.halloween{display:grid;place-items:center;font-size:22px}
 .effect-sample.casino:before{content:'$ ⚄';color:var(--accent-text,var(--accent));font-size:17px}
 .effect-sample.cherry-blossom:before{content:'✿';color:var(--accent-text,var(--accent))}
@@ -571,3 +571,6 @@ body:has(#account-dialog[open]){overflow:hidden}
 :root[data-background=snow] #account-message.is-error,:root[data-background=snow] #account-dialog #account-logout{color:#a82e42}
 :root[data-background=snow] #player-status{background:#fff3d7;color:#704b16}
 :root[data-background=snow] dialog::backdrop{background:#26374666}
+
+.snowflake{background:var(--effect-color,var(--accent))}
+:root[data-background=snow] .snowflake{opacity:min(1,calc(var(--opacity)*1.65));filter:none;box-shadow:none}
