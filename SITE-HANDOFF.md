@@ -70,3 +70,12 @@ through the usual manual GitHub push.
 - Snow now uses light surfaces throughout the site, dark readable text, and darker accent text while retaining the chosen accent for controls. Artwork labels remain white.
 - Casino and Cherry Blossom use the selected accent. Halloween is now a single-color flapping bat silhouette with no facial or pumpkin details.
 - Changed styles.css, background-effects.js, and index.html. Syntax, local seasonal browser checks, and light-theme account flows passed; screenshots inspected. Ready for user push, not deployed.
+
+
+## Group chats and emoji picker
+- Goal: simple named groups (3–10 total people), leave option, existing photo/reply/unread behavior and 24-hour messages. User confirmed no additional member management.
+- Added 25 face emojis plus heart, heartbreak, prayer, poop and wilted flower. Picker inserts at the cursor; it mentions the Windows emoji keyboard for more.
+- Frontend: index.html, messages.js, styles.css. Backend: account-service/chat.mjs, group-schema.sql, group-test.mjs, test.mjs, README.md.
+- Local backend privacy/regression checks and mocked browser creation/send/emoji/leave/mobile checks passed.
+- D1 group-schema.sql successfully applied to the existing accounts DB. Production Worker upload was blocked by automatic approval review because it replaces the shared backend; explicit approval has been requested. Do not rerun migration. Frontend not pushed.
+- Next: after user approves, deploy the prepared tested Worker preserving bindings/secrets, verify deployment metadata, then user pushes website changes.

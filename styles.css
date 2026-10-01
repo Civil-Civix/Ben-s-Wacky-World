@@ -582,3 +582,22 @@ body.ai-open #theme-canvas,body.ai-open #snow{
  mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
  -webkit-mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
 }
+
+/* Group conversations and the lightweight emoji picker. */
+#messages-groups{max-height:25vh;overflow:auto;flex-shrink:0}
+#messages-panel #messages-new-group{border:0;background:transparent;width:30px;height:30px;padding:0;font-size:23px;color:var(--muted)}
+#messages-groups>button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin:3px 0;border-color:transparent;background:transparent;overflow-wrap:anywhere}
+#messages-groups>button[aria-pressed=true]{background:rgb(var(--accent-rgb)/.09);color:var(--accent-text,var(--accent))}
+.messages-room-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-right:14px;flex-shrink:0}
+.messages-room-heading h2{border:0;overflow-wrap:anywhere;min-width:0}
+#messages-panel #messages-leave-group{font-size:11px;padding:6px 10px;flex-shrink:0;color:var(--muted)}
+#messages-panel #messages-emoji{display:grid;place-items:center;align-self:center;width:38px;height:38px;padding:6px;border:0;background:transparent;color:var(--muted)}
+.chat-dialog{width:min(460px,calc(100vw - 32px));max-height:85dvh;overflow:auto;box-sizing:border-box;padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--text,#f5f5f5);box-shadow:0 22px 80px #0005}
+.chat-dialog::backdrop{background:#0008;backdrop-filter:blur(4px)}.chat-dialog h2{font-size:20px;margin:0 0 18px}.chat-dialog p{font-size:12px;color:var(--muted);line-height:1.6}
+.chat-dialog label{display:block;font-size:13px;margin:16px 0 8px}.chat-dialog input{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:inherit;font:inherit}
+.chat-dialog button{font:inherit;padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:inherit;cursor:pointer}.chat-dialog button:hover{background:rgb(var(--accent-rgb)/.1);border-color:var(--accent)}.chat-dialog button:disabled{opacity:.45;cursor:default}
+.chat-dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}#group-create{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#group-selected{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}#group-selected button{font-size:12px;border-radius:20px;background:rgb(var(--accent-rgb)/.1)}
+#group-results{max-height:220px;overflow:auto;font-size:13px;color:var(--muted)}#group-results button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:4px 0}.emoji-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.emoji-heading h2{margin:0}#emoji-close{font-size:22px;border:0;padding:0 8px}
+#emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}#emoji-grid button{font-family:'Segoe UI Emoji','Apple Color Emoji',sans-serif;font-size:25px;padding:9px 0;border-color:transparent}
+@media(max-width:650px){#messages-groups{max-height:110px}#messages-panel .messages-room-heading h2{padding:12px;font-size:14px}#messages-form{gap:4px;padding-inline:8px}#messages-form button[type=submit]{width:38px}#messages-panel #messages-attach{width:32px}#messages-panel #messages-emoji{width:32px}.chat-dialog{padding:20px}}

@@ -40,3 +40,13 @@ Frontend changes take effect on GitHub Pages after the repository is pushed and 
 Apply `chat-schema.sql` to the existing accounts D1 database. Deploy `chat.mjs` with the worker and keep existing secrets/bindings. The hourly `17 * * * *` trigger cleans expired chat rows; reads reject expired messages immediately at 24 hours. Original session cleanup remains enabled.
 
 `GET /chat/people?q=...` finds up to 50 accounts, recent DM contacts first. `GET /chat/messages` reads the main room; `?to=USER_ID` reads only the signed-in user's conversation with that account. `before=ID` pages older messages (100 per page). `POST /chat/messages` accepts `{to:null|USER_ID,text,clientId}`. Sender identity always comes from the session. Text is limited to 1,000 characters and one send per two seconds per account. No message text is logged. DMs are access-controlled, not end-to-end encrypted. Frontend polls every eight seconds while visible, renders plain text, and clears private state on account changes. No uploads, group creation, or moderation UI in this initial test version.
+
+
+## Group chats (September 30)
+- Apply `group-schema.sql` once, then deploy the updated Worker. The migration has already been applied to the existing `bens-wacky-accounts` D1 database; do not run it twice.
+- `GET/POST /chat/groups` lists memberships or creates a named group with `{name,members:[USER_ID,...]}` (2–9 others, 10 people total). `POST /chat/groups/GROUP_ID/leave` leaves; the last departure removes the group.
+- Existing message and read routes accept `to:"group:GROUP_ID"`. Photos, replies, unread counts, mute rules, and 24-hour message expiry work in groups. Membership is checked server-side; main room and DM queries explicitly exclude group messages.
+- Groups remain after message expiry. No adding members, renaming, or rejoining in this version. There is a 10-second creation cooldown and 20 groups per creator.
+- Do not roll back to a pre-group chat handler after groups contain messages: older public-room queries do not exclude group rows.
+- Verification: `node group-test.mjs` and `node test.mjs`. Local browser check: `.audit-evidence/group-ui-check.cjs` from repository root with PLAYWRIGHT_PATH configured.
+- Current rollout: schema applied; backend upload blocked by automatic approval review pending explicit production-deployment approval. Website files remain local for the user's push.
