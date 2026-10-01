@@ -64,3 +64,9 @@ through the usual manual GitHub push.
 - Files: index.html, styles.css, app.js, accounts.js, appearance.js, background-effects.js in this repository.
 - Verified with local mocked browser: eight shortcuts, new presets/effects, saved selection, animation toggle, mobile overflow, no script errors; screenshots in ignored .audit-evidence.
 - Frontend changes are local and ready for the user to push. No deployment or backend changes.
+
+
+## Snow light theme revision
+- Snow now uses light surfaces throughout the site, dark readable text, and darker accent text while retaining the chosen accent for controls. Artwork labels remain white.
+- Casino and Cherry Blossom use the selected accent. Halloween is now a single-color flapping bat silhouette with no facial or pumpkin details.
+- Changed styles.css, background-effects.js, and index.html. Syntax, local seasonal browser checks, and light-theme account flows passed; screenshots inspected. Ready for user push, not deployed.
