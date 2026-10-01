@@ -1,8 +1,10 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{const b=await chromium.launch({headless:true,channel:'msedge'});try{
 const c=await b.newContext({viewport:{width:1600,height:1000}}),p=await c.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
-await c.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!=='http://wacky.test')return r.abort();if(u.pathname.startsWith('/library/'))return r.fulfill({body:'Game fixture',contentType:'text/html'});const file=path.join(__dirname,u.pathname==='/'?'index.html':decodeURIComponent(u.pathname));try{return r.fulfill({body:fs.readFileSync(file),contentType:({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'})[path.extname(file)]||'application/octet-stream'});}catch{return r.fulfill({status:404,body:''});}});
+await c.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!=='http://wacky.test')return r.abort();if(u.pathname.startsWith('/library/'))return r.fulfill({body:'Game fixture',contentType:'text/html'});const file=path.join(require('node:path').resolve(__dirname,'..'),u.pathname==='/'?'index.html':decodeURIComponent(u.pathname));try{return r.fulfill({body:fs.readFileSync(file),contentType:({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'})[path.extname(file)]||'application/octet-stream'});}catch{return r.fulfill({status:404,body:''});}});
 await p.goto('http://wacky.test/#settings');
 for(const effect of ['matrix','constellation','topography','starfield']){
  await p.locator('[data-effect='+effect+']').click();

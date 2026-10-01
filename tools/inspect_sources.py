@@ -1,6 +1,6 @@
 import zipfile, re, json, html, collections
 from pathlib import Path
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 SOURCES = [Path(r'C:\Users\mrell\Downloads\Noahs-Calculus-Tutor-master (1).zip'), Path(r'C:\Users\mrell\Downloads\seraph-main.zip')]
 with zipfile.ZipFile(SOURCES[0]) as z:
     text = z.read('Noahs-Calculus-Tutor-master/games.js').decode('utf-8-sig')
@@ -20,7 +20,7 @@ with zipfile.ZipFile(SOURCES[1]) as z:
     print('Seraph game bytes:', sum(e.file_size for e in z.infolist() if e.filename.startswith('seraph-main/games/')))
     print('Shared runtime bytes:',sum(e.file_size for e in z.infolist() if '/storage/emulatorjs/' in e.filename or '/storage/ruffle/' in e.filename))
     print('Large files:',[(e.filename,e.file_size) for e in z.infolist() if e.file_size>100_000_000 and '/games/' in e.filename])
-(ROOT/'source-inventory.json').write_text(json.dumps({'noah':noah,'seraph':seraph},ensure_ascii=False,indent=2),encoding='utf-8')
+(ROOT/'reports/source-inventory.json').write_text(json.dumps({'noah':noah,'seraph':seraph},ensure_ascii=False,indent=2),encoding='utf-8')
 print('Catalog entries:',len(noah),len(seraph))
 print('Noah titles:',[g['title'] for g in noah])
 print('Seraph titles:',[g['title'] for g in seraph])

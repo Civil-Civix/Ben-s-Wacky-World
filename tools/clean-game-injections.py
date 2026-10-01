@@ -1,6 +1,6 @@
 import re,json
 from pathlib import Path
-root=Path(__file__).resolve().parent
+root=Path(__file__).resolve().parent.parent
 guard=(root/'game-ad-guard.js').read_text(encoding='utf-8')
 games=json.loads((root/'games.json').read_text(encoding='utf-8'));changed=[]
 loader="""<script>document.write('<script src="'+new URL('../../seraph-apps/storage/ruffle/ruffle.js',location.href).href+'"><\\/script>');</script>"""
@@ -17,5 +17,5 @@ for game in games:
     s,n=re.subn(r'<script\b[^>]*src=["\'][^"\']*u-cvlassrom-y/google[^"\']*ruffle\.js[^"\']*["\'][^>]*>\s*</script>',lambda m:loader,s,flags=re.I)
     p.write_text(s,encoding='utf-8')
     if removed[0] or n:changed.append({'id':game['id'],'title':game['title'],'injectedAdScriptsRemoved':removed[0],'flashLoaderReplaced':bool(n)})
-(root/'ad-injection-cleanup.json').write_text(json.dumps(changed,indent=2),encoding='utf-8')
+(root/'reports/ad-injection-cleanup.json').write_text(json.dumps(changed,indent=2),encoding='utf-8')
 print(json.dumps({'adInjectionCleanups':len(changed),'scriptsRemoved':sum(x['injectedAdScriptsRemoved'] for x in changed),'loadersReplaced':sum(x['flashLoaderReplaced'] for x in changed)}))

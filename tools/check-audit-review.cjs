@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{
@@ -9,7 +11,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
   const u=new URL(route.request().url());
   if(u.origin!=='http://wacky.test')return route.abort();
   if(u.pathname.startsWith('/library/'))return route.fulfill({contentType:'text/html',body:'<p>Game frame fixture</p>'});
-  const p=path.join(__dirname,decodeURIComponent(u.pathname));
+  const p=path.join(require('node:path').resolve(__dirname,'..'),decodeURIComponent(u.pathname));
   try{return route.fulfill({contentType:p.endsWith('.js')?'text/javascript':'text/html',body:fs.readFileSync(p)});}catch{return route.fulfill({status:404,body:'Missing'});}
  });
  await page.goto('http://wacky.test/game-audit-review.html');
@@ -33,7 +35,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
  assert.match(await page.locator('article h2').textContent(),/marked broken/);
  assert.equal(await page.locator('#frame').getAttribute('src'),'about:blank');
  await page.locator('#search').fill('');await page.locator('#filter').selectOption('uncertain');
- await page.screenshot({path:path.join(__dirname,'.audit-evidence/review-page.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'.audit-evidence/review-page.png')});
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({filtering:true,marksPersist:true,playerAndFullscreen:true,pageErrors:errors,counts}));
  }finally{await browser.close();}

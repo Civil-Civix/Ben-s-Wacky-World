@@ -1,6 +1,6 @@
 import json,re,zipfile
 from pathlib import Path
-root=Path(__file__).resolve().parent
+root=Path(__file__).resolve().parent.parent
 games=json.loads((root/'games.json').read_text(encoding='utf-8'))
 guard=(root/'game-ad-guard.js').read_text(encoding='utf-8')
 ads=r'(?:googlesyndication\.com|doubleclick\.net|googleadservices\.com|adsterra\.com|monetag\.com|popads\.net|popcash\.net|adinplay\.com)'
@@ -20,7 +20,7 @@ for g in games:
     else:text=block+text
     p.write_text(text,encoding='utf-8')
     changes.append({'id':g['id'],'title':g['title'],'removedAdScripts':n,'removedAdSlots':m,'popupGuard':True})
-(root/'ad-cleanup-report.json').write_text(json.dumps(changes,indent=2),encoding='utf-8')
+(root/'reports/ad-cleanup-report.json').write_text(json.dumps(changes,indent=2),encoding='utf-8')
 ignore=root/'.gitignore';content=ignore.read_text(encoding='utf-8')
 if '.audit-backups/' not in content:ignore.write_text(content+'\n.audit-backups/\n',encoding='utf-8')
 print(json.dumps({'protectedGames':len(changes),'removedAdScripts':sum(x['removedAdScripts'] for x in changes),'removedAdSlots':sum(x['removedAdSlots'] for x in changes)}))

@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{
@@ -19,7 +21,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
   if(u.origin!=='https://civil-civix.github.io')return route.fulfill({contentType:route.request().resourceType()==='script'?'text/javascript':'text/html',body:''});
   let rel=decodeURIComponent(u.pathname.replace(/^\/Ben-s-Wacky-World\//,''));
   if(rel.startsWith('library/'))return route.fulfill({contentType:'text/html',body:'Game fixture'});
-  const file=path.join(__dirname,rel||'index.html');
+  const file=path.join(require('node:path').resolve(__dirname,'..'),rel||'index.html');
   try{return route.fulfill({body:fs.readFileSync(file),contentType:({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'})[path.extname(file)]||'application/octet-stream'});}
   catch{return route.fulfill({status:404,body:''});}
  });

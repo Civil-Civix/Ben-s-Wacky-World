@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const assert=require('node:assert/strict');
 (async()=>{
@@ -11,7 +13,7 @@ const assert=require('node:assert/strict');
  assert.equal(await page.locator('.game-card img').count(),0);
  const size=await page.locator('.game-card').first().boundingBox();
  assert(size.width>=275 && size.width<=281);assert(size.height>=170 && size.height<=176);
- await page.screenshot({path:'catalog-preview.png'});
+ await page.screenshot({path:'docs/previews/catalog-preview.png'});
  await page.locator('#search').fill('zzznomatchzz');
  assert(await page.locator('#empty').isVisible());
  await page.locator('#search').fill('Trombone Champ');

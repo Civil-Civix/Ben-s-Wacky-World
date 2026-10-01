@@ -1,9 +1,11 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const root=__dirname, out=path.join(root,'.audit-evidence');
+const root=require('node:path').resolve(__dirname,'..'), out=path.join(root,'.audit-evidence');
 fs.mkdirSync(out,{recursive:true});
 const games=JSON.parse(fs.readFileSync(path.join(root,'games.json')));
-const resultPath=path.join(root,'game-audit-results.json');
+const resultPath=path.join(root,'reports/game-audit-results.json');
 const existing=fs.existsSync(resultPath)?JSON.parse(fs.readFileSync(resultPath)): [];
 const results=new Map(existing.map(r=>[r.id,r]));
 const limit=Number(process.argv.find(x=>x.startsWith('--limit='))?.split('=')[1]||405);

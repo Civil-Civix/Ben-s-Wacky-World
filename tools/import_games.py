@@ -3,9 +3,9 @@ import zipfile, re, json, html, unicodedata, posixpath, hashlib, sys
 from pathlib import Path
 SOURCES = [Path(r'C:\Users\mrell\Downloads\Noahs-Calculus-Tutor-master (1).zip'), Path(r'C:\Users\mrell\Downloads\seraph-main.zip')]
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 ACTIVE_SOURCES = ('noah','seraph') if '--include-seraph' in sys.argv else ('noah',)
-inventory = json.loads((ROOT/'source-inventory.json').read_text(encoding='utf-8'))
+inventory = json.loads((ROOT/'reports/source-inventory.json').read_text(encoding='utf-8'))
 ALIASES = {
  'aceattorny':'aceattorney','adventurecaptialist':'adventurecapitalist',
  'papaspizzaria':'papaspizzeria','bloxors':'bloxorz','chromedinogame':'chromedino',
@@ -89,6 +89,6 @@ for source,zip_path in zip(('noah','seraph'),SOURCES):
 (ROOT/'games.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2),encoding='utf-8')
 (ROOT/'games.js').write_text('window.WACKY_GAMES = '+json.dumps(catalog,ensure_ascii=False)+';\n',encoding='utf-8')
 report={'games':len(catalog),'duplicatesSkipped':len(skipped),'skipped':skipped,'files':files_written,'bytes':bytes_written,'externalReferences':external,'missingSourceReferences':missing}
-(ROOT/'import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+(ROOT/'reports/import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
 print(json.dumps({k:v for k,v in report.items() if k not in ('skipped','externalReferences','missingSourceReferences')}))
 print('Missing references:',json.dumps(missing)[:6500])

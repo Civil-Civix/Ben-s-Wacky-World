@@ -1,14 +1,14 @@
 import json,re,posixpath
 from pathlib import Path
 from html.parser import HTMLParser
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parent.parent
 games=json.loads((ROOT/'games.json').read_text(encoding='utf-8'))
 invalid=[g for g in games if not (ROOT/g['url']).is_file()]
 games=[g for g in games if (ROOT/g['url']).is_file()]
 if invalid:
     (ROOT/'games.json').write_text(json.dumps(games,ensure_ascii=False,indent=2),encoding='utf-8')
     (ROOT/'games.js').write_text('window.WACKY_GAMES = '+json.dumps(games,ensure_ascii=False)+';\n',encoding='utf-8')
-    (ROOT/'invalid-source-entries.json').write_text(json.dumps(invalid,indent=2),encoding='utf-8')
+    (ROOT/'reports/invalid-source-entries.json').write_text(json.dumps(invalid,indent=2),encoding='utf-8')
 assert len({g['id'] for g in games})==len(games)
 assert len({g['url'] for g in games})==len(games)
 issues=[]; fixes=[]
@@ -33,5 +33,5 @@ for game in games:
         if not ref or ref.startswith(('http:','https:','//','data:','blob:')):continue
         target=(ROOT/ref.lstrip('/')) if ref.startswith('/') else p.parent/ref.split('?')[0]
         if not target.is_file():issues.append({'game':game['title'],'entry':game['url'],'missing':ref})
-(ROOT/'source-issues.json').write_text(json.dumps(issues,indent=2),encoding='utf-8')
+(ROOT/'reports/source-issues.json').write_text(json.dumps(issues,indent=2),encoding='utf-8')
 print(json.dumps({'uniqueGames':len(games),'allLaunchFilesExist':True,'fixedPaths':fixes,'missingRuntimeReferences':issues},indent=2))

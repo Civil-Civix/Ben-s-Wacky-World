@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 (async()=>{
@@ -5,12 +7,12 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  try {
  const context=await browser.newContext({viewport:{width:1920,height:1080}});
  const base='http://wacky.test';
- const catalogCount=JSON.parse(fs.readFileSync(path.join(__dirname,'games.json'))).length;
+ const catalogCount=JSON.parse(fs.readFileSync(path.join(require('node:path').resolve(__dirname,'..'),'games.json'))).length;
  await context.route('**/*',async route=>{
    const url=new URL(route.request().url());
    if(url.origin!==base) return route.abort();
    if(url.pathname.startsWith('/library/')) return route.fulfill({contentType:'text/html',body:'<html><body>Player test fixture</body></html>'});
-   const filename=path.join(__dirname,decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname));
+   const filename=path.join(require('node:path').resolve(__dirname,'..'),decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname));
    const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png'};
    try {return route.fulfill({contentType:types[path.extname(filename)]||'application/octet-stream',body:fs.readFileSync(filename)});}
    catch {return route.fulfill({status:404,body:'Not found'});}
@@ -42,7 +44,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  assert.equal(fullscreenState.width,fullscreenState.viewportWidth);
  assert.equal(fullscreenState.height,fullscreenState.viewportHeight);
  assert.equal(fullscreenState.top,'IFRAME');
- await page.screenshot({path:path.join(__dirname,'fullscreen-check.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'docs/previews/fullscreen-check.png')});
  await page.evaluate(()=>document.exitFullscreen());
  await page.waitForFunction(()=>!document.fullscreenElement);
  assert(await page.locator('#player').isVisible());
@@ -76,9 +78,9 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
  await page.getByRole('link',{name:'All',exact:true}).click(); await page.waitForFunction(()=>document.querySelector('[data-view=all]').getAttribute('aria-current')==='page');
  await page.locator('.game-card').first().hover();
  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.game-card')).borderTopColor==='rgb(139, 123, 255)');
- await page.screenshot({path:path.join(__dirname,'catalog-preview.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'docs/previews/catalog-preview.png')});
  await page.getByRole('link',{name:'Recents',exact:true}).click(); await page.waitForFunction(()=>document.querySelector('[data-view=recents]').getAttribute('aria-current')==='page');
- await page.screenshot({path:path.join(__dirname,'collections-preview.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'docs/previews/collections-preview.png')});
  // Verify image mapping and fallback without adding any artwork to the repository.
  await page.route('**/game-images.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify({peak:'images/test.png',trombonechamp:'images/missing.png'})}));
  await page.route('**/images/test.png',r=>r.fulfill({contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=','base64')}));

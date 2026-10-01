@@ -87,3 +87,10 @@ through the usual manual GitHub push.
 - Halloween and Falling Snow exchange positions. New-browser defaults: Midnight, orange #FF8018, Halloween; saved choices preserved.
 - Edited index.html, appearance.js, messages.js, styles.css. Focused browser checks passed for defaults/persistence, icon switching, animation scope, reduced motion, effect order, emoji placement and group highlights. Screenshot: .audit-evidence/halloween-home-icons.png.
 - No backend change needed. Website changes are saved locally for the user's push.
+
+
+## October 1: repository organization
+- Moved 42 root files into tools/, reports/, docs/, and docs/previews/. No files deleted; report and screenshot contents preserved.
+- Tool paths updated for repository-root access and new report/preview locations. Main README refreshed to describe the current site; images guide link updated.
+- Runtime website files, game library/assets, service code, and Start Local.cmd paths remain unchanged. Ignored local evidence/backups retained.
+- Verified move inventory, report/image content equality, JavaScript/Python syntax, tool report paths, page asset links and a mocked website regression check. Ready for user review/push.

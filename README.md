@@ -1,53 +1,47 @@
 # Ben's Wacky World
 
-Static desktop game and app site. Current repository: `C:\Users\mrell\OneDrive\Documents\GitHub\Ben's Wacky World`. The older Desktop Wacky Games folder is not used for development.
+A static game site with accounts, Chat, Ben AI, appearance settings, and profile-linked Pokémon battles. GitHub Pages serves the frontend without a build step.
 
 ## Open locally
 
-Run **Start Local.cmd** from this repository, then open **http://127.0.0.1:4173**. Keep its window open. If an older preview is running from another folder, stop that preview first. Node.js is required. GitHub Pages can serve the static site without a build step.
+Run **Start Local.cmd** from this folder and open **http://127.0.0.1:4173**. Node.js is required. Keep the preview window open while using the site.
 
-## Included
+## Repository map
 
-- Games from Noah's supplied files, with duplicate titles excluded. See games.json for the current catalog.
-- 16 Seraph apps in their own tab. Seraph games remain excluded.
-- Six cards per desktop row with matched Noah game artwork, with search and an in-page player.
-- Favorites and Recents saved locally in the browser. Apps do not enter these game collections.
-- Reload, game-only fullscreen, and Close controls.
-- Home with locally hosted Inter Bold, typing and ripple animation, and a four-by-two tile layout.
-- Appearance settings, custom accent color (default #8B7BFF), background themes, and falling snow. Reduced-motion preferences are respected.
+| Location | Contents |
+| --- | --- |
+| Root HTML, CSS and JavaScript | Live website: navigation, games, accounts, Chat, AI, appearance and player |
+| `games.json`, `games.js`, `game-images.json`, `home-quotes.json` | Active site content |
+| `disabled-games.json` | Entries intentionally excluded from reimporting |
+| `images/`, `fonts/`, `library/`, `vendor/` | Site assets, game files and required third-party runtimes |
+| `account-service/` | Cloudflare backend for accounts, Chat, groups, AI and moderation |
+| `pokemon-service/` | Pokémon server integration |
+| `popularity-service/` | Game popularity backend |
+| `tools/` | Maintenance, imports, cleanup utilities and browser checks |
+| `reports/` | Historical audit, import and validation results |
+| `docs/` | Guides, audit notes and development handoff |
+| `docs/previews/` | Historical UI screenshots (not used by the live site) |
+| `licenses/` | Third-party license notices |
 
-## Game checks and ads
+## Guides
 
-See [GAME-AUDIT.md](GAME-AUDIT.md) for complete results. Open **http://127.0.0.1:4173/game-audit-review.html** while the local preview is running to check uncertain games. Working/broken review marks stay in that browser and do not remove entries.
+- [Current development handoff](docs/SITE-HANDOFF.md)
+- [Adding game artwork](docs/ADDING-IMAGES.md)
+- [Game audit notes](docs/GAME-AUDIT.md)
+- [Quote review](docs/QUOTE-REVIEW.md)
+- [Backend setup](account-service/README.md)
+- [Maintenance tools](tools/README.md)
 
-All 405 original entries received a short browser loading check. Confirmed missing-asset failures were retried and reviewed before being hidden. Working-looking and uncertain entries remain. Appears-loaded is not a full gameplay test.
+The manual [game audit review](game-audit-review.html) remains at its existing URL. Its browser scripts and generated review data are kept in the root to preserve that page.
 
-Known embedded ad scripts, AdSense placements, and injected ad sidebars were removed. Modified Flash loaders were replaced with the local emulator. Local game documents block known ad requests and popup windows. Ads within externally hosted embedded pages cannot be universally removed here.
+## Working on the site
 
-`disabled-games.json` preserves hidden catalog entries; their source files remain. `.audit-backups/` contains original HTML and the previous catalog, and `.audit-evidence/` contains local screenshots. Both folders are ignored by Git. The importer respects disabled IDs; importing original source HTML again will require repeating the ad cleanup and checking the results.
+Edit frontend files, check the change locally, then commit and push to publish through GitHub Pages. Backend changes require a separate Cloudflare or Pokémon server deployment; pushing website files does not deploy those services.
 
-## Files
+Appearance preferences are saved per browser. First-time defaults are Midnight, orange and Halloween. Effects support speed up to 5× and amount from 0.25× to 3×. Chat supports the main room, DMs and groups of up to 10 people; messages expire after 24 hours.
 
-- `index.html`, `app.js`, `styles.css`: homepage, catalogs, player, and shared layout.
-- `home.js`, `appearance.js`: heading animations and saved appearance settings.
-- `messages.js`: Chat main room, DMs, unread badges, and reply highlighting.
-- `games.json` / `games.js`: game catalog.
-- `library/noah/games/`: supplied game pages.
-- `library/seraph-apps/storage/`: shared emulator files required by games.
-- `game-ad-guard.js`: source for the protection embedded in local game pages.
-- `game-audit-review.html`: manual review page.
-- `game-audit-results.json`, `GAME-AUDIT.md`: audit evidence and summary.
-- `licenses/`: supplied license notices.
-- `ADDING-IMAGES.md`: how to map your own artwork to game IDs.
+## Local-only folders
 
-Some games download large files from outside servers. Local hosting does not make them offline games. External outages, blocked embedding, and browser differences can still affect them.
+`.audit-evidence/`, `.audit-backups/`, `.pokemon-runtime/`, caches, dependencies and secret environment files are ignored by Git. They are intentionally retained locally. `library/seraph-apps/storage/` contains shared game runtimes even though Apps was removed from navigation; do not remove it as unused app clutter.
 
-## Handoff
-
-Current goal: keep usable games, hide only confirmed failures, and remove identifiable ads. Automated checks and local ad cleanup are complete; uncertain games need manual review. Continue in this GitHub repository. These audit changes have not been committed or pushed.
-
-
-## Background effects
-Settings → Appearance offers None, Falling snow, Matrix, Constellation, Topography, and Starfield. Each follows the accent color, with a subtle page tint and a soft homepage title spotlight. Animate background pauses motion while retaining the selected design. Choices are saved locally; animations pause during gameplay and in hidden tabs. New effects are original lightweight implementations inspired by the supplied Noah theme options.
-
-Animation speed in Settings ranges from 0.25× to 3× and is saved locally. The homepage glow originates above the heading; the accent tint is deliberately subtle. All 400 current games have locally optimized artwork (about 9.5 MB). Five Nights at Epstein was removed by request; its catalog entry remains in disabled-games.json to prevent reimporting it.
+Historical reports and screenshots are reference material, not current test results. Some games require outside servers and cannot work fully offline.

@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
@@ -9,7 +11,7 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
    const url=new URL(route.request().url());
    if(url.origin!=='http://wacky.test')return route.abort();
    if(url.pathname.startsWith('/library/'))return route.fulfill({contentType:'text/html',body:'<body>Game fixture</body>'});
-   const p=path.join(__dirname,url.pathname==='/'?'index.html':decodeURIComponent(url.pathname));
+   const p=path.join(require('node:path').resolve(__dirname,'..'),url.pathname==='/'?'index.html':decodeURIComponent(url.pathname));
    const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json'};
    try{return route.fulfill({contentType:types[path.extname(p)]||'application/octet-stream',body:fs.readFileSync(p)});}
    catch{return route.fulfill({status:404,body:'Not found'});}
@@ -28,7 +30,7 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
  await page.getByRole('button',{name:'Settings',exact:true}).click();
  await page.locator('#settings-panel').waitFor({state:'visible'});
  assert(await page.locator('#catalog').isHidden());
- await page.screenshot({path:path.join(__dirname,'appearance-preview.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'docs/previews/appearance-preview.png')});
  await page.getByRole('button',{name:'Mocha',exact:true}).click();
  assert.equal(await page.locator('html').getAttribute('data-background'),'mocha');
  await page.getByRole('button',{name:'Blue accent',exact:true}).click();
@@ -56,11 +58,11 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
  assert.equal(await page.locator('#accent-value').textContent(),'#8B7BFF');
  await page.getByRole('button',{name:'Games',exact:true}).click();
  await page.locator('#catalog').waitFor({state:'visible'});
- await page.screenshot({path:path.join(__dirname,'snow-preview.png')});
+ await page.screenshot({path:path.join(require('node:path').resolve(__dirname,'..'),'docs/previews/snow-preview.png')});
  assert.deepEqual(errors,[]);
  const reduced=await browser.newContext({reducedMotion:'reduce'});
  await reduced.route('**/*',async r=>{
-   const u=new URL(r.request().url()),p=path.join(__dirname,u.pathname==='/'?'index.html':u.pathname);
+   const u=new URL(r.request().url()),p=path.join(require('node:path').resolve(__dirname,'..'),u.pathname==='/'?'index.html':u.pathname);
    const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json'};
    try{return r.fulfill({contentType:types[path.extname(p)]||'text/plain',body:fs.readFileSync(p)});}catch{return r.fulfill({status:404,body:''});}
  });

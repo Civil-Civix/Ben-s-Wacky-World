@@ -1,14 +1,16 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('node:fs'),path=require('node:path');
-const root=__dirname,file=n=>path.join(root,n);
-let results=JSON.parse(fs.readFileSync(file('game-audit-results.json')));
+const root=require('node:path').resolve(__dirname,'..'),file=n=>path.join(root,n);
+let results=JSON.parse(fs.readFileSync(file('reports/game-audit-results.json')));
 const final=process.argv.includes('--finalize');
 const previouslyDisabled=fs.existsSync(file('disabled-games.json'))?JSON.parse(fs.readFileSync(file('disabled-games.json'))):[];
-const approved=fs.existsSync(file('reviewed-failures.json'))?JSON.parse(fs.readFileSync(file('reviewed-failures.json'))):[];
+const approved=fs.existsSync(file('reports/reviewed-failures.json'))?JSON.parse(fs.readFileSync(file('reports/reviewed-failures.json'))):[];
 if(final) {
  if(results.length!==405)throw new Error('Audit must cover all 405 original entries before finalizing');
  for(const id of approved)if(!results.some(r=>r.id===id && r.status==='confirmed-failed'))throw new Error('Removal lacks repeat-failure evidence: '+id);
  results=results.map(r=>r.status==='confirmed-failed'&&!approved.includes(r.id)?{...r,status:'uncertain',reviewNote:'Kept for manual review after assessing the evidence.'}:r);
- fs.writeFileSync(file('game-audit-results.json'),JSON.stringify(results,null,2));
+ fs.writeFileSync(file('reports/game-audit-results.json'),JSON.stringify(results,null,2));
  const backup=file('.audit-backups/catalog-before-removals.json');
  const catalog=JSON.parse(fs.readFileSync(fs.existsSync(backup)?backup:file('games.json')));
  if(!fs.existsSync(backup))fs.writeFileSync(backup,JSON.stringify(catalog,null,2));
@@ -44,6 +46,6 @@ const lines=['# Game audit','',final?'Completed audit of all 405 original games.
 '## Hidden after repeated failure','',...data.filter(r=>r.status==='confirmed-failed').map(r=>'- '+r.title+': '+r.reason),'',
 '## Uncertain: please review','',...data.filter(r=>r.status==='uncertain').map(r=>'- **'+r.title+'** — '+r.reason),'',
 '## Appears loaded: kept','',...data.filter(r=>r.status==='appears-loaded').map(r=>'- '+r.title),''];
-fs.writeFileSync(file('GAME-AUDIT.md'),lines.join('\n'));
+fs.writeFileSync(file('docs/GAME-AUDIT.md'),lines.join('\n'));
 console.log(JSON.stringify({final,checked:results.length,counts,hidden:final?approved:[]}));
 

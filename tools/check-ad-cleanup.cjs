@@ -1,3 +1,5 @@
+// Run maintenance tools from the repository root, regardless of shell location.
+process.chdir(require('node:path').resolve(__dirname,'..'));
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 (async()=>{
@@ -6,7 +8,7 @@ const {chromium}=require('C:/Users/mrell/.cache/codex-runtimes/codex-primary-run
   const p=await b.newPage();let adRequests=0;
   await p.route('**/*',r=>{if(/googlesyndication|breadisgay/.test(r.request().url()))adRequests++;return r.abort();});
   await p.setContent('<html><head></head><body><button id="play">Play</button><div id="normal">Game content</div></body></html>');
-  await p.addScriptTag({content:fs.readFileSync(path.join(__dirname,'game-ad-guard.js'),'utf8')});
+  await p.addScriptTag({content:fs.readFileSync(path.join(require('node:path').resolve(__dirname,'..'),'game-ad-guard.js'),'utf8')});
   const r=await p.evaluate(async()=>{
    const ad=document.createElement('script');ad.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';document.body.appendChild(ad);
    const iframe=document.createElement('iframe');iframe.src='https://breadisgay.eduplace.net/e';document.body.appendChild(iframe);
