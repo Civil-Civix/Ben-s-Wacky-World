@@ -77,5 +77,13 @@ through the usual manual GitHub push.
 - Added 25 face emojis plus heart, heartbreak, prayer, poop and wilted flower. Picker inserts at the cursor; it mentions the Windows emoji keyboard for more.
 - Frontend: index.html, messages.js, styles.css. Backend: account-service/chat.mjs, group-schema.sql, group-test.mjs, test.mjs, README.md.
 - Local backend privacy/regression checks and mocked browser creation/send/emoji/leave/mobile checks passed.
-- D1 group-schema.sql successfully applied to the existing accounts DB. Production Worker upload was blocked by automatic approval review because it replaces the shared backend; explicit approval has been requested. Do not rerun migration. Frontend not pushed.
-- Next: after user approves, deploy the prepared tested Worker preserving bindings/secrets, verify deployment metadata, then user pushes website changes.
+- D1 group-schema.sql applied; do not rerun. After explicit user approval, backend deployed successfully: a509b7b76c0940f2936bf9b3f4c7997d. All nine existing bindings/secrets preserved.
+- October 1 verification: published website has group/emoji controls; backend leaderboard returns 200 and anonymous group access correctly returns 401. Feature ready for user testing. No real accounts or messages were created during verification.
+
+
+## October 1: Halloween navigation and chat polish
+- Emoji button now follows attachment button. Replies addressed to the current user highlight in groups as well as the main room.
+- Halloween swaps five navigation/home icons: Games bat, Chat spider/web, AI evil robot, Stream Hub candy corn, Settings jack-o-lantern. Home-only intermittent animations respect the animation toggle and reduced motion; other effects restore the original icons.
+- Halloween and Falling Snow exchange positions. New-browser defaults: Midnight, orange #FF8018, Halloween; saved choices preserved.
+- Edited index.html, appearance.js, messages.js, styles.css. Focused browser checks passed for defaults/persistence, icon switching, animation scope, reduced motion, effect order, emoji placement and group highlights. Screenshot: .audit-evidence/halloween-home-icons.png.
+- No backend change needed. Website changes are saved locally for the user's push.

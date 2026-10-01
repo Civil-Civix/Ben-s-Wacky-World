@@ -49,4 +49,4 @@ Apply `chat-schema.sql` to the existing accounts D1 database. Deploy `chat.mjs` 
 - Groups remain after message expiry. No adding members, renaming, or rejoining in this version. There is a 10-second creation cooldown and 20 groups per creator.
 - Do not roll back to a pre-group chat handler after groups contain messages: older public-room queries do not exclude group rows.
 - Verification: `node group-test.mjs` and `node test.mjs`. Local browser check: `.audit-evidence/group-ui-check.cjs` from repository root with PLAYWRIGHT_PATH configured.
-- Current rollout: schema applied; backend upload blocked by automatic approval review pending explicit production-deployment approval. Website files remain local for the user's push.
+- Rollout complete October 1: user explicitly approved production deployment; schema applied and Worker deployed (a509b7b76c0940f2936bf9b3f4c7997d). All nine bindings, including secrets, preserved. Read-only production checks: groups requires login (401), leaderboard healthy (200), published website contains group and emoji controls.

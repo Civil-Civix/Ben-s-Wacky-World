@@ -601,3 +601,17 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 #group-results{max-height:220px;overflow:auto;font-size:13px;color:var(--muted)}#group-results button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:4px 0}.emoji-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.emoji-heading h2{margin:0}#emoji-close{font-size:22px;border:0;padding:0 8px}
 #emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}#emoji-grid button{font-family:'Segoe UI Emoji','Apple Color Emoji',sans-serif;font-size:25px;padding:9px 0;border-color:transparent}
 @media(max-width:650px){#messages-groups{max-height:110px}#messages-panel .messages-room-heading h2{padding:12px;font-size:14px}#messages-form{gap:4px;padding-inline:8px}#messages-form button[type=submit]{width:38px}#messages-panel #messages-attach{width:32px}#messages-panel #messages-emoji{width:32px}.chat-dialog{padding:20px}}
+
+/* Seasonal navigation keeps the same labels and destinations. */
+.halloween-nav-icon{display:none}
+:root[data-effect=halloween] .standard-nav-icon{display:none}
+:root[data-effect=halloween] .halloween-nav-icon{display:block}
+.halloween-web{opacity:.5;stroke-width:1.1}
+.halloween-wings{transform-origin:50% 50%;transform-box:view-box}
+:root[data-effect=halloween][data-animate-effects=true] #home-panel:not([hidden]) .halloween-wings{animation:home-bat-flap 10s ease-in-out infinite}
+:root[data-effect=halloween][data-animate-effects=true] #home-panel:not([hidden]) .halloween-spider{animation:home-spider-walk 13s ease-in-out 2s infinite}
+:root[data-effect=halloween][data-animate-effects=true] #home-panel:not([hidden]) .halloween-eyes{animation:home-robot-glance 11s ease-in-out 1s infinite}
+@keyframes home-bat-flap{0%,76%,100%{transform:scaleY(1)}80%,88%{transform:scaleY(.4)}84%,92%{transform:scaleY(1)}}
+@keyframes home-spider-walk{0%,72%,100%{transform:translate(0,0)}80%{transform:translate(-6px,-5px)}88%{transform:translate(-3px,-8px)}94%{transform:translate(2px,-3px)}}
+@keyframes home-robot-glance{0%,78%,100%{transform:translateX(0)}83%{transform:translateX(-1.5px)}91%{transform:translateX(1.5px)}}
+@media(prefers-reduced-motion:reduce){#home-panel .halloween-nav-icon *{animation:none!important}}

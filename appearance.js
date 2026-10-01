@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'obsidian',accent:'#FFDD00',effect:'snow',speed:1,amount:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'midnight',accent:'#FF8018',effect:'halloween',speed:1,amount:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
   const effects = ['none','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
   const backgrounds = ['midnight','obsidian','slate','mocha','moss','snow'];
   const root = document.documentElement;
@@ -32,6 +32,8 @@
   layer.append(fragment);
   function apply(save=false) {
     root.dataset.background = appearance.background;
+    root.dataset.effect = appearance.effect;
+    root.dataset.animateEffects = String(appearance.snow);
     root.style.setProperty('--effect-speed',appearance.speed);
     document.querySelector('#effect-speed').value=appearance.speed;
     document.querySelector('#speed-value').textContent=appearance.speed.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')+'×';
@@ -48,14 +50,14 @@
     const favicon = document.querySelector('link[rel="icon"]');
     const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="'+appearance.accent+'"/><text x="16" y="23" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="23" fill="'+root.style.getPropertyValue('--accent-ink')+'">W</text></svg>';
     favicon.href = 'data:image/svg+xml,' + encodeURIComponent(icon);
-    document.querySelectorAll('[data-background]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.background===appearance.background)));
+    document.querySelectorAll('button[data-background]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.background===appearance.background)));
     document.querySelectorAll('[data-accent]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.accent.toUpperCase()===appearance.accent)));
     document.querySelector('#custom-accent').value = appearance.accent;
     document.querySelector('#accent-value').textContent = appearance.accent;
     document.querySelector('#snow-enabled').checked = appearance.snow;
     layer.hidden = appearance.effect !== 'snow';
     layer.classList.toggle('still',!appearance.snow);
-    document.querySelectorAll('[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
+    document.querySelectorAll('button[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
     window.setBackgroundEffect({...appearance,effectColor});
     window.dispatchEvent(new Event('bww:appearance'));
     if(save) {
@@ -63,8 +65,8 @@
       catch (_) {warning.hidden=false;}
     }
   }
-  document.querySelectorAll('[data-background]').forEach(button=>button.addEventListener('click',()=>{appearance.background=button.dataset.background;apply(true);}));
-  document.querySelectorAll('[data-effect]').forEach(button=>button.addEventListener('click',()=>{appearance.effect=button.dataset.effect;apply(true);}));
+  document.querySelectorAll('button[data-background]').forEach(button=>button.addEventListener('click',()=>{appearance.background=button.dataset.background;apply(true);}));
+  document.querySelectorAll('button[data-effect]').forEach(button=>button.addEventListener('click',()=>{appearance.effect=button.dataset.effect;apply(true);}));
   document.querySelectorAll('[data-accent]').forEach(button=>button.addEventListener('click',()=>{appearance.accent=button.dataset.accent.toUpperCase();apply(true);}));
   document.querySelector('#custom-accent').addEventListener('input',event=>{appearance.accent=event.target.value.toUpperCase();apply(true);});
   document.querySelector('#effect-speed').addEventListener('input',event=>{appearance.speed=Number(event.target.value);apply(true);});
