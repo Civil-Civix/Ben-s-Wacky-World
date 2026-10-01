@@ -91,7 +91,7 @@ function render() {
   if (view === "ai") {document.title="AI Chat | Ben\'s Wacky World";return;}
   if (view === "messages") {document.title = "Chat | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
-  if (view === "settings") {document.title = "Basic Settings | Ben's Wacky World"; return;}
+  if (view === "settings") {document.title = "Settings | Ben's Wacky World"; return;}
   const query = normalize(search.value);
   const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;

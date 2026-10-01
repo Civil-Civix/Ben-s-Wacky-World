@@ -550,3 +550,17 @@ body:has(#account-dialog[open]){overflow:hidden}
 #account-dialog[data-signed-in=false] #account-message{padding:12px 0 0;margin-top:12px}
 #settings-panel .settings-layout{display:block}#settings-panel .appearance-column{max-width:1200px}
 @media(max-width:700px){#account-dialog{width:calc(100vw - 24px);max-height:92dvh}#account-dialog #account-profile{display:block;overflow:auto}.account-editor{border:0;padding:20px}.account-preview{padding:0 20px 20px;overflow:visible}.account-dialog-header{padding:20px}.account-editor-footer{position:sticky;bottom:0;background:var(--panel);padding:14px 20px}#account-dialog .profile-preferences{grid-template-columns:minmax(0,1fr)}#account-dialog #profile-form{grid-template-columns:minmax(0,1fr)}.account-preview-card{max-width:400px;margin:auto}.account-preview .preview-label{max-width:400px;margin:0 auto 12px}#account-dialog[data-signed-in=false]{padding:24px}}
+
+/* Background presets and seasonal effects. Snow keeps familiar dark controls. */
+:root[data-background=moss]{--page:#101b14;--surface:#18271d;--panel:#142219ed;--line:#354b39;--muted:#adbfaa}
+:root[data-background=snow]{--page:#dfe8ee;--surface:#202b35;--panel:#18232ff2;--line:#526474;--muted:#bccbd8}
+:root[data-background=snow] .home-title,:root[data-background=snow] .home-quote,:root[data-background=snow] .settings-heading,:root[data-background=snow] .appearance-column>h2,:root[data-background=snow] .settings-footer,:root[data-background=snow] .ai-heading,:root[data-background=snow] #messages-panel>header{color:#263746}
+:root[data-background=snow] .settings-heading .eyebrow,:root[data-background=snow] .home-quote{color:#405566}
+.background-sample.moss{background-color:#304d36}.background-sample.snow{background-color:#dfe8ee}
+.sidebar .nav-basic{margin-top:auto}
+.effect-sample.casino,.effect-sample.cherry-blossom,.effect-sample.halloween{display:grid;place-items:center;font-size:22px}
+.effect-sample.casino:before{content:'$ ⚄';color:#8cba89;font-size:17px}
+.effect-sample.cherry-blossom:before{content:'✿';color:#f4a6c1}
+.effect-sample.halloween:before{content:'🦇';font-size:22px}
+
+:root[data-background=snow] .settings-card legend{background:var(--surface);border-radius:6px;padding:3px 8px}

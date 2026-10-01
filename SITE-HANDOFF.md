@@ -55,3 +55,12 @@ Mocked browser checks passed for signup validation, persistence, profile saves,
 status, admin access, logout, returning to the underlying page, and desktop/mobile
 widths. No real user data or backend changes were needed. Publish these changes
 through the usual manual GitHub push.
+
+
+## September 30: settings navigation and seasonal backgrounds
+- Settings is at the bottom of the sidebar; home ends with Settings then Account. Both labels are shortened.
+- Added Moss and Snow background presets (Snow uses a pale backdrop with dark controls).
+- Added Casino bills/dice, Cherry Blossom petals drifting right, and Halloween flapping bats drifting right, some wearing pumpkins. Existing speed, pause, and saved preference behavior applies.
+- Files: index.html, styles.css, app.js, accounts.js, appearance.js, background-effects.js in this repository.
+- Verified with local mocked browser: eight shortcuts, new presets/effects, saved selection, animation toggle, mobile overflow, no script errors; screenshots in ignored .audit-evidence.
+- Frontend changes are local and ready for the user to push. No deployment or backend changes.

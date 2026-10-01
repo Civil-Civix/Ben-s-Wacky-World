@@ -45,7 +45,7 @@
   window.dispatchEvent(new Event('wacky-account-change'));
   document.querySelectorAll('[data-account-avatar]').forEach(el=>el.replaceChildren(avatar(me)));
   $('#account-auth').hidden=!!me;$('#account-profile').hidden=!me;accountDialog.dataset.signedIn=String(!!me);
-  $('#account-dialog-title').textContent=me?'Account Settings':mode==='login'?'Welcome back':'Create your account';
+  $('#account-dialog-title').textContent=me?'Account':mode==='login'?'Welcome back':'Create your account';
   if(me){
    paintStatus();
    $('#my-avatar').replaceChildren(avatar(me,'large'));
