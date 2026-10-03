@@ -15,7 +15,7 @@
     const baseURL = new URL(originalBase || '.', gameURL).href;
     const base = parsed.createElement('base');base.href = baseURL;parsed.head.prepend(base);
     const mark = `<style>
-#bww-download-watermark{all:initial!important;position:fixed!important;z-index:2147483647!important;bottom:14px!important;right:14px!important;display:grid!important;place-items:center!important;width:42px!important;height:42px!important;box-sizing:border-box!important;border:1px solid #ffffff55!important;border-left:3px solid #ffffff70!important;border-right:3px solid #ffffff70!important;border-radius:11px!important;background:rgba(100,100,108,.55)!important;color:#fff!important;text-decoration:none!important;font:900 29px/1 Arial,sans-serif!important;text-shadow:0 1px 3px #0008!important;box-shadow:0 2px 10px #0004!important;cursor:pointer!important}
+#bww-download-watermark{all:initial!important;position:fixed!important;z-index:2147483647!important;bottom:14px!important;right:14px!important;display:grid!important;place-items:center!important;width:42px!important;height:42px!important;box-sizing:border-box!important;border:1px solid #cbd2d9!important;border-radius:11px!important;background:rgba(38,39,42,.88)!important;color:#e5edf2!important;text-decoration:none!important;font:800 29px/1 Arial,sans-serif!important;cursor:pointer!important}
 #bww-download-watermark:focus-visible{outline:2px solid white!important;outline-offset:3px!important}
 </style><a id="bww-download-watermark" href="${site}" target="_blank" rel="noopener noreferrer" aria-label="Visit Ben's Wacky Site" title="Ben's Wacky Site · This game may require internet">W</a>`;
     parsed.body.insertAdjacentHTML('beforeend', mark);
