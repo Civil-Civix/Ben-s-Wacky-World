@@ -38,10 +38,14 @@ The manual [game audit review](game-audit-review.html) remains at its existing U
 
 Edit frontend files, check the change locally, then commit and push to publish through GitHub Pages. Backend changes require a separate Cloudflare or Pokémon server deployment; pushing website files does not deploy those services.
 
-Appearance preferences are saved per browser. First-time defaults are Midnight, orange and Halloween. Effects support speed up to 5× and amount from 0.25× to 3×. Chat supports the main room, DMs and groups of up to 10 people; messages expire after 24 hours.
+Appearance preferences are saved per browser. First-time defaults are Midnight, red (#FF4242) and Halloween. Effects support speed up to 5× and amount from 0.25× to 3×. Chat supports the main room, DMs and groups of up to 10 people; messages expire after 24 hours.
 
 ## Local-only folders
 
 `.audit-evidence/`, `.audit-backups/`, `.pokemon-runtime/`, caches, dependencies and secret environment files are ignored by Git. They are intentionally retained locally. `library/seraph-apps/storage/` contains shared game runtimes even though Apps was removed from navigation; do not remove it as unused app clutter.
 
 Historical reports and screenshots are reference material, not current test results. Some games require outside servers and cannot work fully offline.
+
+## Game downloads
+
+The player Download HTML button saves local game HTML with a W watermark linking to Ben’s Wacky Site. Currently 401 games qualify; external/Render games and 22 detected iframe wrappers are excluded. Relative assets resolve to the published game folder, so internet may be required. These are not offline asset bundles, saved progress is not exported, and some engines may reject local-file origins. The download button validates embedded wrappers again before saving.

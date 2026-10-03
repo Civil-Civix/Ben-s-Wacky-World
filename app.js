@@ -13,6 +13,15 @@ document.querySelector('#dismiss-among-us-notice').addEventListener('click', () 
 const status = document.querySelector('#player-status');
 const fullscreen = document.querySelector('#fullscreen');
 const favoriteButton = document.querySelector('#favorite');
+const downloadButton = document.querySelector('#download-game');
+downloadButton.addEventListener('click', async () => {
+  const game = currentGame;
+  if (!window.WackyDownloads.eligible(game)) return;
+  downloadButton.disabled = true;
+  try { await window.WackyDownloads.download(game); }
+  catch (error) { if (currentGame === game) {status.textContent = error.message;status.hidden = false;} }
+  finally { downloadButton.disabled = false; }
+});
 const hidePlayerBar = document.querySelector('#hide-player-bar');
 const showPlayerBar = document.querySelector('#show-player-bar');
 function setPlayerBarHidden(hidden, moveFocus=false) {
@@ -212,6 +221,7 @@ function launchGame(game,opener=document.activeElement) {
   lastLaunch=opener;
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
   favoriteButton.hidden = game.kind === 'stream';
+  downloadButton.hidden = !window.WackyDownloads.eligible(game);
   if (game.kind !== 'stream') {
     recents = [game.id,...recents.filter(id => id !== game.id)];
     saveList(keys.recents,recents);

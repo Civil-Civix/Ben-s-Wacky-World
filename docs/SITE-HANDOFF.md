@@ -101,3 +101,10 @@ through the usual manual GitHub push.
 - Updated index.html, messages.js, styles.css, account-service/chat.mjs, group-test.mjs and test.mjs. Added account-service/public-rooms.sql.
 - Backend/regression tests and mocked browser room-switching/send/history checks passed. D1 migration applied successfully.
 - User explicitly approved production deployment; Worker deployed successfully (3e188e5accb947c397e002640d87a95b), preserving all nine bindings and secrets. Unauthenticated PokéChat returns 401; leaderboard returns 200. Do not rerun the migration. Frontend still needs the user to push; published page does not yet contain PokéChat.
+
+## October 2: accents, AI divider and HTML downloads
+- Removed AI Chat title divider. Added #DFE8EE and #FF4242 preset accents; new-browser default is red, with saved choices preserved.
+- Added game-downloads.js and player download control. 401 local game HTML files qualify; external/Render games, streams, Showdown and 22 detected embedded wrappers are skipped per user direction.
+- Downloads contain actual game HTML, an absolute hosted asset base, and a white W watermark with rounded translucent grey background and thicker side borders. W links to the same Google Site as the homepage W. Internet is allowed/required for hosted assets; local-origin restrictions may affect some engines. Progress is not exported.
+- Focused browser check passed for all 401 generated documents, watermark/base URLs, actual file download, both swatches, new red default, saved orange retention and AI divider removal. Did not individually play every downloaded game.
+- Edited index.html, app.js, appearance.js, styles.css, README.md; added game-downloads.js. Local changes ready for user push; no backend changes.
