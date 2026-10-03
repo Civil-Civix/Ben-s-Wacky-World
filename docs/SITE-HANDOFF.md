@@ -108,3 +108,9 @@ through the usual manual GitHub push.
 - Downloads contain actual game HTML, an absolute hosted asset base, and a white W watermark with rounded translucent grey background and thicker side borders. W links to the same Google Site as the homepage W. Internet is allowed/required for hosted assets; local-origin restrictions may affect some engines. Progress is not exported.
 - Focused browser check passed for all 401 generated documents, watermark/base URLs, actual file download, both swatches, new red default, saved orange retention and AI divider removal. Did not individually play every downloaded game.
 - Edited index.html, app.js, appearance.js, styles.css, README.md; added game-downloads.js. Local changes ready for user push; no backend changes.
+
+## October 3: Showdown wins and Poly Track records (not yet deployed)
+- Added Playtime / Showdown wins / Poly Track leaderboard categories. Matchmaking-only Gen 9 Random Battle wins use a signed server plugin and duplicate-safe event storage.
+- Poly Track repo cloned to sibling `newcargame`. Native replay viewer and record code integrated with account API for 17 official tracks; fastest run per account and Watch replay links. Community times, not server-verified physics.
+- Focused backend, server sender, UI and in-game replay checks passed. No production users/battles created, no frontend push or server deployment.
+- Cloudflare connection is unavailable. Asked user to reconnect; no response yet. Finish deployment following `docs/LEADERBOARD-ROLLOUT.md` once restored. All files/locations, migration/secret requirements and tests are documented there.

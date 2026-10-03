@@ -4,6 +4,7 @@
  const $=s=>document.querySelector(s);
  const person='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg>';
  let me=null,mode='login',sessionReady=false,game=null,lease=null,sequence=0,checkpoint=0;
+ let boardMode='playtime';
  let queue=Promise.resolve(),listGeneration=0,offset=0,searchTimer,retryAt=0,authGeneration=0,profileGeneration=0;
  const channel=typeof BroadcastChannel==='function'?new BroadcastChannel('wacky-account'):null;
  const note=(text,error=false)=>{$('#account-message').textContent=text;$('#account-message').classList.toggle('is-error',error);};
@@ -169,22 +170,31 @@
   const button=document.createElement('button');button.type='button';button.className=podium?'podium-person place-'+user.rank:'leaderboard-person';
   const rank=document.createElement('span');rank.className='rank';rank.textContent='#'+user.rank;
   const name=document.createElement('strong');name.textContent=user.username;
-  const time=document.createElement('span');time.className='rank-time';time.textContent=duration(user.playSeconds);
-  button.append(rank,avatar(user),name,badge(user),time);button.addEventListener('click',()=>void openProfile(user.id));return button;
+  const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='showdown'?user.wins+' win'+(user.wins===1?'':'s'):boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
+  button.append(rank,avatar(user),name,badge(user),time);button.addEventListener('click',()=>void openProfile(user.id));
+  if(boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'replay-ranking podium-replay':'replay-ranking';const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(button,watch);return row;}return button;
  }
  async function loadBoard(reset=true){
-  const generation=++listGeneration;if(reset){offset=0;$('#leaderboard-list').replaceChildren();}
+  const generation=++listGeneration;if(reset){offset=0;$('#leaderboard-list').replaceChildren();$('#leaderboard-podium').replaceChildren();}$('#leaderboard-more').hidden=true;
   $('#leaderboard-status').textContent='Loading leaderboard…';$('#leaderboard-more').disabled=true;
   try{
-   const data=await api('/leaderboard?q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset);
+   const query='q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset;
+   let data;
+   if(boardMode==='polytrack'){
+    if(!$('#leaderboard-track').options.length){const list=await api('/poly/tracks');if(generation!==listGeneration)return;for(const track of list.tracks){const option=document.createElement('option');option.value=track.id;option.textContent=track.name;$('#leaderboard-track').append(option);}}
+    const result=await api('/poly/board?track='+encodeURIComponent($('#leaderboard-track').value)+'&'+query);
+    const map=r=>({...r.profile,rank:r.position,frames:r.frames,replayId:r.id});data={users:result.entries.map(map),top:result.top.map(map),hasMore:result.hasMore};
+   }else data=await api('/leaderboard?mode='+boardMode+'&'+query);
    if(generation!==listGeneration)return;
    $('#leaderboard-podium').replaceChildren(...data.top.map(u=>personRow(u,true)));
    data.users.forEach(user=>$('#leaderboard-list').append(personRow(user)));
    offset+=data.users.length;$('#leaderboard-more').hidden=!data.hasMore;
-   $('#leaderboard-status').textContent=offset?'All-time game playtime. Select a player to view their profile.':'No accounts found.';
+   $('#leaderboard-status').textContent=(boardMode==='showdown'?'Gen 9 Random Battle matchmaking wins, recorded from launch. Friend challenges do not count.':boardMode==='polytrack'?'Best time per player on this track. Community submissions with replays; times are not server-verified.':'All-time game playtime. Select a player to view their profile.')+(offset?'':' No results yet.');
   }catch(error){if(generation===listGeneration)$('#leaderboard-status').textContent=error.message;}
   finally{if(generation===listGeneration)$('#leaderboard-more').disabled=false;}
  }
+ document.querySelectorAll('[data-ranking]').forEach(button=>button.addEventListener('click',()=>{boardMode=button.dataset.ranking;document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';void loadBoard();}));
+ $('#leaderboard-track').addEventListener('change',()=>void loadBoard());
  $('#leaderboard-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>void loadBoard(),250);});
  $('#leaderboard-more').addEventListener('click',()=>void loadBoard(false));
  $('#leaderboard-refresh').addEventListener('click',()=>void loadBoard());

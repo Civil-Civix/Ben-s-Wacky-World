@@ -16,18 +16,18 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261002-updates">
+  <link rel="stylesheet" href="styles.css?v=20261003-rankings">
   <script src="games.js?v=20260930-profile-battles" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="popularity.js?v=20260929-owner-banner" defer></script>
-  <script src="accounts.js?v=20260930-ai-gutters" defer></script>
+  <script src="accounts.js?v=20261003-rankings" defer></script>
   <script src="admin.js?v=20260929-settings-rows" defer></script>
   <script src="messages.js?v=20261001-public-rooms" defer></script>
   <script src="ai-files.js?v=20260929-upload" defer></script>
   <script src="ai.js?v=20260929-owner-banner" defer></script>
   <script src="game-downloads.js?v=20261002-home-font" defer></script>
-  <script src="app.js?v=20261002-downloads" defer></script>
+  <script src="app.js?v=20261003-rankings" defer></script>
   <script src="battles.js?v=20260930-polish" defer></script>
   <script src="sort-menu.js?v=20260919-menu" defer></script>
   <script src="background-effects.js?v=20260930-ai-gutters" defer></script>
@@ -144,6 +144,8 @@
   </section>
   <section id="leaderboard-panel" aria-labelledby="leaderboard-heading" hidden>
     <header class="leaderboard-heading"><div><p class="eyebrow">The Wacky crowd</p><h1 id="leaderboard-heading">Leaderboard</h1><p>Every player. One shared scoreboard.</p></div><button type="button" id="leaderboard-refresh">Refresh</button></header>
+    <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="playtime" aria-pressed="true">Playtime</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown wins</button><button type="button" data-ranking="polytrack" aria-pressed="false">Poly Track</button></div>
+    <label id="leaderboard-track-label" hidden>Track <select id="leaderboard-track" aria-label="Poly Track course"></select></label>
     <div id="leaderboard-podium" aria-label="Top three players"></div>
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>
     <p id="leaderboard-status" role="status"></p><div id="leaderboard-list" aria-label="All players"></div><button type="button" id="leaderboard-more" hidden>Load more</button>
