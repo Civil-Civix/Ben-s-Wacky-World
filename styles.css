@@ -620,3 +620,15 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 :is(.nav-game,.nav-messages,.nav-ai,.nav-basic,.launch-tile:not([data-stream]))>.halloween-nav-icon{transform:scale(1.15);overflow:visible}
 
 #messages-poke{margin-top:8px;flex-shrink:0}
+
+/* Compact homepage changelog, expanded only when requested. */
+.home-updates{width:min(960px,100%);margin:24px auto 0;text-align:left;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text,#eeedf4);font-family:Inter,Arial,sans-serif}
+.home-updates summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;cursor:pointer;list-style:none;border-radius:16px}
+.home-updates summary::-webkit-details-marker{display:none}
+.home-updates summary:hover{background:rgb(var(--accent-rgb)/.06)}
+.home-updates summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.updates-summary-text{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}.updates-summary-text strong{font-size:14px}.updates-summary-text>span{font-size:12px;color:var(--muted)}
+.updates-expand{font-size:23px;line-height:1;color:var(--muted);transition:transform .15s}.home-updates[open] .updates-expand{transform:rotate(45deg)}
+.updates-log{padding:0 22px 8px}.updates-log article{border-top:1px solid var(--line);padding:22px 0}.updates-log time,.updates-date{display:block;color:var(--muted);font-size:11px;margin:0 0 8px}.updates-log h2{font-size:17px;margin:0 0 12px}.updates-log ul{margin:0;padding-left:19px;color:var(--muted);font-size:13px;line-height:1.7}.updates-log li+li{margin-top:7px}
+@media(max-width:700px){.home-updates{margin-top:16px}.home-updates summary{padding:16px}.updates-summary-text{display:grid;gap:5px}.updates-log{padding:0 16px 4px}}
+@media(prefers-reduced-motion:reduce){.updates-expand{transition:none}}
