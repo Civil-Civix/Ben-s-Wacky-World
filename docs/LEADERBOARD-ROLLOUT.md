@@ -1,7 +1,9 @@
 # Game leaderboards — October 3, 2026
 
 ## Status
-Implemented and tested locally. NOT deployed: the Cloudflare connection used earlier is unavailable in this chat. Neither frontend repository has been pushed, and the Oracle server has not been changed.
+Backend deployed October 4, 2026. D1 score tables applied; Worker deployment `d4fec32bea5a4707937cc32ec5e154d7` is live with existing bindings preserved and BATTLE_RESULT_SECRET added. Showdown result plugin installed, built and service restarted while idle; private secret has mode 600 and is owned by showdown. Main site leaderboard UI is already published.
+
+Remaining: user commits and pushes the local newcargame changes. Published Poly Track does not yet include bww-leaderboard.js. Do not push on the user's behalf unless asked.
 
 ## What is ready
 - Existing playtime leaderboard plus Showdown wins and Poly Track tabs, search, top three, track selector and Watch replay buttons.
@@ -19,7 +21,7 @@ Implemented and tested locally. NOT deployed: the Cloudflare connection used ear
 - Poly integration: `bww-leaderboard.js`, hooks in `main.bundle.js`, `index.html`, `tests/leaderboard.cjs`.
 
 ## Deployment order
-1. Restore Cloudflare access. Apply additive/idempotent `account-service/score-schema.sql` to existing D1 `bens-wacky-accounts` (5e683b3e-fcda-4a84-8d55-0db23514438e). This migration has NOT been applied.
+1. Completed: restored Cloudflare access and applied additive/idempotent `account-service/score-schema.sql` to existing D1 `bens-wacky-accounts` (5e683b3e-fcda-4a84-8d55-0db23514438e). Applied October 4, 2026.
 2. Generate a new private random 32-byte secret. Add it as Worker secret `BATTLE_RESULT_SECRET`. Store the same value only in `/opt/showdown/pokemon-showdown/config/bww-result-secret`, owned by showdown with mode 600. Never put it in a public file, source tree, command output or chat.
 3. Deploy `bens-wacky-accounts`, including scores.mjs and poly-tracks.mjs along with every existing module, preserving all existing bindings, secrets, triggers and observability. Verify old account endpoints and public leaderboard reads.
 4. Back up the active Showdown code/config privately. Copy wacky-results.ts to `/opt/showdown/pokemon-showdown/server/chat-plugins/wacky-results.ts`, build with the existing Node build process, and restart Showdown when there are no active battles. Confirm the plugin is loaded. The outbox lives in private config/bww-result-outbox; do not publish or erase pending rows.
@@ -35,4 +37,4 @@ If deploying via wrangler, inspect live settings first; do not overwrite dashboa
 - Poly `node tests/leaderboard.cjs`: game starts with 17 tracks; native save path submits; adapters show account names; replay deserialization and actual viewer work. All network records mocked.
 
 ## Follow-up
-Deploy after connection is restored, then user pushes both repos. Full server-side Poly Track simulation validation and historical Showdown backfill are outside this first rollout. Pending live deployment is the only blocker to activation.
+User pushes newcargame, then tests a normal completed run and matchmaking win. Live read checks passed for playtime, Showdown, tracks and Poly board; unauthenticated /me remains 401. No production scores were manufactured. Full server-side Poly Track simulation validation and historical Showdown backfill remain outside this first rollout.

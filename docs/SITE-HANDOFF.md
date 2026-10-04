@@ -114,3 +114,6 @@ through the usual manual GitHub push.
 - Poly Track repo cloned to sibling `newcargame`. Native replay viewer and record code integrated with account API for 17 official tracks; fastest run per account and Watch replay links. Community times, not server-verified physics.
 - Focused backend, server sender, UI and in-game replay checks passed. No production users/battles created, no frontend push or server deployment.
 - Cloudflare connection is unavailable. Asked user to reconnect; no response yet. Finish deployment following `docs/LEADERBOARD-ROLLOUT.md` once restored. All files/locations, migration/secret requirements and tests are documented there.
+
+## October 4 leaderboard rollout
+Cloudflare score migration and Worker deployment completed; Showdown result plugin installed and restarted while idle. Main site ranking tabs already published. User still needs to commit/push newcargame for in-game leaderboard and replay support. See LEADERBOARD-ROLLOUT.md.
