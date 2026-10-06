@@ -181,7 +181,7 @@
    const query='q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset;
    let data;
    if(boardMode==='polytrack'){
-    if(!$('#leaderboard-track').options.length){const list=await api('/poly/tracks');if(generation!==listGeneration)return;for(const track of list.tracks){const option=document.createElement('option');option.value=track.id;option.textContent=track.name;$('#leaderboard-track').append(option);}}
+    if(!$('#leaderboard-track').options.length){const list=await api('/poly/tracks');if(generation!==listGeneration)return;for(const track of list.tracks){const option=document.createElement('option');option.value=track.id;option.textContent=track.name;$('#leaderboard-track').append(option);}renderTrackOptions();}
     const result=await api('/poly/board?track='+encodeURIComponent($('#leaderboard-track').value)+'&'+query);
     const map=r=>({...r.profile,rank:r.position,frames:r.frames,replayId:r.id});data={users:result.entries.map(map),top:result.top.map(map),hasMore:result.hasMore};
    }else data=await api('/leaderboard?mode='+boardMode+'&'+query);
@@ -194,7 +194,28 @@
   finally{if(generation===listGeneration)$('#leaderboard-more').disabled=false;}
  }
  document.querySelectorAll('[data-ranking]').forEach(button=>button.addEventListener('click',()=>{boardMode=button.dataset.ranking;document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';void loadBoard();}));
- $('#leaderboard-track').addEventListener('change',()=>void loadBoard());
+ const trackTrigger=$('#track-trigger'),trackOptions=$('#track-options'),trackSelect=$('#leaderboard-track');
+ function closeTrackPicker(restoreFocus=false){trackOptions.hidden=true;trackTrigger.setAttribute('aria-expanded','false');if(restoreFocus)trackTrigger.focus();}
+ function renderTrackOptions(){
+  $('#track-value').textContent=trackSelect.selectedOptions[0]?.textContent||'Choose a track';
+  trackOptions.replaceChildren(...Array.from(trackSelect.options,option=>{
+   const button=document.createElement('button');button.type='button';button.role='option';button.tabIndex=-1;button.textContent=option.textContent;button.setAttribute('aria-selected',String(option.selected));
+   button.addEventListener('click',()=>{trackSelect.value=option.value;renderTrackOptions();closeTrackPicker(true);trackSelect.dispatchEvent(new Event('change'));});return button;
+  }));
+ }
+ function openTrackPicker(){if(!trackSelect.options.length)return;trackOptions.hidden=false;trackTrigger.setAttribute('aria-expanded','true');const selected=trackOptions.querySelector('[aria-selected="true"]');selected?.focus();selected?.scrollIntoView({block:'nearest'});}
+ trackTrigger.addEventListener('click',()=>trackOptions.hidden?openTrackPicker():closeTrackPicker());
+ trackTrigger.addEventListener('keydown',event=>{if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();openTrackPicker();}});
+ trackOptions.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){event.preventDefault();closeTrackPicker(true);return;}
+  const buttons=Array.from(trackOptions.children),index=buttons.indexOf(document.activeElement);let next;
+  if(event.key==='ArrowDown')next=(index+1)%buttons.length;else if(event.key==='ArrowUp')next=(index-1+buttons.length)%buttons.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=buttons.length-1;
+  if(next!==undefined){event.preventDefault();buttons[next]?.focus();}
+ });
+ document.addEventListener('pointerdown',event=>{if(!event.target.closest('.track-picker'))closeTrackPicker();});
+ $('.track-picker').addEventListener('focusout',event=>{if(!event.currentTarget.contains(event.relatedTarget))closeTrackPicker();});
+ document.querySelectorAll('[data-ranking]').forEach(button=>button.addEventListener('click',()=>closeTrackPicker()));
+ trackSelect.addEventListener('change',()=>{renderTrackOptions();void loadBoard();});
  $('#leaderboard-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>void loadBoard(),250);});
  $('#leaderboard-more').addEventListener('click',()=>void loadBoard(false));
  $('#leaderboard-refresh').addEventListener('click',()=>void loadBoard());

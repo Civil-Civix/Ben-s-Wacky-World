@@ -724,12 +724,6 @@
     "source": "noah"
   },
   {
-    "id": "deltarunechapters34",
-    "title": "Deltarune Chapters 3 & 4",
-    "url": "library/noah/games/340.html",
-    "source": "noah"
-  },
-  {
     "id": "earthbound",
     "title": "Earthbound",
     "url": "library/noah/games/339.html",
@@ -1332,8 +1326,9 @@
   {
     "id": "deltarune",
     "title": "Deltarune",
-    "url": "library/noah/games/110.html",
-    "source": "noah"
+    "url": "https://civil-civix.github.io/test/",
+    "source": "external",
+    "online": true
   },
   {
     "id": "learntofly3",
@@ -1600,12 +1595,6 @@
     "source": "noah"
   },
   {
-    "id": "buckshotroulette",
-    "title": "Buckshot Roulette",
-    "url": "library/noah/games/63.html",
-    "source": "noah"
-  },
-  {
     "id": "fnafpizzasim",
     "title": "FNAF: Pizza Sim",
     "url": "library/noah/games/1.html",
@@ -1687,12 +1676,6 @@
     "id": "yanderesimulator",
     "title": "Yandere Simulator",
     "url": "library/noah/games/12.html",
-    "source": "noah"
-  },
-  {
-    "id": "twerkrace3d",
-    "title": "Twerk Race 3D",
-    "url": "library/noah/games/13.html",
     "source": "noah"
   },
   {
