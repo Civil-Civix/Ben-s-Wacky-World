@@ -164,7 +164,9 @@ function loadGame() {
   frame.title = currentGame.title;
   frame.allow = 'autoplay; fullscreen; gamepad; clipboard-write';
   frame.allowFullscreen = true;
-  frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads');
+  const sandbox = 'allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads';
+  // Stream Hub's Open Link and Open Folder actions launch external tabs.
+  frame.setAttribute('sandbox', sandbox + (currentGame.kind === 'stream' ? ' allow-popups allow-popups-to-escape-sandbox' : ''));
   const gameURL=new URL(currentGame.url,location.href);
   if(currentGame.id==='pokemonshowdown')gameURL.searchParams.set('launch',Date.now().toString());
   frame.src = gameURL.href;
