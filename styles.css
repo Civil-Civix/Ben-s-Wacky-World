@@ -647,3 +647,14 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 #track-options button:hover,#track-options button:focus-visible{background:rgb(var(--accent-rgb)/.1);outline:1px solid var(--accent);outline-offset:-1px}
 #track-options button[aria-selected=true]{background:rgb(var(--accent-rgb)/.16);color:var(--accent-text,var(--accent));font-weight:700}
 #track-options button[aria-selected=true]:after{content:'✓';float:right}
+
+.home-socials{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;width:min(960px,100%);margin:24px auto 0;padding:18px 20px;border:1px solid var(--line);border-radius:var(--section-radius,18px);background:var(--panel);text-align:left}
+.home-socials h2{margin:0;font-size:15px;font-weight:600;color:var(--text)}
+.social-link{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;color:var(--text);text-decoration:none}
+.social-link>svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.social-link .instagram-dot{fill:currentColor;stroke:none}
+.social-link span{display:grid;gap:3px}.social-link strong{font-size:13px;font-weight:600}.social-link small{font-size:12px;color:var(--muted)}
+.social-link .social-arrow{width:16px;height:16px;margin-left:12px;color:var(--muted)}
+.social-link:hover,.social-link:focus-visible{border-color:var(--accent);background:rgb(var(--accent-rgb)/.10);color:var(--accent-text,var(--accent))}
+.social-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:480px){.home-socials{padding:16px}.social-link{width:100%}.social-link .social-arrow{margin-left:auto}}
