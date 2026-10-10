@@ -577,7 +577,7 @@ body:has(#account-dialog[open]){overflow:hidden}
 
 /* Background effects remain visible in the AI chat gutters. */
 body.ai-open #ai-panel{background:transparent}
-body.ai-open .ai-heading{background:var(--page)}
+body.ai-open .ai-heading{background:transparent}
 body.ai-open #theme-canvas,body.ai-open #snow{
  mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
  -webkit-mask-image:linear-gradient(to right,#000 max(0px,calc(var(--chat-effect-left,50%) - 72px)),transparent var(--chat-effect-left,50%),transparent var(--chat-effect-right,50%),#000 calc(var(--chat-effect-right,50%) + 72px));
