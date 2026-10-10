@@ -55,11 +55,12 @@
     ctx.save();ctx.translate(p.x,p.y);ctx.scale(size,size);ctx.globalAlpha=Math.min(1,(.45)*(light?1.65:1));
     if(effect==='casino'){
      ctx.rotate(p.phase+time*.25);
+     const detailColor=light?ink:'#ffffff';
      if(i%3!==0){
-      ctx.fillStyle=color;ctx.fillRect(-19,-9,38,18);ctx.strokeStyle=ink;ctx.lineWidth=1;ctx.strokeRect(-16,-6,32,12);
-      ctx.fillStyle=ink;ctx.font='bold 14px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,1);
+      ctx.fillStyle=color;ctx.fillRect(-19,-9,38,18);ctx.strokeStyle=detailColor;ctx.lineWidth=1;if(!light)ctx.strokeRect(-19,-9,38,18);ctx.strokeRect(-16,-6,32,12);
+      ctx.fillStyle=detailColor;ctx.font='bold 14px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,1);
      }else{
-      ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(-10,-10,20,20,4);ctx.fill();ctx.fillStyle=ink;
+      ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(-10,-10,20,20,4);ctx.fill();if(!light){ctx.strokeStyle=detailColor;ctx.lineWidth=1;ctx.stroke();}ctx.fillStyle=detailColor;
       const value=Math.floor(i/3)%6+1,pips=[];
       if(value%2)pips.push([0,0]);if(value>1)pips.push([-5,-5],[5,5]);if(value>3)pips.push([5,-5],[-5,5]);if(value===6)pips.push([-5,0],[5,0]);
       pips.forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,1.6,0,Math.PI*2);ctx.fill();});
