@@ -1,7 +1,7 @@
 'use strict';
 (() => {
  const canvas=document.querySelector('#theme-canvas'),ctx=canvas.getContext('2d');
- let effect='none',color='#8B7BFF',ink='#382f66',animate=true,speed=1,amount=1,light=false,w=0,h=0,points=[],raf=0,last=0,time=0;
+ let effect='none',color='#8B7BFF',ink='#382f66',highlight='#b4a8ff',animate=true,speed=1,amount=1,light=false,w=0,h=0,points=[],raf=0,last=0,time=0;
  function resize(){
   w=innerWidth;h=innerHeight;const d=Math.min(devicePixelRatio||1,1.5);
   canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);
@@ -55,12 +55,16 @@
     ctx.save();ctx.translate(p.x,p.y);ctx.scale(size,size);ctx.globalAlpha=Math.min(1,(.45)*(light?1.65:1));
     if(effect==='casino'){
      ctx.rotate(p.phase+time*.25);
-     const detailColor=light?ink:'#ffffff';
+     const detailColor=light?ink:highlight;
      if(i%3!==0){
-      ctx.fillStyle=color;ctx.fillRect(-19,-9,38,18);ctx.strokeStyle=detailColor;ctx.lineWidth=1;if(!light)ctx.strokeRect(-19,-9,38,18);ctx.strokeRect(-16,-6,32,12);
-      ctx.fillStyle=detailColor;ctx.font='bold 14px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('$',0,1);
+      ctx.fillStyle=color;ctx.fillRect(-19,-9,38,18);ctx.strokeStyle=detailColor;ctx.lineWidth=light?1:.8;
+      if(!light){ctx.strokeRect(-19,-9,38,18);ctx.save();ctx.globalAlpha*=.3;ctx.strokeRect(-16,-6,32,12);ctx.restore();}else ctx.strokeRect(-16,-6,32,12);
+      ctx.save();ctx.beginPath();ctx.rect(-14,-5,28,10);ctx.clip();
+      ctx.fillStyle=detailColor;ctx.font=light?'bold 14px Georgia':'bold 11px Georgia';ctx.textAlign='center';
+      if(light){ctx.textBaseline='middle';ctx.fillText('$',0,1);}else{ctx.textBaseline='alphabetic';const glyph=ctx.measureText('$');ctx.fillText('$',0,(glyph.actualBoundingBoxAscent-glyph.actualBoundingBoxDescent)/2);}
+      ctx.restore();
      }else{
-      ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(-10,-10,20,20,4);ctx.fill();if(!light){ctx.strokeStyle=detailColor;ctx.lineWidth=1;ctx.stroke();}ctx.fillStyle=detailColor;
+      ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(-10,-10,20,20,4);ctx.fill();if(!light){ctx.strokeStyle=detailColor;ctx.lineWidth=.8;ctx.stroke();}ctx.fillStyle=detailColor;
       const value=Math.floor(i/3)%6+1,pips=[];
       if(value%2)pips.push([0,0]);if(value>1)pips.push([-5,-5],[5,5]);if(value>3)pips.push([5,-5],[-5,5]);if(value===6)pips.push([-5,0],[5,0]);
       pips.forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,1.6,0,Math.PI*2);ctx.fill();});
@@ -101,7 +105,7 @@
  }
  new ResizeObserver(updateChatMask).observe(document.querySelector('#ai-content'));
  function sync(){updateChatMask();cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;color=settings.effectColor||settings.accent;ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
+ window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;color=settings.effectColor||settings.accent;highlight='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join('');ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();
