@@ -172,7 +172,7 @@
   const name=document.createElement('strong');name.textContent=user.username;
   const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='showdown'?user.wins+' win'+(user.wins===1?'':'s'):boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
   button.append(rank,avatar(user),name,badge(user),time);button.addEventListener('click',()=>void openProfile(user.id));
-  if(boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'replay-ranking podium-replay':'replay-ranking';const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(button,watch);return row;}return button;
+  if(podium||boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'podium-slot place-'+user.rank:'replay-ranking';row.append(button);if(boardMode!=='polytrack')return row;const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(watch);return row;}return button;
  }
  async function loadBoard(reset=true){
   const generation=++listGeneration;if(reset){offset=0;$('#leaderboard-list').replaceChildren();$('#leaderboard-podium').replaceChildren();}$('#leaderboard-more').hidden=true;
