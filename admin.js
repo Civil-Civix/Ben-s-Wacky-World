@@ -5,7 +5,7 @@
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
  const note=text=>$('#admin-status').textContent=text;
  function sync(){const allowed=!!account.user?.owner;$('#admin-open').hidden=!allowed;if(!allowed){++generation;dialog.close();$('#admin-confirm').close();selected=null;$('#admin-users').replaceChildren();$('#admin-detail').replaceChildren();$('#admin-log').replaceChildren();}}
- async function search(){const token=++generation;try{const data=await account.api('/admin/users?q='+encodeURIComponent($('#admin-search').value));if(token!==generation||!account.user?.owner)return;$('#admin-users').replaceChildren(...data.users.map(user=>{const b=el('button',user.username);b.type='button';b.disabled=user.owner;b.addEventListener('click',()=>{selected=user;roles=user.roles.map(r=>({...r}));detail();});return b;}));}catch(e){note(e.message);}}
+ async function search(){const token=++generation;try{const data=await account.api('/admin/users?q='+encodeURIComponent($('#admin-search').value));if(token!==generation||!account.user?.owner)return;$('#admin-users').replaceChildren(...data.users.map(user=>{const b=el('button',user.username);b.type='button';b.addEventListener('click',()=>{selected=user;roles=user.roles.map(r=>({...r}));detail();});return b;}));}catch(e){note(e.message);}}
  async function audit(){try{const data=await account.api('/admin/log');if(!account.user?.owner)return;$('#admin-log').replaceChildren(...data.entries.map(entry=>{const d=JSON.parse(entry.details),row=el('p');row.textContent=new Date(entry.created).toLocaleString()+' · '+entry.action+' · '+(d.username||entry.target)+' · '+d.reason;return row;}));}catch(e){note(e.message);}}
  function field(label,node){const wrap=el('label',label);wrap.append(node);return wrap;}
  function detail(){
@@ -17,6 +17,7 @@
   const apply=el('button','Review action');apply.type='button';apply.className='admin-primary';apply.addEventListener('click',()=>void applyUser(choice.value));actions.append(field('Action',choice),apply);panel.append(actions);
   const roleEditor=el('details',undefined,'admin-role-editor');roleEditor.append(el('summary','Profile roles'),el('p','Colored labels only. No moderation permissions.'));panel.append(roleEditor);
   const roleList=el('div');roleList.id='admin-role-list';roleEditor.append(roleList);paintRoles();
+  const scores=el('details',undefined,'admin-role-editor');scores.append(el('summary','Leaderboard scores'));const list=el('div',undefined,'admin-score-list');scores.append(list);scores.addEventListener('toggle',()=>{if(scores.open)void loadScores(selected.id,list);});panel.append(scores);
   const name=el('input');name.id='admin-role-name';name.maxLength=24;name.placeholder='e.g. Community helper';const color=el('input');color.id='admin-role-color';color.type='color';color.value='#8b7bff';roleEditor.append(field('Role name',name),field('Role color',color));const add=el('button','Add role');add.type='button';add.addEventListener('click',()=>{if(!name.value.trim()||roles.length>=5){note('Enter a role name. Maximum five roles.');return;}roles.push({name:name.value.trim(),color:color.value});name.value='';paintRoles();});const save=el('button','Save roles');save.type='button';save.addEventListener('click',()=>void applyUser('roles'));roleEditor.append(add,save);
  }
  function paintRoles(){const list=$('#admin-role-list');list.replaceChildren(...roles.map((role,index)=>{const b=el('button',role.name+' ×','profile-role');b.type='button';b.style.setProperty('--role-color',role.color);b.setAttribute('aria-label','Remove '+role.name);b.addEventListener('click',()=>{roles.splice(index,1);paintRoles();});return b;}));}
@@ -32,5 +33,20 @@
  function tab(name){document.querySelectorAll('[data-admin-section]').forEach(s=>s.hidden=s.dataset.adminSection!==name);document.querySelectorAll('[data-admin-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.adminTab===name)));}
  document.querySelectorAll('[data-admin-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.adminTab)));
  async function open(q=''){if(!account.user?.owner)return;$('#admin-search').value=q;tab('people');note('');if(!dialog.open)dialog.showModal();await search();void audit();void boosts();}
- $('#admin-open').addEventListener('click',()=>void open());$('#admin-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(search,250);});window.WackyAdmin={open};window.addEventListener('wacky-account-change',sync);sync();
+ const removal=$('#admin-remove-dialog');let removalBusy=false,removalJob=null;
+ function reviewRemoval(description,job){if(removalBusy||removal.open)return;removalJob=job;$('#admin-remove-description').textContent=description;$('#admin-remove-reason').value='';removal.showModal();$('#admin-remove-reason').focus();}
+ $('#admin-remove-cancel').addEventListener('click',()=>{if(!removalBusy)removal.close();});
+ removal.addEventListener('cancel',event=>{if(removalBusy)event.preventDefault();});
+ $('#admin-remove-form').addEventListener('submit',async event=>{event.preventDefault();const reason=$('#admin-remove-reason').value.trim();if(!reason||removalBusy||!account.user?.owner)return;removalBusy=true;const submit=event.currentTarget.querySelector('[type=submit]');submit.disabled=true;try{await removalJob(reason);removal.close();void audit();}catch(error){$('#admin-remove-description').textContent=error.message;}finally{removalBusy=false;submit.disabled=false;}});
+ async function loadScores(userId,list){
+  list.textContent='Loading scores…';try{const [data,trackData]=await Promise.all([account.api('/admin/scores?user='+encodeURIComponent(userId)),account.api('/poly/tracks')]);if(!account.user?.owner)return;list.replaceChildren();
+   const add=(label,kind,id)=>{const row=el('div',undefined,'admin-score-row'),button=el('button','Remove');button.type='button';button.addEventListener('click',()=>reviewRemoval('Remove '+label+' for '+data.user.username+'? This cannot be undone.',async reason=>{await account.api('/admin/remove-score',{method:'POST',data:{userId,kind,id,reason}});await loadScores(userId,list);note('Score removed.');}));row.append(el('span',label),button);list.append(row);};
+   if(data.user.play_ms>0)add('Playtime: '+Math.floor(data.user.play_ms/60000)+' minutes','playtime');
+   for(const run of data.poly)add((trackData.tracks.find(t=>t.id===run.track)?.name||run.track)+' · '+(run.frames/1000).toFixed(3)+'s','poly',run.id);
+   for(const win of data.wins)add('Showdown win · '+new Date(win.finished).toLocaleString(),'showdown',win.battle_id);
+   if(!list.children.length)list.textContent='No scores to remove.';
+  }catch(error){list.textContent=error.message;}
+ }
+ function removeMessage(message){if(!account.user?.owner)return;reviewRemoval('Delete '+message.user.username+'’s message: '+message.text.slice(0,160)+'?',async reason=>{await account.api('/admin/remove-message',{method:'POST',data:{id:message.id,reason}});window.dispatchEvent(new CustomEvent('wacky-message-removed',{detail:message.id}));});}
+ $('#admin-open').addEventListener('click',()=>void open());$('#admin-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(search,250);});window.WackyAdmin={open,removeMessage};window.addEventListener('wacky-account-change',sync);sync();
 })();

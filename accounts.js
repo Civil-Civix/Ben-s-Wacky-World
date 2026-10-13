@@ -52,7 +52,7 @@
    $('#my-avatar').replaceChildren(avatar(me,'large'));
    $('#my-name').textContent=me.username;$('#my-badge').replaceChildren(badge(me));
    $('#my-playtime').textContent=duration(me.playSeconds);
-   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
+   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';$('#favorite-trigger').textContent=$('#profile-favorite-game').selectedOptions[0]?.textContent||'None selected';$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
    previewProfile();
   }
  }
@@ -223,12 +223,19 @@
   $('#leaderboard-panel').hidden=view!=='leaderboard';
   if(view==='leaderboard')void loadBoard();
  };
- const favoriteSelect=$('#profile-favorite-game');
+ const favoriteSelect=$('#profile-favorite-game'),favoriteTrigger=$('#favorite-trigger'),favoritePicker=$('#favorite-picker');
+ function favoriteLabel(){favoriteTrigger.textContent=favoriteSelect.selectedOptions[0]?.textContent||'None selected';favoriteTrigger.disabled=favoriteSelect.disabled;}
+ function paintFavoriteOptions(){const query=$('#favorite-search').value.trim().toLowerCase();const options=Array.from(favoriteSelect.options).filter(o=>!query||o.textContent.toLowerCase().includes(query));$('#favorite-options').replaceChildren(...options.map(o=>{const b=document.createElement('button');b.type='button';b.textContent=o.textContent;b.setAttribute('aria-pressed',String(o.selected));b.addEventListener('click',()=>{if(favoriteSelect.disabled)return;favoriteSelect.value=o.value;favoriteLabel();favoritePicker.close();favoriteSelect.dispatchEvent(new Event('change'));});return b;}));if(!options.length)$('#favorite-options').textContent='No matching games.';}
+ favoriteTrigger.addEventListener('click',()=>{$('#favorite-search').value='';paintFavoriteOptions();favoritePicker.showModal();$('#favorite-search').focus();});
+ $('#favorite-search').addEventListener('input',paintFavoriteOptions);
+ new MutationObserver(favoriteLabel).observe(favoriteSelect,{attributes:true,attributeFilter:['disabled']});
+ window.addEventListener('wacky-account-change',favoriteLabel);
+
  for(const game of [...(window.WACKY_GAMES||[])].sort((a,b)=>a.title.localeCompare(b.title))){const option=document.createElement('option');option.value=game.id;option.textContent=game.title;favoriteSelect.append(option);}
  favoriteSelect.addEventListener('change',async()=>{
   if(!me)return;const id=me.id,favoriteGame=favoriteSelect.value;favoriteSelect.disabled=true;
   try{const current=(await api('/me')).user;if(me?.id!==id)return;const result=await api('/me',{method:'PATCH',data:{username:current.username,bio:current.bio,favoriteGame}});if(me?.id!==id)return;me=result.user;renderAccount(false);note('Favorite game saved.');channel?.postMessage('changed');}
-  catch(error){if(me?.id===id){favoriteSelect.value=me.favoriteGame||'';note(error.message,true);}}finally{favoriteSelect.disabled=false;}
+  catch(error){if(me?.id===id){favoriteSelect.value=me.favoriteGame||'';note(error.message,true);}}finally{favoriteSelect.disabled=false;favoriteLabel();}
  });
  $('#profile-banner').addEventListener('input',e=>{$('#profile-banner-preview').style.backgroundColor=e.target.value;});
  const statusPicker=$('#status-picker');let statusTarget='profile-presence';

@@ -97,7 +97,7 @@ function makeRandomCard(){
 function render() {
   clearInterval(randomArtTimer);randomArtObserver?.disconnect();
   if(view==='leaderboard'){document.title="Leaderboard | Ben's Wacky World";return;}
-  if (view === "ai") {document.title="AI Chat | Ben\'s Wacky World";return;}
+  if (view === "ai") {document.title="AI | Ben\'s Wacky World";return;}
   if (view === "messages") {document.title = "Chat | Ben\'s Wacky World"; return;}
   if (view === "home") {document.title = "Ben's Wacky World"; return;}
   if (view === "settings") {document.title = "Settings | Ben's Wacky World"; return;}
@@ -331,3 +331,5 @@ fetch('./game-images.json?v=20260930').then(response => {
 window.WackyBattleGame={open(){const game=games.find(g=>g.id==='pokemonshowdown');if(game)openGame(game);},close:closeGame};
 
 window.WackyPolyGame={watch(id){if(!Number.isSafeInteger(id)||id<1)return;const game=games.find(g=>g.id==='polytrack');if(game){const url=new URL(game.url);url.searchParams.set('bwwReplay',id);openGame({...game,url:url.href});}}};
+
+document.querySelector('.nav-instagram').addEventListener('click',event=>{event.preventDefault();document.querySelector('#instagram-dialog').showModal();});

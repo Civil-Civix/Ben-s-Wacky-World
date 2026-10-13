@@ -663,3 +663,15 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 .podium-slot>.watch-replay{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%)}
 #leaderboard-podium:has(.watch-replay){margin-bottom:76px}
 @media(max-width:600px){.podium-slot>.watch-replay{padding:8px 6px;font-size:11px}}
+
+#ai-panel{isolation:isolate}
+#ai-panel::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(1100px,100%);height:360px;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 50% 0%,rgb(var(--accent-rgb)/.19) 0%,rgb(var(--accent-rgb)/.075) 32%,transparent 72%)}
+.compact-picker{position:fixed;width:min(420px,calc(100vw - 32px));max-height:85vh;overflow:auto;padding:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--text);box-shadow:0 24px 80px #0006}
+.compact-picker::backdrop{background:#0009;backdrop-filter:blur(4px)}
+.compact-picker h2{font-size:21px;margin:0 32px 12px 0}.compact-picker p{color:var(--muted);line-height:1.5}
+.picker-close{position:absolute;top:12px;right:12px}.compact-picker button,.picker-link,#favorite-trigger{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:10px 14px;cursor:pointer;font:inherit}
+#instagram-dialog{text-align:center}.instagram-qr{display:block;margin:20px auto;background:white;border-radius:12px;width:min(240px,100%);height:auto}.picker-link{display:inline-block;text-decoration:none}
+.compact-picker input{display:block;box-sizing:border-box;width:100%;margin:8px 0 16px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit}
+#favorite-options{display:grid;gap:5px;max-height:330px;overflow:auto}#favorite-options button{text-align:left}#favorite-options button:hover,#favorite-options button[aria-pressed=true]{border-color:var(--accent);background:rgb(var(--accent-rgb)/.12);color:var(--accent-text,var(--accent))}
+#favorite-trigger{text-align:left;width:100%;display:flex;justify-content:space-between;gap:12px}#favorite-trigger:after{content:'⌄'}
+.removal-actions{display:flex;justify-content:flex-end;gap:10px}.admin-score-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.admin-score-row span{overflow-wrap:anywhere}.admin-score-list{max-height:300px;overflow:auto}.message-delete-button{align-self:center;color:var(--muted);background:none;border:1px solid var(--line);border-radius:8px;padding:6px;cursor:pointer}

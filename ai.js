@@ -32,7 +32,7 @@
   const log=$('#ai-log'),scroll=log.scrollTop,atBottom=log.scrollHeight-log.scrollTop-log.clientHeight<90,fragment=document.createDocumentFragment();
   for(const turn of state?.messages||[]){
    if(turn.expires<=Date.now())continue;
-   for(const [name,text,kind] of [['You',turn.prompt,'user'],[turn.provider?'AI Chat · '+turn.provider:'AI Chat',turn.answer,'assistant']]){
+   for(const [name,text,kind] of [['You',turn.prompt,'user'],[turn.provider?'AI · '+turn.provider:'AI',turn.answer,'assistant']]){
     const row=document.createElement('article'),label=document.createElement('strong'),body=document.createElement('p');
     row.className='ai-message ai-'+kind;label.textContent=name;if(kind==='assistant'&&turn.model)label.title=turn.model;body.textContent=text;label.className=kind==='user'?'sr-only':'ai-response-label';row.append(label,kind==='assistant'?formatAnswer(text):body);if(kind==='user'&&turn.attachment){const file=document.createElement('span');file.className='ai-file-label';file.textContent='▧ '+turn.attachment.name;row.prepend(file);}fragment.append(row);
    }
@@ -43,7 +43,7 @@
  async function refresh(){
   if(!open||document.hidden||!account.user||busy)return;
   const token=generation;
-  try{const next=await account.api('/ai');if(token!==generation)return;state=next;paint();note(next.enabled?'':'AI Chat is being connected. Check back soon.');}
+  try{const next=await account.api('/ai');if(token!==generation)return;state=next;paint();note(next.enabled?'':'AI is being connected. Check back soon.');}
   catch(e){if(token===generation)note(e.message);}
  }
  function sync(){

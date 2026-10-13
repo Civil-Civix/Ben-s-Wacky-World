@@ -1,0 +1,1 @@
+ALTER TABLE battle_results ADD COLUMN voided INTEGER NOT NULL DEFAULT 0 CHECK(voided IN (0,1));

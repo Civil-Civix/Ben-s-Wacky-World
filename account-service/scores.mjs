@@ -15,7 +15,7 @@ export async function battleResult({request,env,now,body,fail,json}){
  if(!winner||!loser||winner===loser)fail(400,'Two different site profiles are required.');
  const found=await env.DB.prepare('SELECT COUNT(*) AS n FROM users WHERE id IN (?,?) AND banned=0 AND suspended_until<=?').bind(winner,loser,now).first();
  if(found.n!==2)fail(400,'Player unavailable.');
- await env.DB.prepare('INSERT OR IGNORE INTO battle_results VALUES(?,?,?,?)').bind(d.battleId,winner,loser,d.finished).run();
+ await env.DB.prepare('INSERT OR IGNORE INTO battle_results(battle_id,winner,loser,finished) VALUES(?,?,?,?)').bind(d.battleId,winner,loser,d.finished).run();
  return json({ok:true});
 }
 export async function scoreRead({url,env,now,fail,json,publicUser}){
@@ -25,7 +25,7 @@ export async function scoreRead({url,env,now,fail,json,publicUser}){
  const q=(url.searchParams.get('q')||'').slice(0,20).replace(/[^a-z0-9_]/gi,'');
  const pattern='%'+q.replace(/_/g,'\\_')+'%';
  if(path==='/leaderboard'){
- const cte=`WITH scores AS (SELECT users.*,COUNT(b.battle_id) AS wins FROM users JOIN battle_results b ON b.winner=users.id WHERE banned=0 AND suspended_until<=? GROUP BY users.id),ranked AS (SELECT *,ROW_NUMBER() OVER(ORDER BY wins DESC,username_key ASC) AS rank FROM scores) `;
+ const cte=`WITH scores AS (SELECT users.*,COUNT(b.battle_id) AS wins FROM users JOIN battle_results b ON b.winner=users.id WHERE b.voided=0 AND banned=0 AND suspended_until<=? GROUP BY users.id),ranked AS (SELECT *,ROW_NUMBER() OVER(ORDER BY wins DESC,username_key ASC) AS rank FROM scores) `;
  const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY rank LIMIT 51 OFFSET ?").bind(now,pattern,offset).all();
  const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY rank LIMIT 3').bind(now).all();
  const out=r=>({...publicUser(r),rank:r.rank,wins:r.wins});
