@@ -4,7 +4,7 @@
  const $=s=>document.querySelector(s);
  const person='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg>';
  let me=null,mode='login',sessionReady=false,game=null,lease=null,sequence=0,checkpoint=0;
- let boardMode='playtime';
+ let boardMode='polytrack';
  let queue=Promise.resolve(),listGeneration=0,offset=0,searchTimer,retryAt=0,authGeneration=0,profileGeneration=0;
  const channel=typeof BroadcastChannel==='function'?new BroadcastChannel('wacky-account'):null;
  const note=(text,error=false)=>{$('#account-message').textContent=text;$('#account-message').classList.toggle('is-error',error);};
@@ -181,7 +181,7 @@
    const query='q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset;
    let data;
    if(boardMode==='polytrack'){
-    if(!$('#leaderboard-track').options.length){const list=await api('/poly/tracks');if(generation!==listGeneration)return;for(const track of list.tracks){const option=document.createElement('option');option.value=track.id;option.textContent=track.name;$('#leaderboard-track').append(option);}renderTrackOptions();}
+    await ensureTracks();if(generation!==listGeneration)return;
     const result=await api('/poly/board?track='+encodeURIComponent($('#leaderboard-track').value)+'&'+query);
     const map=r=>({...r.profile,rank:r.position,frames:r.frames,replayId:r.id});data={users:result.entries.map(map),top:result.top.map(map),hasMore:result.hasMore};
    }else data=await api('/leaderboard?mode='+boardMode+'&'+query);
@@ -195,6 +195,34 @@
  }
  document.querySelectorAll('[data-ranking]').forEach(button=>button.addEventListener('click',()=>{boardMode=button.dataset.ranking;document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';void loadBoard();}));
  const trackTrigger=$('#track-trigger'),trackOptions=$('#track-options'),trackSelect=$('#leaderboard-track');
+ let tracksPromise=null,weekly=null;const seenWeeks=new Map();
+ const weeklyKey=()=> 'wacky-weekly-track-seen:'+(me?.id||'guest');
+ function weeklySeen(){const key=weeklyKey();try{return localStorage.getItem(key)===String(weekly.week);}catch{return seenWeeks.get(key)===weekly.week;}}
+ function paintWeekly(markSeen=false){
+  if(!weekly)return;
+  const key=weeklyKey();if(markSeen){seenWeeks.set(key,weekly.week);try{localStorage.setItem(key,String(weekly.week));}catch{}}
+  const unread=!weeklySeen();$('#leaderboard-unread-badge').hidden=!unread;
+  $('.nav-leaderboard').setAttribute('aria-label',unread?'Leaderboard — new track of the week':'Leaderboard');
+  $('#weekly-track-name').textContent=weekly.track.name;
+ }
+ function syncWeekly(){
+  const next=window.WackyWeeklyTrack.pick(Array.from(trackSelect.options,o=>({id:o.value,name:o.textContent})));
+  if(!next)return;const changed=!weekly||weekly.week!==next.week;weekly=next;
+  if(changed){trackSelect.value=weekly.track.id;renderTrackOptions();}
+  paintWeekly(!$('#leaderboard-panel').hidden);
+  if(changed&&!$('#leaderboard-panel').hidden)void loadBoard();
+ }
+ async function ensureTracks(){
+  if(!tracksPromise)tracksPromise=api('/poly/tracks').then(list=>{for(const track of list.tracks){const option=document.createElement('option');option.value=track.id;option.textContent=track.name;trackSelect.append(option);}syncWeekly();}).catch(error=>{tracksPromise=null;throw error;});
+  await tracksPromise;
+ }
+ $('#weekly-track-open').addEventListener('click',()=>{if(!weekly)return;document.querySelector('[data-ranking="polytrack"]').click();trackSelect.value=weekly.track.id;renderTrackOptions();void loadBoard();});
+ window.addEventListener('wacky-account-change',()=>paintWeekly(!$('#leaderboard-panel').hidden));
+ window.addEventListener('storage',()=>paintWeekly());
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(trackSelect.options.length)syncWeekly();else void ensureTracks().catch(()=>{});}});
+ setInterval(()=>{if(!document.hidden){if(trackSelect.options.length)syncWeekly();else void ensureTracks().catch(()=>{});}},60000);
+ void ensureTracks().catch(()=>{});
+
  function closeTrackPicker(restoreFocus=false){trackOptions.hidden=true;trackTrigger.setAttribute('aria-expanded','false');if(restoreFocus)trackTrigger.focus();}
  function renderTrackOptions(){
   $('#track-value').textContent=trackSelect.selectedOptions[0]?.textContent||'Choose a track';
@@ -221,7 +249,7 @@
  $('#leaderboard-refresh').addEventListener('click',()=>void loadBoard());
  window.showAccountPages=view=>{
   $('#leaderboard-panel').hidden=view!=='leaderboard';
-  if(view==='leaderboard')void loadBoard();
+  if(view==='leaderboard'){if(weekly&&!weeklySeen()){boardMode='polytrack';trackSelect.value=weekly.track.id;renderTrackOptions();}document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ranking===boardMode)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';paintWeekly(true);void loadBoard();}
  };
  const favoriteSelect=$('#profile-favorite-game'),favoriteTrigger=$('#favorite-trigger'),favoritePicker=$('#favorite-picker');
  function favoriteLabel(){favoriteTrigger.textContent=favoriteSelect.selectedOptions[0]?.textContent||'None selected';favoriteTrigger.disabled=favoriteSelect.disabled;}
