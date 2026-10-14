@@ -198,9 +198,9 @@ body::before{background:rgb(var(--accent-rgb)/.022)}
 .home-quote.quote-visible{opacity:1}
 @media(prefers-reduced-motion:reduce){.home-quote{transition:none}}
 
-/* Keep quotes inside the existing title-to-menu gap. */
-.home-heading-group{position:relative}
-.home-heading-group .home-quote{position:absolute;top:100%;left:0;right:0;margin:26px auto 0}
+/* Keep the centered quote in flow so wrapped text cannot overlap shortcuts. */
+.home-heading-group{position:relative;width:min(960px,100%);margin-inline:auto}
+.home-heading-group .home-quote{position:static;margin:clamp(20px,3vh,28px) auto 0;text-align:center}
 @media(max-width:700px){.home-heading-group .home-quote{margin-top:16px;font-size:13px;line-height:1.5}.launch-grid{margin-top:110px}}
 
 .nav-stream{flex:none;width:44px;height:44px;display:grid;place-items:center;border:0;padding:0;border-radius:13px;background:transparent;color:var(--muted)}
@@ -465,7 +465,7 @@ body.ai-open{overflow:hidden}#ai-panel{position:fixed;left:64px;right:0;top:0;bo
 textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 :where(button,input,select,textarea){font-family:inherit}
 #home-panel{padding-top:clamp(56px,9vh,100px)}
-.launch-grid{gap:16px;margin-top:clamp(48px,8vh,88px)}
+.launch-grid{gap:16px;margin-top:clamp(20px,3vh,28px)}
 .launch-tile{border-radius:var(--section-radius);gap:14px}
 #catalog{padding-bottom:40px}.game-grid{gap:18px}
 .game-card{content-visibility:auto;contain-intrinsic-size:auto 160px}
@@ -487,7 +487,7 @@ textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px so
 body.messages-open #snow{visibility:hidden}
 body.messages-open .snowflake{animation-play-state:paused}
 @media(max-width:1150px){#account-profile{grid-template-columns:190px minmax(0,1fr)}#profile-form{padding-right:0}.profile-preferences{grid-column:1/-1}}
-@media(max-width:720px){#account-profile{grid-template-columns:minmax(0,1fr);gap:20px}#profile-form{padding:20px 0 0;grid-template-columns:minmax(0,1fr)}#profile-form .banner-color-control{grid-column:auto}.launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:40px;gap:12px}.launch-tile{aspect-ratio:1.3;font-size:13px}.game-grid{gap:12px}.game-card{contain-intrinsic-size:auto 110px}.settings-layout{gap:22px}}
+@media(max-width:720px){#account-profile{grid-template-columns:minmax(0,1fr);gap:20px}#profile-form{padding:20px 0 0;grid-template-columns:minmax(0,1fr)}#profile-form .banner-color-control{grid-column:auto}.launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px;gap:12px}.launch-tile{aspect-ratio:1.3;font-size:13px}.game-grid{gap:12px}.game-card{contain-intrinsic-size:auto 110px}.settings-layout{gap:22px}}
 @media(prefers-reduced-motion:reduce){.launch-tile,.game-card{transition:none}}
 
 @media(max-width:700px){.catalog-controls{width:100%;min-width:0}.collection-nav{width:100%;max-width:100%;flex-wrap:wrap;justify-content:center;gap:6px}.collection-nav a{padding:8px 10px;font-size:12px}#sort-wrap{margin:4px 0 0;max-width:100%}.search-area{height:auto;min-height:170px;padding-block:24px;gap:16px}.search-wrap{flex-shrink:0}}
