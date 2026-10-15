@@ -203,7 +203,7 @@
   const key=weeklyKey();if(markSeen){seenWeeks.set(key,weekly.week);try{localStorage.setItem(key,String(weekly.week));}catch{}}
   const unread=!weeklySeen();$('#leaderboard-unread-badge').hidden=!unread;
   $('.nav-leaderboard').setAttribute('aria-label',unread?'Leaderboard — new track of the week':'Leaderboard');
-  $('#weekly-track-name').textContent=weekly.track.name;
+  paintWeeklyControls();
  }
  function syncWeekly(){
   const next=window.WackyWeeklyTrack.pick(Array.from(trackSelect.options,o=>({id:o.value,name:o.textContent})));
@@ -224,7 +224,13 @@
  void ensureTracks().catch(()=>{});
 
  function closeTrackPicker(restoreFocus=false){trackOptions.hidden=true;trackTrigger.setAttribute('aria-expanded','false');if(restoreFocus)trackTrigger.focus();}
+ function paintWeeklyControls(){
+  const featured=!!weekly&&trackSelect.value===weekly.track.id;
+  $('#weekly-track-badge').hidden=!featured;$('#weekly-track-open').hidden=!weekly||featured;
+  if(weekly)$('#weekly-track-open').setAttribute('aria-label','View featured track: '+weekly.track.name);
+ }
  function renderTrackOptions(){
+  paintWeeklyControls();
   $('#track-value').textContent=trackSelect.selectedOptions[0]?.textContent||'Choose a track';
   trackOptions.replaceChildren(...Array.from(trackSelect.options,option=>{
    const button=document.createElement('button');button.type='button';button.role='option';button.tabIndex=-1;button.textContent=option.textContent;button.setAttribute('aria-selected',String(option.selected));

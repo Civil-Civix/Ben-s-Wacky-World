@@ -17,13 +17,13 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261014-weekly">
+  <link rel="stylesheet" href="styles.css?v=20261014-board-layout">
   <script src="games.js?v=20261008-deltarune" defer></script>
   <script src="home-quotes.js?v=20260918-random" defer></script>
   <script src="home.js?v=20260918-5" defer></script>
   <script src="popularity.js?v=20260929-owner-banner" defer></script>
   <script src="weekly-track.js?v=20261014-weekly" defer></script>
-  <script src="accounts.js?v=20261014-weekly" defer></script>
+  <script src="accounts.js?v=20261014-board-layout" defer></script>
   <script src="admin.js?v=20261013-refresh" defer></script>
   <script src="messages.js?v=20261013-refresh" defer></script>
   <script src="ai-files.js?v=20260929-upload" defer></script>
@@ -148,8 +148,7 @@
   <section id="leaderboard-panel" aria-labelledby="leaderboard-heading" hidden>
     <header class="leaderboard-heading"><div><p class="eyebrow">The Wacky crowd</p><h1 id="leaderboard-heading">Leaderboard</h1><p>Every player. One shared scoreboard.</p></div><button type="button" id="leaderboard-refresh">Refresh</button></header>
     <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="polytrack" aria-pressed="true">Poly Track</button><button type="button" data-ranking="playtime" aria-pressed="false">Playtime</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown wins</button></div>
-    <p class="weekly-track-note">Track of the week: <button type="button" id="weekly-track-open"><span id="weekly-track-name">Loading…</span></button><small>New track every Monday · All-time records stay</small></p>
-    <div id="leaderboard-track-label"><span id="track-heading">Track</span><div class="track-picker"><select id="leaderboard-track" aria-label="Poly Track course" hidden></select><button id="track-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="track-options" aria-labelledby="track-heading track-value"><span id="track-value">Choose a track</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div id="track-options" role="listbox" aria-labelledby="track-heading" hidden></div></div></div>
+    <div id="leaderboard-track-label"><span id="track-heading" class="sr-only">Track</span><div class="track-picker"><select id="leaderboard-track" aria-label="Poly Track course" hidden></select><button id="track-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="track-options" aria-labelledby="track-heading track-value"><span id="track-value">Choose a track</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div id="track-options" role="listbox" aria-labelledby="track-heading" hidden></div></div><span id="weekly-track-badge" class="weekly-track-badge" tabindex="0" title="Changes every Monday. Records stay." hidden><span aria-hidden="true">★</span> Track of the week</span><button type="button" id="weekly-track-open" hidden>View featured track</button></div>
     <div id="leaderboard-podium" aria-label="Top three players"></div>
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>
     <p id="leaderboard-status" role="status"></p><div id="leaderboard-list" aria-label="All players"></div><button type="button" id="leaderboard-more" hidden>Load more</button>
