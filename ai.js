@@ -21,6 +21,14 @@
   return root;
  }
  const note=text=>$('#ai-status').textContent=text;
+ const chatLog=$('#ai-log');
+ function updateScrollEdges(){
+  chatLog.style.setProperty('--ai-fade-top',chatLog.scrollTop>2?'22px':'0px');
+  chatLog.style.setProperty('--ai-fade-bottom',chatLog.scrollHeight-chatLog.scrollTop-chatLog.clientHeight>2?'22px':'0px');
+ }
+ chatLog.addEventListener('scroll',updateScrollEdges,{passive:true});
+ new ResizeObserver(updateScrollEdges).observe(chatLog);
+
  function paint(){
   const signedIn=!!account.user;
   $('#ai-login').hidden=signedIn;$('#ai-content').hidden=!signedIn;
@@ -38,7 +46,7 @@
    }
   }
   if(!fragment.childNodes.length){const empty=document.createElement('div');empty.className='ai-empty';const h=document.createElement('h2'),p=document.createElement('p');h.textContent='What’s on your mind?';p.textContent='Ask a question, brainstorm an idea, or get help figuring something out.';empty.append(h,p);fragment.append(empty);}
-  log.replaceChildren(fragment);log.scrollTop=atBottom?log.scrollHeight:scroll;
+  log.replaceChildren(fragment);log.scrollTop=atBottom?log.scrollHeight:scroll;updateScrollEdges();
  }
  async function refresh(){
   if(!open||document.hidden||!account.user||busy)return;
