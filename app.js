@@ -333,3 +333,6 @@ window.WackyBattleGame={open(){const game=games.find(g=>g.id==='pokemonshowdown'
 window.WackyPolyGame={watch(id){if(!Number.isSafeInteger(id)||id<1)return;const game=games.find(g=>g.id==='polytrack');if(game){const url=new URL(game.url);url.searchParams.set('bwwReplay',id);openGame({...game,url:url.href});}}};
 
 document.querySelector('.nav-instagram').addEventListener('click',event=>{event.preventDefault();document.querySelector('#instagram-dialog').showModal();});
+
+// Keep site navigation in the current tab while preserving text-editing menus.
+document.addEventListener("contextmenu",event=>{if(!event.target.closest("input,textarea,[contenteditable=true]"))event.preventDefault();});
