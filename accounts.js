@@ -24,7 +24,7 @@
   if(!response.ok){const error=new Error(result.error||'Please try again.');error.status=response.status;throw error;}
   return result;
  }
- window.WackyAccount={api,avatar,openProfile,open:openAccount,get user(){return me;}};
+ window.WackyAccount={api,avatar,profileIcon,openProfile,open:openAccount,get user(){return me;}};
  const accountDialog=$('#account-dialog');
  function openAccount(){renderAccount();note('');if(!accountDialog.open)accountDialog.showModal();$('.nav-settings').setAttribute('data-active','');if(!me)$('#auth-username').focus();}
  document.querySelectorAll('[data-open-account]').forEach(button=>button.addEventListener('click',e=>{e.preventDefault();openAccount();}));
@@ -144,6 +144,11 @@
  channel?.addEventListener('message',()=>{void enqueue(()=>pulse(true)).then(restore);});
  const profileDialog=$('#public-profile');
  $('#public-profile-close').addEventListener('click',()=>profileDialog.close());
+ function profileIcon(button,kind,label){
+  const paths={message:'<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-3 3V11.5A8.5 8.5 0 0 1 9.5 3h3a8.5 8.5 0 0 1 8.5 8.5Z"/><path d="M6 9h10M6 13h7"/>',challenge:'<path d="m14 3 7-1-1 7-10 10-5-5Z"/><path d="m4 13 7 7M7.5 17.5 3 22M2 20l3 3M10 14l7-7"/>',request:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-3a7 7 0 0 1 11-5M18 14v8M14 18h8"/>',accept:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-3a7 7 0 0 1 11-5m1 5 3 3 5-6"/>',remove:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-3a7 7 0 0 1 11-5M15 15l6 6m0-6-6 6"/>',cancel:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-3a7 7 0 0 1 11-5M14 18h8"/>',decline:'<path d="m6 6 12 12M18 6 6 18"/>'};
+  button.classList.add('profile-icon-button');button.title=label;button.setAttribute('aria-label',label);
+  button.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths[kind]+'</svg>';
+ }
  async function openProfile(id){
   const generation=++profileGeneration;
   $('#public-profile-content').textContent='Loading profile…';if(!profileDialog.open)profileDialog.showModal();
@@ -152,8 +157,8 @@
    if(generation!==profileGeneration)return;
    $('#public-profile .public-profile-banner').style.background=user.bannerColor||'#24242c';
    const top=document.createElement('div');top.className='public-profile-top';top.append(avatar(user,'large'));
-   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});const actions=document.createElement('div');actions.className='public-profile-buttons';const challenge=document.createElement('button');challenge.type='button';challenge.className='profile-challenge-button';challenge.textContent='Challenge';challenge.title='Challenge to a 6v6 random battle';challenge.setAttribute('aria-label','Challenge '+user.username);challenge.addEventListener('click',()=>void window.WackyBattles?.challenge(user));actions.append(dm,challenge);window.WackyFriends?.mount(actions,user);top.append(actions);}
-   if(me?.owner&&!user.owner){const manage=document.createElement('button');manage.type='button';manage.className='profile-message-button';manage.textContent='Manage';manage.addEventListener('click',()=>{profileDialog.close();window.WackyAdmin?.open(user.username);});top.append(manage);}
+   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';profileIcon(dm,'message','Message');dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});const actions=document.createElement('div');actions.className='public-profile-buttons';const challenge=document.createElement('button');challenge.type='button';challenge.className='profile-challenge-button';profileIcon(challenge,'challenge','Challenge');challenge.title='Challenge to a 6v6 random battle';challenge.setAttribute('aria-label','Challenge '+user.username);challenge.addEventListener('click',()=>void window.WackyBattles?.challenge(user));actions.append(dm,challenge);window.WackyFriends?.mount(actions,user);top.append(actions);}
+   if(me?.owner&&!user.owner){const manage=document.createElement('button');manage.type='button';manage.className='profile-message-button';manage.textContent='Manage';manage.addEventListener('click',()=>{profileDialog.close();window.WackyAdmin?.open(user.username);});(top.querySelector('.public-profile-buttons')||top).append(manage);}
    const name=document.createElement('h2');name.id='public-profile-name';name.textContent=user.username;
    const identity=document.createElement('div');identity.className='public-profile-identity';identity.append(name,badge(user));
    const roles=document.createElement('div');roles.className='profile-roles';for(const role of user.roles||[]){const pill=document.createElement('span');pill.className='profile-role';pill.textContent=role.name;if(/^#[0-9a-f]{6}$/i.test(role.color))pill.style.setProperty('--role-color',role.color);roles.append(pill);}

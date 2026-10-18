@@ -7,14 +7,18 @@
  function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b;}
  async function change(user,action){const id=account.user?.id;if(!id)return;await account.api('/friends',{method:'POST',data:{userId:user.id,action}});if(account.user?.id!==id)return;await refresh();window.dispatchEvent(new Event('wacky-friends-change'));}
  function mount(parent,user){
-  const box=document.createElement('div');box.className='friend-actions';parent.append(box);const id=account.user?.id;if(!id||id===user.id)return;
-  async function update(){try{const data=await account.api('/friends?user='+encodeURIComponent(user.id));if(account.user?.id!==id)return;paintActions(box,user,data.relationship,update);}catch(e){box.textContent=e.message;}}
+  const box=document.createElement('div');box.className='friend-actions profile-friend-actions';parent.append(box);const id=account.user?.id;if(!id||id===user.id)return;
+  async function update(){try{const data=await account.api('/friends?user='+encodeURIComponent(user.id));if(account.user?.id!==id)return;paintActions(box,user,data.relationship,update);}catch(e){profileError(box,e.message);}}
   void update();
  }
+ function profileError(box,message){
+  const target=box.closest('.public-profile-top')||box;target.querySelector('.friend-error')?.remove();
+  const error=document.createElement('small');error.className='friend-error';error.setAttribute('role','status');error.textContent=message;target.append(error);
+ }
  function paintActions(box,user,relationship,done){
-  box.replaceChildren();
+  box.replaceChildren();box.closest('.public-profile-top')?.querySelector('.friend-error')?.remove();
   const choices=relationship==='friends'?[['Remove friend','remove']]:relationship==='incoming'?[['Accept','accept'],['Decline','decline']]:relationship==='outgoing'?[['Cancel request','cancel']]:[['Add friend','request']];
-  for(const [label,action]of choices)box.append(button(label,async()=>{box.querySelectorAll('button').forEach(b=>b.disabled=true);try{await change(user,action);await done();}catch(e){const error=document.createElement('small');error.setAttribute('role','status');error.textContent=e.message;box.append(error);box.querySelectorAll('button').forEach(b=>b.disabled=false);}}));
+  for(const [label,action]of choices){const b=button(label,async()=>{box.querySelectorAll('button').forEach(b=>b.disabled=true);try{await change(user,action);await done();}catch(e){profileError(box,e.message);box.querySelectorAll('button').forEach(b=>b.disabled=false);}});if(box.classList.contains('profile-friend-actions'))account.profileIcon(b,action,label);box.append(b);}
  }
  function paint(list=rows.filter(r=>r.relationship===tab)){
   const target=$('#friends-list');target.replaceChildren();
