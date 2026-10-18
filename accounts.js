@@ -4,7 +4,7 @@
  const $=s=>document.querySelector(s);
  const person='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg>';
  let me=null,mode='login',sessionReady=false,game=null,lease=null,sequence=0,checkpoint=0;
- let boardMode='polytrack';
+ let boardMode='polytrack',boardAudience='everyone';
  let queue=Promise.resolve(),listGeneration=0,offset=0,searchTimer,retryAt=0,authGeneration=0,profileGeneration=0;
  const channel=typeof BroadcastChannel==='function'?new BroadcastChannel('wacky-account'):null;
  const note=(text,error=false)=>{$('#account-message').textContent=text;$('#account-message').classList.toggle('is-error',error);};
@@ -152,7 +152,7 @@
    if(generation!==profileGeneration)return;
    $('#public-profile .public-profile-banner').style.background=user.bannerColor||'#24242c';
    const top=document.createElement('div');top.className='public-profile-top';top.append(avatar(user,'large'));
-   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});const actions=document.createElement('div');actions.className='public-profile-buttons';const challenge=document.createElement('button');challenge.type='button';challenge.className='profile-challenge-button';challenge.textContent='Challenge';challenge.title='Challenge to a 6v6 random battle';challenge.setAttribute('aria-label','Challenge '+user.username);challenge.addEventListener('click',()=>void window.WackyBattles?.challenge(user));actions.append(dm,challenge);top.append(actions);}
+   if(me&&me.id!==user.id){const dm=document.createElement('button');dm.type='button';dm.className='profile-message-button';dm.textContent='Message';dm.addEventListener('click',()=>{profileDialog.close();window.WackyMessages?.dm(user);});const actions=document.createElement('div');actions.className='public-profile-buttons';const challenge=document.createElement('button');challenge.type='button';challenge.className='profile-challenge-button';challenge.textContent='Challenge';challenge.title='Challenge to a 6v6 random battle';challenge.setAttribute('aria-label','Challenge '+user.username);challenge.addEventListener('click',()=>void window.WackyBattles?.challenge(user));actions.append(dm,challenge);window.WackyFriends?.mount(actions,user);top.append(actions);}
    if(me?.owner&&!user.owner){const manage=document.createElement('button');manage.type='button';manage.className='profile-message-button';manage.textContent='Manage';manage.addEventListener('click',()=>{profileDialog.close();window.WackyAdmin?.open(user.username);});top.append(manage);}
    const name=document.createElement('h2');name.id='public-profile-name';name.textContent=user.username;
    const identity=document.createElement('div');identity.className='public-profile-identity';identity.append(name,badge(user));
@@ -178,7 +178,8 @@
   const generation=++listGeneration;if(reset){offset=0;$('#leaderboard-list').replaceChildren();$('#leaderboard-podium').replaceChildren();}$('#leaderboard-more').hidden=true;
   $('#leaderboard-status').textContent='Loading leaderboard…';$('#leaderboard-more').disabled=true;
   try{
-   const query='q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset;
+   if(boardAudience==='friends'&&!me){$('#leaderboard-status').textContent='Log in to compare scores with your friends.';return;}
+   const query='q='+encodeURIComponent($('#leaderboard-search').value.trim())+'&offset='+offset+(boardAudience==='friends'?'&scope=friends':'');
    let data;
    if(boardMode==='polytrack'){
     await ensureTracks();if(generation!==listGeneration)return;
@@ -193,6 +194,9 @@
   }catch(error){if(generation===listGeneration)$('#leaderboard-status').textContent=error.message;}
   finally{if(generation===listGeneration)$('#leaderboard-more').disabled=false;}
  }
+ document.querySelectorAll('[data-audience]').forEach(button=>button.addEventListener('click',()=>{boardAudience=button.dataset.audience;document.querySelectorAll('[data-audience]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));void loadBoard();}));
+ window.addEventListener('wacky-account-change',()=>{if(boardAudience==='friends'&&!$('#leaderboard-panel').hidden)void loadBoard();});
+ window.addEventListener('wacky-friends-change',()=>{if(boardAudience==='friends'&&!$('#leaderboard-panel').hidden)void loadBoard();});
  document.querySelectorAll('[data-ranking]').forEach(button=>button.addEventListener('click',()=>{boardMode=button.dataset.ranking;document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';void loadBoard();}));
  const trackTrigger=$('#track-trigger'),trackOptions=$('#track-options'),trackSelect=$('#leaderboard-track');
  let tracksPromise=null,weekly=null;const seenWeeks=new Map();

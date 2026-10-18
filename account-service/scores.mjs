@@ -1,3 +1,4 @@
+import {friendFilter} from './friends.mjs';
 import {inflateSync} from 'node:zlib';
 import {createHmac,timingSafeEqual} from 'node:crypto';
 import tracks from './poly-tracks.mjs';
@@ -18,16 +19,17 @@ export async function battleResult({request,env,now,body,fail,json}){
  await env.DB.prepare('INSERT OR IGNORE INTO battle_results(battle_id,winner,loser,finished) VALUES(?,?,?,?)').bind(d.battleId,winner,loser,d.finished).run();
  return json({ok:true});
 }
-export async function scoreRead({url,env,now,fail,json,publicUser}){
+export async function scoreRead({url,env,now,fail,json,publicUser,friendId=null}){
  const path=url.pathname;
+ const friendParams=friendId?[friendId,friendId,friendId]:[];
  if(path==='/poly/tracks')return json({tracks});
  const offset=Math.min(100000,Math.max(0,parseInt(url.searchParams.get('offset'))||0));
  const q=(url.searchParams.get('q')||'').slice(0,20).replace(/[^a-z0-9_]/gi,'');
  const pattern='%'+q.replace(/_/g,'\\_')+'%';
  if(path==='/leaderboard'){
- const cte=`WITH scores AS (SELECT users.*,COUNT(b.battle_id) AS wins FROM users JOIN battle_results b ON b.winner=users.id WHERE b.voided=0 AND banned=0 AND suspended_until<=? GROUP BY users.id),ranked AS (SELECT *,ROW_NUMBER() OVER(ORDER BY wins DESC,username_key ASC) AS rank FROM scores) `;
- const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY rank LIMIT 51 OFFSET ?").bind(now,pattern,offset).all();
- const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY rank LIMIT 3').bind(now).all();
+ const cte=`WITH scores AS (SELECT users.*,COUNT(b.battle_id) AS wins FROM users JOIN battle_results b ON b.winner=users.id WHERE b.voided=0 AND banned=0 AND suspended_until<=?${friendId?' AND '+friendFilter('users'):''} GROUP BY users.id),ranked AS (SELECT *,ROW_NUMBER() OVER(ORDER BY wins DESC,username_key ASC) AS rank FROM scores) `;
+ const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY rank LIMIT 51 OFFSET ?").bind(now,...friendParams,pattern,offset).all();
+ const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY rank LIMIT 3').bind(now,...friendParams).all();
  const out=r=>({...publicUser(r),rank:r.rank,wins:r.wins});
  return json({users:rows.results.slice(0,50).map(out),top:top.results.map(out),hasMore:rows.results.length>50});
  }
@@ -38,11 +40,11 @@ export async function scoreRead({url,env,now,fail,json,publicUser}){
  }
  const track=url.searchParams.get('track');if(!trackIds.has(track))fail(400,'Choose an official track.');
  const limit=Math.min(50,Math.max(1,parseInt(url.searchParams.get('limit'))||50));
- const cte=`WITH ranked AS (SELECT u.*,p.id AS replay_id,p.frames,p.car_style,p.updated,ROW_NUMBER() OVER(ORDER BY p.frames,p.updated,p.id) AS position FROM poly_records p JOIN users u ON u.id=p.user_id WHERE p.track=? AND u.banned=0 AND u.suspended_until<=?) `;
- const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY position LIMIT ? OFFSET ?").bind(track,now,pattern,limit+1,offset).all();
- const total=await env.DB.prepare(cte+'SELECT COUNT(*) AS n FROM ranked').bind(track,now).first();
- const own=await env.DB.prepare(cte+'SELECT replay_id AS id,position,frames FROM ranked WHERE id=?').bind(track,now,url.searchParams.get('user')||'').first();
- const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY position LIMIT 3').bind(track,now).all();
+ const cte=`WITH ranked AS (SELECT u.*,p.id AS replay_id,p.frames,p.car_style,p.updated,ROW_NUMBER() OVER(ORDER BY p.frames,p.updated,p.id) AS position FROM poly_records p JOIN users u ON u.id=p.user_id WHERE p.track=? AND u.banned=0 AND u.suspended_until<=?${friendId?' AND '+friendFilter('u'):''}) `;
+ const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY position LIMIT ? OFFSET ?").bind(track,now,...friendParams,pattern,limit+1,offset).all();
+ const total=await env.DB.prepare(cte+'SELECT COUNT(*) AS n FROM ranked').bind(track,now,...friendParams).first();
+ const own=await env.DB.prepare(cte+'SELECT replay_id AS id,position,frames FROM ranked WHERE id=?').bind(track,now,...friendParams,url.searchParams.get('user')||'').first();
+ const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY position LIMIT 3').bind(track,now,...friendParams).all();
  const out=r=>({id:r.replay_id,userId:r.id,nickname:r.username,frames:r.frames,carStyle:r.car_style,position:r.position,profile:publicUser(r)});
  return json({entries:rows.results.slice(0,limit).map(out),top:top.results.map(out),total:total.n,userEntry:own,hasMore:rows.results.length>limit});
 }

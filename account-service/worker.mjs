@@ -1,3 +1,4 @@
+import {friends,friendFilter} from './friends.mjs';
 import {battleResult,scoreRead,polySubmit} from './scores.mjs';
 import {battle,verifyBattle} from './battle.mjs';
 import {admin} from './admin.mjs';
@@ -59,7 +60,7 @@ export default {
  async fetch(request,env){
   const url=new URL(request.url),path=url.pathname,now=Date.now();
   const origin=request.headers.get('Origin');
-  const publicGet=request.method==='GET'&&(path==='/game-boosts'||path==='/leaderboard'||['/poly/tracks','/poly/board','/poly/replays'].includes(path)||path.startsWith('/profiles/')||path.startsWith('/avatars/'));
+  const publicGet=url.searchParams.get('scope')!=='friends'&&request.method==='GET'&&(path==='/game-boosts'||path==='/leaderboard'||['/poly/tracks','/poly/board','/poly/replays'].includes(path)||path.startsWith('/profiles/')||path.startsWith('/avatars/'));
   const cors=origin===env.ALLOWED_ORIGIN?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Vary':'Origin'}:publicGet?{'Access-Control-Allow-Origin':'*'}:{};
   const json=(data,status=200,extra={})=>Response.json(data,{status,headers:{...cors,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});
   try{
@@ -68,16 +69,19 @@ export default {
    if(request.method!=='GET'&&request.headers.get('X-Wacky-Client')!=='1')fail(403,'Invalid client.');
    const ip=digest(now.toString().slice(0,5)+':'+(request.headers.get('CF-Connecting-IP')||'unknown'));
    if(!(await env.REQUEST_LIMIT.limit({key:ip})).success)fail(429,'Too many requests. Please try again in a minute.');
+   let friendId=null;if(url.searchParams.get('scope')==='friends'&&['/leaderboard','/poly/board'].includes(path)){const viewer=await session(request,env,now);permitted(viewer,now);friendId=viewer.id;}
    if(path==='/battle/results')return await battleResult({request,env,now,body,fail,json});
-   if(request.method==='GET'&&(['/poly/tracks','/poly/board','/poly/replays'].includes(path)||(path==='/leaderboard'&&url.searchParams.get('mode')==='showdown')))return await scoreRead({url,env,now,fail,json,publicUser});
+   if(request.method==='GET'&&(['/poly/tracks','/poly/board','/poly/replays'].includes(path)||(path==='/leaderboard'&&url.searchParams.get('mode')==='showdown')))return await scoreRead({url,env,now,fail,json,publicUser,friendId});
    if(path==='/battle/verify')return await verifyBattle({request,env,now,body,fail,json});
    if(path==='/game-boosts'&&request.method==='GET'){const rows=await env.DB.prepare('SELECT game_id AS id,bonus FROM game_boosts WHERE bonus>0').all();return json({games:rows.results});}
    if(path==='/leaderboard'&&request.method==='GET'){
     const q=(url.searchParams.get('q')||'').slice(0,20).toLowerCase().replace(/[^a-z0-9_]/g,'');
     const offset=Math.min(100000,Math.max(0,parseInt(url.searchParams.get('offset')||'0',10)||0));
-    const query='WITH ranked AS (SELECT '+PUBLIC+',ROW_NUMBER() OVER(ORDER BY play_ms DESC,username_key ASC) AS rank FROM users) SELECT * FROM ranked WHERE lower(username) LIKE ? ESCAPE \'\\\' ORDER BY rank LIMIT 51 OFFSET ?';
-    const rows=await env.DB.prepare(query).bind('%'+q.replace(/_/g,'\\_')+'%',offset).all();
-    const top=await env.DB.prepare('SELECT '+PUBLIC+' FROM users ORDER BY play_ms DESC,username_key ASC LIMIT 3').all();
+    const where=' WHERE banned=0 AND suspended_until<=?'+(friendId?' AND '+friendFilter('users'):'');
+    const params=[now,...(friendId?[friendId,friendId,friendId]:[])];
+    const cte='WITH ranked AS (SELECT '+PUBLIC+',ROW_NUMBER() OVER(ORDER BY play_ms DESC,username_key ASC) AS rank FROM users'+where+') ';
+    const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE instr(lower(username),?)>0 ORDER BY rank LIMIT 51 OFFSET ?").bind(...params,q,offset).all();
+    const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY rank LIMIT 3').bind(...params).all();
     return json({users:rows.results.slice(0,50).map(r=>({...publicUser(r),rank:r.rank})),hasMore:rows.results.length>50,top:top.results.map((r,i)=>({...publicUser(r),rank:i+1}))});
    }
    if(path.startsWith('/profiles/')&&request.method==='GET'){
@@ -112,6 +116,7 @@ export default {
    }
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
+   if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});
    if(path.startsWith('/admin/'))return await admin({request,url,env,me,now,body,fail,json,games});
    if(path==='/poly/best')return await polySubmit({request,env,me,now,body,fail,json});
    if(path.startsWith('/battle/'))return await battle({request,url,env,me,now,body,fail,json});

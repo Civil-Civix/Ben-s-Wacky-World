@@ -117,3 +117,12 @@ through the usual manual GitHub push.
 
 ## October 4 leaderboard rollout
 Cloudflare score migration and Worker deployment completed; Showdown result plugin installed and restarted while idle. Main site ranking tabs already published. User still needs to commit/push newcargame for in-game leaderboard and replay support. See LEADERBOARD-ROLLOUT.md.
+
+## October 17: friends and Showdown matchmaking wins
+- Added friend requests on public profiles, searchable Friends dialogs in Chat and Account, incoming/sent requests, and accept/decline/cancel/remove actions. Pending request badges respect Do Not Disturb.
+- Added Everyone / Friends filters to Playtime, Showdown and Poly Track leaderboards. Friends includes the signed-in player and accepted friends; the filtered endpoints require authentication.
+- Applied additive friends-schema.sql to production D1 and deployed the accounts Worker (a64a161ad4f241ab8ce6c5c248780a2e), preserving bindings/secrets.
+- Found why Showdown had no recorded wins: the casual matchmaking queue was rejected by the old rated-only guard. The server now accepts rated/unrated matchmaking and still excludes direct challenges and tournaments. Built and restarted the live server with zero active battles; service is healthy.
+- Account/chat regression, scores, friend lifecycle/filtering, signed result delivery/outbox, and mocked browser request/filter/responsive checks passed. Live public boards return 200; private friends routes reject unauthenticated access.
+- Next real matchmaking win remains the live end-to-end confirmation. Previously discarded wins were not backfilled. No fake production wins/accounts were created.
+- Source is in this repository: friends.js, accounts.js, index.html, styles.css, account-service/friends*, worker.mjs, scores.mjs, and pokemon-service/wacky-results.ts/results-test.mjs. Continue in Ben's Wacky World if follow-up is needed.

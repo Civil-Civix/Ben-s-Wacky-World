@@ -22,7 +22,7 @@ if(state.__bwwResultsTimer)clearInterval(state.__bwwResultsTimer);
 state.__bwwResultsTimer=setInterval(()=>void flush(),60000);state.__bwwResultsTimer.unref();
 export const handlers: Chat.Handlers={
  onBattleEnd(battle,winner,players){
-  if(!battle.rated||battle.format!=='gen9randombattle'||players.length!==2||!players.includes(winner)||players.some(id=>!/^bww[a-f0-9]{32}$/.test(id)))return;
+  if(!['rated','unrated'].includes(battle.challengeType)||battle.format!=='gen9randombattle'||players.length!==2||!players.includes(winner)||players.some(id=>!/^bww[a-f0-9]{32}$/.test(id)))return;
   const loser=players.find(id=>id!==winner);if(!loser)return;
   const battleId=battle.roomid+'-'+boot;
   const body=JSON.stringify({battleId,format:'gen9randombattle',rated:true,winner,loser,finished:Date.now()});
