@@ -223,6 +223,7 @@ function launchGame(game,opener=document.activeElement) {
   lastLaunch=opener;
   currentGame = game; lastId = game.id; savedScroll = window.scrollY;
   favoriteButton.hidden = game.kind === 'stream';
+  document.querySelector('#report-game').hidden = game.kind === 'stream';
   downloadButton.hidden = !window.WackyDownloads.eligible(game);
   if (game.kind !== 'stream') {
     recents = [game.id,...recents.filter(id => id !== game.id)];
@@ -336,3 +337,10 @@ document.querySelector('.nav-instagram').addEventListener('click',event=>{event.
 
 // Keep site navigation in the current tab while preserving text-editing menus.
 document.addEventListener("contextmenu",event=>{if(!event.target.closest("input,textarea,[contenteditable=true]"))event.preventDefault();});
+
+// Capture the selected game so a report cannot switch targets while open.
+const reportDialog=document.querySelector('#game-report-dialog');let reportedGame=null,reportBusy=false;
+document.querySelector('#report-game').addEventListener('click',()=>{if(!currentGame||currentGame.kind==='stream')return;if(!window.WackyAccount.user){window.WackyAccount.open();return;}reportedGame=currentGame;document.querySelector('#game-report-form').reset();document.querySelector('#game-report-status').textContent='';document.querySelector('#game-report-name').textContent=reportedGame.title;reportDialog.showModal();});
+document.querySelector('#game-report-close').addEventListener('click',()=>{if(!reportBusy)reportDialog.close();});reportDialog.addEventListener('cancel',e=>{if(reportBusy)e.preventDefault();});
+document.querySelector('#game-report-form').addEventListener('submit',async e=>{e.preventDefault();if(reportBusy||!reportedGame)return;reportBusy=true;const button=e.currentTarget.querySelector('[type=submit]');button.disabled=true;try{await window.WackyAccount.api('/game-reports',{method:'POST',data:{gameId:reportedGame.id,kind:document.querySelector('#game-report-kind').value,note:document.querySelector('#game-report-note').value.trim()}});document.querySelector('#game-report-status').textContent='Report saved. Thanks for helping us fix it.';document.querySelector('#game-report-close').textContent='Close';}catch(error){document.querySelector('#game-report-status').textContent=error.message;button.disabled=false;}finally{reportBusy=false;}});
+reportDialog.addEventListener('close',()=>{document.querySelector('#game-report-form [type=submit]').disabled=false;document.querySelector('#game-report-close').textContent='Cancel';});

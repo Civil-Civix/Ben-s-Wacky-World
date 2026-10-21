@@ -1,7 +1,7 @@
 import {friends,friendFilter} from './friends.mjs';
 import {battleResult,scoreRead,polySubmit} from './scores.mjs';
 import {battle,verifyBattle} from './battle.mjs';
-import {admin} from './admin.mjs';
+import {admin,reportGame} from './admin.mjs';
 import {ai} from './ai.mjs';
 import {chat} from './chat.mjs';
 import {scrypt,createHmac,timingSafeEqual,randomBytes,createHash} from 'node:crypto';
@@ -117,6 +117,7 @@ export default {
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
    if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});
+   if(path==='/game-reports')return await reportGame({request,env,me,now,body,fail,json,games});
    if(path.startsWith('/admin/'))return await admin({request,url,env,me,now,body,fail,json,games});
    if(path==='/poly/best')return await polySubmit({request,env,me,now,body,fail,json});
    if(path.startsWith('/battle/'))return await battle({request,url,env,me,now,body,fail,json});

@@ -126,3 +126,11 @@ Cloudflare score migration and Worker deployment completed; Showdown result plug
 - Account/chat regression, scores, friend lifecycle/filtering, signed result delivery/outbox, and mocked browser request/filter/responsive checks passed. Live public boards return 200; private friends routes reject unauthenticated access.
 - Next real matchmaking win remains the live end-to-end confirmation. Previously discarded wins were not backfilled. No fake production wins/accounts were created.
 - Source is in this repository: friends.js, accounts.js, index.html, styles.css, account-service/friends*, worker.mjs, scores.mjs, and pokemon-service/wacky-results.ts/results-test.mjs. Continue in Ben's Wacky World if follow-up is needed.
+
+## October 21: game reports and Chat navigation
+- Completed game-report flag in player toolbar, signed-in report form, and owner-only Admin tools > Reports inbox. Open / Fixed / Removed statuses track handling; they do not delete game files. Reports validate game IDs, limit notes, throttle submissions, deduplicate per account/game, and permit reporting resolved issues again after a day. Status changes are audited and inbox results paginate.
+- Removed PokeChat from sidebar and placed World chat above Friends. Historical backend room/data retained.
+- Cleared previous homepage changelog entries; only this update is listed, dated October 21, 2026.
+- Applied reports-schema.sql and deployed Worker ca04b654bb8141ebb0e6bc02e2808e7e with existing bindings/secrets/settings preserved. Live unauthenticated report endpoints return 401; leaderboard returns 200. No fake production reports submitted.
+- Tests passed: reports auth/validation/duplicates/owner permissions/audit/status filters/cooldown/rate limits/pagination, existing accounts/chat regression, and browser report submission/resolution/mobile sizing/safe text rendering/chat order/changelog checks.
+- Changed index.html, app.js, admin.js, messages.js, styles.css, account-service/admin.mjs, worker.mjs; added reports-schema.sql and reports-test.mjs. Source remains in this Ben's Wacky World repository. Continue here for report-related follow-up.

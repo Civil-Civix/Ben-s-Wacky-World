@@ -11,10 +11,19 @@ export async function admin({request,url,env,me,now,body,fail,json,games}){
   const poly=await env.DB.prepare('SELECT id,track,frames FROM poly_records WHERE user_id=? ORDER BY track').bind(id).all();
   const wins=await env.DB.prepare('SELECT battle_id,finished FROM battle_results WHERE winner=? AND voided=0 ORDER BY finished DESC LIMIT 100').bind(id).all();return json({user,poly:poly.results,wins:wins.results});
  }
+ if(url.pathname==='/admin/reports'&&request.method==='GET'){
+  const status=url.searchParams.get('status')||'open',before=Number(url.searchParams.get('before')||Number.MAX_SAFE_INTEGER);if(!['open','fixed','removed'].includes(status)||!Number.isSafeInteger(before)||before<1)fail(400,'Invalid report filter.');
+  const rows=await env.DB.prepare('SELECT r.*,u.username FROM game_reports r LEFT JOIN users u ON u.id=r.reporter WHERE r.status=? AND r.id<? ORDER BY r.id DESC LIMIT 51').bind(status,before).all();return json({reports:rows.results.slice(0,50),hasMore:rows.results.length>50});
+ }
  if(request.method!=='POST')fail(404,'Not found.');
  const data=await body(request),reason=typeof data.reason==='string'?data.reason.trim():'';
  if(!reason||reason.length>280)fail(400,'Add a short reason (up to 280 characters).');
  const audit=(target,action,details)=>env.DB.prepare('INSERT INTO admin_log(actor,target,action,details,created) VALUES(?,?,?,?,?)').bind(me.id,target,action,JSON.stringify({...details,reason}),now);
+ if(url.pathname==='/admin/report-status'){
+  if(!Number.isSafeInteger(data.id)||!['open','fixed','removed'].includes(data.status))fail(400,'Invalid report update.');
+  const report=await env.DB.prepare('SELECT * FROM game_reports WHERE id=?').bind(data.id).first();if(!report)fail(404,'Report not found.');
+  await env.DB.batch([env.DB.prepare('UPDATE game_reports SET status=?,updated=? WHERE id=?').bind(data.status,now,data.id),audit(report.game_id,'game-report-status',{reportId:data.id,before:report.status,after:data.status})]);return json({ok:true});
+ }
  if(url.pathname==='/admin/remove-message'){
   if(!Number.isSafeInteger(data.id)||data.id<1)fail(400,'Invalid message.');
   const message=await env.DB.prepare('SELECT id,sender FROM chat_messages WHERE id=?').bind(data.id).first();if(!message)fail(404,'Message not found.');
@@ -50,4 +59,12 @@ export async function admin({request,url,env,me,now,body,fail,json,games}){
  }else value=action==='ban'?1:0;
  await env.DB.batch([env.DB.prepare('UPDATE users SET '+field+'=? WHERE id=? AND owner=0').bind(value,id),audit(id,action,{username:user.username,before:user[field],after:value})]);
  return json({ok:true,user:summary({...user,[field]:value})});
+}
+
+export async function reportGame({request,env,me,now,body,fail,json,games}){
+ if(request.method!=='POST')fail(405,'Use POST.');
+ const data=await body(request);if(!games.has(data.gameId)||!['loading','broken','controls','other'].includes(data.kind)||typeof data.note!=='string'||data.note.length>500)fail(400,'Choose a game and problem, with details up to 500 characters.');
+ if(!(await env.AUTH_LIMIT.limit({key:'game-report:'+me.id})).success)fail(429,'Too many reports. Try again shortly.');
+ await env.DB.prepare("INSERT INTO game_reports(game_id,reporter,kind,note,created,updated) VALUES(?,?,?,?,?,?) ON CONFLICT(game_id,reporter) DO UPDATE SET kind=excluded.kind,note=excluded.note,status='open',created=excluded.created,updated=excluded.updated WHERE game_reports.status<>'open' AND game_reports.updated<excluded.updated-86400000").bind(data.gameId,me.id,data.kind,data.note.trim(),now,now).run();
+ return json({ok:true});
 }

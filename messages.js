@@ -134,11 +134,11 @@
  }
  function choose(user=null){
   scheduleUnread();clearTimeout(timer);++generation;setReply();clearPhoto();selectedPerson=user;to=user?.id||null;rows=[];oldest=null;$('#messages-text').value='';$('#messages-older').hidden=true;
-  $('#messages-room-title').textContent=user?(user.group||user.room?'':'@')+user.username:'World chat';$('#messages-leave-group').hidden=!user?.group;$('#messages-public').setAttribute('aria-pressed',String(!to));$('#messages-poke').setAttribute('aria-pressed',String(to==='room:poke'));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
+  $('#messages-room-title').textContent=user?(user.group||user.room?'':'@')+user.username:'World chat';$('#messages-leave-group').hidden=!user?.group;$('#messages-public').setAttribute('aria-pressed',String(!to));paint();note('Loading…');void refresh();void people();timer=setTimeout(tick,2000);
  }
  function sync(){
   scheduleUnread();clearTimeout(timer);++generation;
-  const id=account.user?.id||null;if(id!==identity){identity=id;setReply();clearPhoto();photoCache.clear();selectedPerson=null;picker.close();groupPicker.close();emojiPicker.close();$('#group-leave-picker').close();groupMembers.clear();++groupSearchToken;$('#messages-groups').replaceChildren();$('#messages-leave-group').hidden=true;to=null;$('#messages-public').setAttribute('aria-pressed','true');$('#messages-poke').setAttribute('aria-pressed','false');rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='World chat';$('#messages-people').replaceChildren();paint();}
+  const id=account.user?.id||null;if(id!==identity){identity=id;setReply();clearPhoto();photoCache.clear();selectedPerson=null;picker.close();groupPicker.close();emojiPicker.close();$('#group-leave-picker').close();groupMembers.clear();++groupSearchToken;$('#messages-groups').replaceChildren();$('#messages-leave-group').hidden=true;to=null;$('#messages-public').setAttribute('aria-pressed','true');rows=[];oldest=null;$('#messages-text').value='';$('#messages-room-title').textContent='World chat';$('#messages-people').replaceChildren();paint();}
   $('#messages-login').hidden=!!id;$('#messages-layout').hidden=!id;
   if(active()){void refresh();void people();timer=setTimeout(tick,2000);}
  }
@@ -148,7 +148,7 @@
  $('#messages-reply-cancel').addEventListener('click',()=>setReply());
  window.showMessages=value=>{document.body.classList.toggle('messages-open',value);open=value;$('#messages-panel').hidden=!value;sync();};
  window.addEventListener('wacky-account-change',sync);document.addEventListener('visibilitychange',sync);
- $('#messages-public').addEventListener('click',()=>choose());$('#messages-poke').addEventListener('click',()=>choose({id:'room:poke',username:'PokéChat',room:true}));$('#messages-older').addEventListener('click',()=>void refresh(true));
+ $('#messages-public').addEventListener('click',()=>choose());$('#messages-older').addEventListener('click',()=>void refresh(true));
  $('#messages-search').addEventListener('input',()=>{clearTimeout(peopleTimer);peopleTimer=setTimeout(searchPeople,250);});
  $('#messages-form').addEventListener('submit',async event=>{
   event.preventDefault();if(busy||photoReading||!active())return;const text=$('#messages-text').value.trim();if(!text&&!attachment)return;
