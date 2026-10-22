@@ -246,11 +246,24 @@ async function closeGame() {
   const card = [...grid.children].find(card => card.dataset.game === lastId);
   (lastLaunch?.isConnected?lastLaunch:card || document.querySelector('[data-view][aria-current="page"]') || document.querySelector('.nav-home')).focus({preventScroll:true});
 }
+const newGamesSeenKey='bens-wacky-world.new-games-seen.v1';
+const newGamesVersion=games.filter(g=>g.collection==='new').map(g=>g.id+'@'+g.url).sort().join('|');
+let newGamesSeen='';
+try{newGamesSeen=localStorage.getItem(newGamesSeenKey)||'';}catch(_){}
+function updateNewGamesBadge(markSeen=false){
+ if(markSeen&&newGamesVersion){newGamesSeen=newGamesVersion;try{localStorage.setItem(newGamesSeenKey,newGamesSeen);}catch(_){}}
+ const unread=Boolean(newGamesVersion&&newGamesSeen!==newGamesVersion),link=document.querySelector('[data-new-collection]');
+ document.querySelector('#new-games-badge').hidden=!unread;
+ link.setAttribute('aria-label',unread?'New — new games available':'New');
+ link.title=unread?'New games available':'New games';
+}
+window.addEventListener('storage',event=>{if(event.key===newGamesSeenKey||event.key===null){newGamesSeen=event.newValue||'';updateNewGamesBadge(view==='new');}});
 function applyRoute() {
   let hash = location.hash.slice(1);
   const openAccount=hash==='account';if(openAccount||hash==='request'){hash='home';history.replaceState(null,'','#home');}
   if(['apps','app-favorites','app-recents','chat'].includes(hash)){hash='messages';history.replaceState(null,'','#messages');}
   view = ['all','online','new','favorites','recents','settings','leaderboard','messages','ai'].includes(hash) ? hash : 'home';
+  updateNewGamesBadge(view==='new');
   const settingsOpen = view === 'settings';
   window.showAccountPages(view);
   window.showMessages(view === 'messages');
