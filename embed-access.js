@@ -8,7 +8,8 @@
  // Google Sites can use an intermediate Google-hosted embed frame.
  // Browsers without ancestorOrigins expose only that immediate referrer.
  const referrerHost=host(document.referrer);
- const allowed=framed&&(ancestors.length?ancestors.some(googleSite):googleSite(document.referrer)||referrerHost.endsWith('.googleusercontent.com'));
+ const sitesWrapper=referrerHost==='www.gstatic.com'&&new URL(document.referrer).pathname.startsWith('/atari/embeds/');
+ const allowed=framed&&(ancestors.length?ancestors.some(googleSite):googleSite(document.referrer)||sitesWrapper||referrerHost.endsWith('.googleusercontent.com'));
  if(!allowed){
   const card=document.createElement('main');card.className='site-entry-card';
   const title=document.createElement('h1');title.textContent="Ben's Wacky World";
