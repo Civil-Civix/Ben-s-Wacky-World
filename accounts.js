@@ -175,7 +175,8 @@
   const button=document.createElement('button');button.type='button';button.className=podium?'podium-person place-'+user.rank:'leaderboard-person';
   const rank=document.createElement('span');rank.className='rank';rank.textContent='#'+user.rank;
   const name=document.createElement('strong');name.textContent=user.username;
-  const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='showdown'?user.wins+' win'+(user.wins===1?'':'s'):boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
+  const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='showdown'?user.elo.toLocaleString()+' Elo':boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
+  if(boardMode==='showdown')time.title=user.wins+' wins · '+user.losses+' losses';
   button.append(rank,avatar(user),name,badge(user),time);button.addEventListener('click',()=>void openProfile(user.id));
   if(podium||boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'podium-slot place-'+user.rank:'replay-ranking';row.append(button);if(boardMode!=='polytrack')return row;const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(watch);return row;}return button;
  }
@@ -195,7 +196,7 @@
    $('#leaderboard-podium').replaceChildren(...data.top.map(u=>personRow(u,true)));
    data.users.forEach(user=>$('#leaderboard-list').append(personRow(user)));
    offset+=data.users.length;$('#leaderboard-more').hidden=!data.hasMore;
-   $('#leaderboard-status').textContent=(boardMode==='showdown'?'Gen 9 Random Battle matchmaking wins, recorded from launch. Friend challenges do not count.':boardMode==='polytrack'?'Best time per player on this track. Community submissions with replays; times are not server-verified.':'All-time game playtime. Select a player to view their profile.')+(offset?'':' No results yet.');
+   $('#leaderboard-status').textContent=(boardMode==='showdown'?'Ranked battles start at 1,000 Elo. Wins raise your rating; losses lower it. Past battles count. Friend challenges are unranked.':boardMode==='polytrack'?'Best time per player on this track. Community submissions with replays; times are not server-verified.':'All-time game playtime. Select a player to view their profile.')+(offset?'':' No results yet.');
   }catch(error){if(generation===listGeneration)$('#leaderboard-status').textContent=error.message;}
   finally{if(generation===listGeneration)$('#leaderboard-more').disabled=false;}
  }

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {showdownRatings} from './showdown-elo.mjs';
+const first={battle_id:'1',winner:'a',loser:'b',finished:1};
+const second={battle_id:'2',winner:'b',loser:'a',finished:2};
+assert.equal(showdownRatings([]).size,0);
+assert.deepEqual(showdownRatings([first]).get('a'),{elo:1016,wins:1,losses:0});
+assert.deepEqual(showdownRatings([second,first]),showdownRatings([first,second]));
+assert.deepEqual(showdownRatings([first,first]),showdownRatings([first]));
+assert.deepEqual(showdownRatings([{...first,voided:1},second]),showdownRatings([second]));
+const ratings=showdownRatings([first,second]);
+assert.equal(ratings.get('b').elo,1001);
+assert.equal([...ratings.values()].reduce((sum,r)=>sum+r.elo,0),2000);
+console.log('PASS: history ordering, upset rewards, duplicates, voids and zero-sum ratings.');

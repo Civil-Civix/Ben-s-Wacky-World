@@ -1,3 +1,4 @@
+import {showdownRatings} from './showdown-elo.mjs';
 import {friendFilter} from './friends.mjs';
 import {inflateSync} from 'node:zlib';
 import {createHmac,timingSafeEqual} from 'node:crypto';
@@ -27,11 +28,14 @@ export async function scoreRead({url,env,now,fail,json,publicUser,friendId=null}
  const q=(url.searchParams.get('q')||'').slice(0,20).replace(/[^a-z0-9_]/gi,'');
  const pattern='%'+q.replace(/_/g,'\\_')+'%';
  if(path==='/leaderboard'){
- const cte=`WITH scores AS (SELECT users.*,COUNT(b.battle_id) AS wins FROM users JOIN battle_results b ON b.winner=users.id WHERE b.voided=0 AND banned=0 AND suspended_until<=?${friendId?' AND '+friendFilter('users'):''} GROUP BY users.id),ranked AS (SELECT *,ROW_NUMBER() OVER(ORDER BY wins DESC,username_key ASC) AS rank FROM scores) `;
- const rows=await env.DB.prepare(cte+"SELECT * FROM ranked WHERE username LIKE ? ESCAPE '\\' ORDER BY rank LIMIT 51 OFFSET ?").bind(now,...friendParams,pattern,offset).all();
- const top=await env.DB.prepare(cte+'SELECT * FROM ranked ORDER BY rank LIMIT 3').bind(now,...friendParams).all();
- const out=r=>({...publicUser(r),rank:r.rank,wins:r.wins});
- return json({users:rows.results.slice(0,50).map(out),top:top.results.map(out),hasMore:rows.results.length>50});
+ const battles=await env.DB.prepare('SELECT battle_id,winner,loser,finished FROM battle_results WHERE voided=0 ORDER BY finished,battle_id').all();
+ const ratings=showdownRatings(battles.results);
+ const profiles=await env.DB.prepare('SELECT users.* FROM users WHERE banned=0 AND suspended_until<=?'+(friendId?' AND '+friendFilter('users'):'')).bind(now,...friendParams).all();
+ const ranked=profiles.results.filter(r=>ratings.has(r.id)).map(r=>({...publicUser(r),...ratings.get(r.id)}));
+ ranked.sort((a,b)=>b.elo-a.elo||(a.username.toLowerCase()<b.username.toLowerCase()?-1:a.username.toLowerCase()>b.username.toLowerCase()?1:0));
+ ranked.forEach((r,i)=>{r.rank=i+1;});
+ const matched=ranked.filter(r=>r.username.toLowerCase().includes(q.toLowerCase()));
+ return json({users:matched.slice(offset,offset+50),top:ranked.slice(0,3),hasMore:matched.length>offset+50});
  }
  if(path==='/poly/replays'){
  const ids=(url.searchParams.get('ids')||'').split(',');if(!ids.length||ids.length>10||ids.some(x=>!/^\d{1,12}$/.test(x)))fail(400,'Invalid replay IDs.');

@@ -25,7 +25,7 @@
   <script type="text/plain" data-site-src="home.js?v=20260918-5"></script>
   <script type="text/plain" data-site-src="popularity.js?v=20260929-owner-banner"></script>
   <script type="text/plain" data-site-src="weekly-track.js?v=20261014-weekly"></script>
-  <script type="text/plain" data-site-src="accounts.js?v=20261017-profile-icons"></script>
+  <script type="text/plain" data-site-src="accounts.js?v=20261022-elo"></script>
   <script type="text/plain" data-site-src="friends.js?v=20261017-profile-icons"></script>
   <script type="text/plain" data-site-src="admin.js?v=20261021-reports"></script>
   <script type="text/plain" data-site-src="messages.js?v=20261021-reports"></script>
@@ -87,8 +87,9 @@
       <a class="launch-tile" href="#account" data-open-account aria-label="Open Account"><span data-account-avatar aria-hidden="true"></span><span>Account</span></a>
     </div>
 <details class="home-updates">
-      <summary><span class="updates-summary-text"><strong>What’s new</strong><span>Game reporting &amp; a simpler Chat</span></span><span class="updates-expand" aria-hidden="true">+</span></summary>
+      <summary><span class="updates-summary-text"><strong>What’s new</strong><span>Showdown Elo &amp; game reporting</span></span><span class="updates-expand" aria-hidden="true">+</span></summary>
       <div class="updates-log">
+        <article><time datetime="2026-10-22">October 22, 2026</time><h2>Climb the Showdown rankings</h2><ul><li>Showdown now ranks players by Elo. Wins increase your rating and losses decrease it, based on your opponent’s rating.</li><li>New players start at 1,000. Existing ratings include saved ranked battles; friendly challenges remain unranked.</li></ul></article>
         <article><time datetime="2026-10-22">October 22, 2026</time><h2>Open Wacky World from our Google Site</h2><ul><li>Direct visits now show a button to the Google Site. Games, Chat, and account features load inside the embed.</li></ul></article>
         <article><time datetime="2026-10-21">October 21, 2026</time><h2>Help us fix broken games</h2><ul><li>Use the flag in the game toolbar to report loading problems, broken gameplay, or controls that don't work.</li><li>Signed-in players can include a short note. Reports are tracked for review, fixes, or removal.</li></ul></article>
         <article><time datetime="2026-10-21">October 21, 2026</time><h2>A simpler Chat sidebar</h2><ul><li>World chat now appears above Friends.</li><li>PokéChat has been removed from the sidebar.</li></ul></article>
@@ -146,7 +147,7 @@
   <section id="leaderboard-panel" aria-labelledby="leaderboard-heading" hidden>
     <header class="leaderboard-heading"><div><p class="eyebrow">The Wacky crowd</p><h1 id="leaderboard-heading">Leaderboard</h1><p>Every player. One shared scoreboard.</p></div><button type="button" id="leaderboard-refresh">Refresh</button></header>
     <div class="leaderboard-audience" role="group" aria-label="Leaderboard players"><button type="button" data-audience="everyone" aria-pressed="true">Everyone</button><button type="button" data-audience="friends" aria-pressed="false">Friends</button></div>
-    <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="polytrack" aria-pressed="true">Poly Track</button><button type="button" data-ranking="playtime" aria-pressed="false">Playtime</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown wins</button></div>
+    <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="polytrack" aria-pressed="true">Poly Track</button><button type="button" data-ranking="playtime" aria-pressed="false">Playtime</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown Elo</button></div>
     <div id="leaderboard-track-label"><span id="track-heading" class="sr-only">Track</span><div class="track-picker"><select id="leaderboard-track" aria-label="Poly Track course" hidden></select><button id="track-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="track-options" aria-labelledby="track-heading track-value"><span id="track-value">Choose a track</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div id="track-options" role="listbox" aria-labelledby="track-heading" hidden></div></div><span id="weekly-track-badge" class="weekly-track-badge" tabindex="0" title="Changes every Monday. Records stay." hidden><span aria-hidden="true">★</span> Track of the week</span><button type="button" id="weekly-track-open" hidden>View featured track</button></div>
     <div id="leaderboard-podium" aria-label="Top three players"></div>
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>

@@ -35,6 +35,8 @@ assert.equal((await req('/battle/results','POST',payload)).status,403);
 assert.equal((await req('/battle/results','POST',payload,signed(payload))).status,200);
 assert.equal((await req('/battle/results','POST',payload,signed(payload))).status,200);
 let board=await req('/leaderboard?mode=showdown');assert.equal(board.data.users[0].wins,1);assert.equal(board.data.users[0].id,aId);assert(!JSON.stringify(board.data).includes('password'));
+assert.deepEqual(board.data.users.map(u=>[u.elo,u.wins,u.losses]),[[1016,1,0],[984,0,1]]);
+assert.equal((await req('/leaderboard?mode=showdown&q=ScoreTwo')).data.users[0].rank,2);
 const challenge={...payload,battleId:'battle-gen9randombattle-2',rated:false};assert.equal((await req('/battle/results','POST',challenge,signed(challenge))).status,400);
 assert.equal((await req('/battle/results','POST',{...payload,winner:payload.loser},signed(payload))).status,403);
 const run={track:tracks[0].id,frames:12345,recording:'eNpjYgABAXUGZAAAA1EAOg',carStyle:''};
@@ -49,7 +51,7 @@ board=await req('/poly/board?track='+run.track+'&user='+aId);assert.equal(board.
 const replayId=board.data.entries[0].id;assert.equal((await req('/poly/replays?ids='+replayId)).data.recordings[0].recording,run.recording);
 assert.equal((await req('/poly/board?track='+tracks[1].id)).data.total,0);
 assert.equal((await req('/poly/replays?ids=bad')).status,400);
-db.prepare('UPDATE users SET banned=1 WHERE id=?').run(aId);assert.equal((await req('/leaderboard?mode=showdown')).data.users.length,0);assert.equal((await req('/poly/board?track='+run.track)).data.total,0);assert.equal((await req('/poly/replays?ids='+replayId)).data.recordings[0],null);assert.equal((await req('/poly/best','POST',run)).status,403);
+db.prepare('UPDATE users SET banned=1 WHERE id=?').run(aId);assert.equal((await req('/leaderboard?mode=showdown')).data.users[0].elo,984);assert.equal((await req('/poly/board?track='+run.track)).data.total,0);assert.equal((await req('/poly/replays?ids='+replayId)).data.recordings[0],null);assert.equal((await req('/poly/best','POST',run)).status,403);
 db.prepare('UPDATE users SET banned=0 WHERE id=?').run(aId);
 assert.equal((await req('/admin/remove-score','POST',{kind:'poly',id:replayId,userId:aId,reason:'test'})).status,403);
 assert.equal((await req('/admin/remove-message','POST',{id:1,reason:'test'})).status,403);
