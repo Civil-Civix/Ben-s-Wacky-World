@@ -342,7 +342,7 @@
   "rooftopsnipers2": "images/noah/rooftopsnipers2.webp",
   "holeio": "images/noah/holeio.webp",
   "wrassling": "images/noah/wrassling.webp",
-  "hillclimbracing": "images/noah/hillclimbracing.webp",
+  "hillclimbracing": "images/imported-20261022/hillclimbracing.png",
   "leveldevil": "images/noah/leveldevil.webp",
   "templerun2": "images/noah/templerun2.webp",
   "boxinglive2": "images/noah/boxinglive2.webp",
@@ -434,5 +434,10 @@
   "reincarnage": "images/reincarnage-20260928.png",
   "chessformers": "images/chessformers.png",
   "counterstrike": "images/counterstrike.png",
-  "tomodachilife2": "images/tomodachilife.png"
+  "tomodachilife2": "images/tomodachilife.png",
+  "toasterball": "images/imported-20261022/toasterball.png",
+  "dudestop": "images/imported-20261022/dudestop.png",
+  "gambonanza": "images/imported-20261022/gambonanza.png",
+  "deeeersimulator": "images/imported-20261022/deeeersimulator.png",
+  "treeshateyou": "images/imported-20261022/treeshateyou.png"
 }

@@ -1,10 +1,51 @@
 [
   {
+    "id": "hillclimbracing",
+    "title": "Hill Climb Racing",
+    "url": "https://civil-civix.github.io/HillClimbRacingPort/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "toasterball",
+    "title": "Toasterball",
+    "url": "library/imported-20261022/toasterball/play.html",
+    "source": "user-upload",
+    "collection": "new"
+  },
+  {
+    "id": "dudestop",
+    "title": "Dude, Stop",
+    "url": "library/imported-20261022/dudestop/play.html",
+    "source": "user-upload",
+    "collection": "new"
+  },
+  {
+    "id": "gambonanza",
+    "title": "Gambonanza",
+    "url": "https://civil-civix.github.io/Gambonanza-Port/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "deeeersimulator",
+    "title": "DEEEER Simulator",
+    "url": "https://civil-civix.github.io/DEEEER-Simulator-Port/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "treeshateyou",
+    "title": "Trees Hate You",
+    "url": "https://civil-civix.github.io/Trees-Hate-You/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
     "id": "pokemonshowdown",
     "title": "Pokémon Showdown",
     "url": "https://bens-pokemon.129-146-183-45.sslip.io/profile-battle.html",
     "source": "external",
-    "collection": "new",
     "online": true
   },
   {
@@ -101,8 +142,7 @@
     "id": "yohohoio",
     "title": "YoHoHo.io",
     "url": "library/imported-20260928/yohohoio/index.html",
-    "source": "user-upload",
-    "collection": "new"
+    "source": "user-upload"
   },
   {
     "id": "totallyaccuratebattlesimulator",
@@ -240,8 +280,7 @@
     "id": "cheeseroll",
     "title": "Cheese Rolling",
     "url": "https://tarotben67-ops.github.io/CHESSESEW/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "cleggycar",
@@ -1975,8 +2014,7 @@
     "id": "flappybird",
     "title": "Flappy Bird",
     "url": "library/seraph-games/flappy/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "recoil",
@@ -2045,12 +2083,6 @@
     "source": "noah"
   },
   {
-    "id": "hillclimbracing",
-    "title": "Hillclimb Racing",
-    "url": "library/noah/games/226.html",
-    "source": "noah"
-  },
-  {
     "id": "leveldevil",
     "title": "Level Devil",
     "url": "library/noah/games/225.html",
@@ -2096,8 +2128,7 @@
     "id": "stickmanhook",
     "title": "Stickman Hook",
     "url": "library/seraph-games/stickmanhook/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "riorex",
@@ -2163,8 +2194,7 @@
     "id": "snowrider3d",
     "title": "Snow Rider 3D",
     "url": "library/seraph-games/snowrider3d/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "gladihoppers",
@@ -2309,8 +2339,7 @@
     "id": "chromedino",
     "title": "Dino Game",
     "url": "library/seraph-games/dinogame/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "dodgeball",
@@ -2503,113 +2532,97 @@
     "id": "gangbeasts",
     "title": "Gang Beasts",
     "url": "https://civil-civix.github.io/GangBeast-WebPort/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "superflight",
     "title": "Superflight",
     "url": "https://civil-civix.github.io/superflight-webport/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "slope",
     "title": "Slope",
     "url": "library/seraph-games/slope/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "tunnelrush",
     "title": "Tunnel Rush",
     "url": "library/seraph-games/tunnelrush/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "majorasmask",
     "title": "The Legend of Zelda: Majora's Mask",
     "url": "library/seraph-games/majorasmask/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "dadish",
     "title": "Dadish 1",
     "url": "library/seraph-games/dadish/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "dadish2",
     "title": "Dadish 2",
     "url": "library/seraph-games/dadish2/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "dadish3",
     "title": "Dadish 3",
     "url": "library/seraph-games/dadish3/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "deathrun3d",
     "title": "Death Run 3D",
     "url": "library/seraph-games/deathrun3d/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "stack",
     "title": "Stack",
     "url": "library/seraph-games/stack/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "colorswitch",
     "title": "Color Switch",
     "url": "library/seraph-games/colorswitch/index.html",
-    "source": "seraph",
-    "collection": "new"
+    "source": "seraph"
   },
   {
     "id": "reincarnage",
     "title": "Reincarnage",
     "url": "https://tarotben67-ops.github.io/Rein/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "boilnoodles",
     "title": "Boil Noodles at Night",
     "url": "library/imported-20260928/boilnoodles/index.html",
-    "source": "user-upload",
-    "collection": "new"
+    "source": "user-upload"
   },
   {
     "id": "rimworld",
     "title": "RimWorld",
     "url": "https://civil-civix.github.io/Rim-world/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "chessformers",
     "title": "Chessformer",
     "url": "library/imported-20260928/chessformers/chessformers.html",
-    "source": "user-upload",
-    "collection": "new"
+    "source": "user-upload"
   },
   {
     "id": "swordbattle",
     "title": "Sword Battle",
     "url": "https://wacky-sword-battle-play.onrender.com/",
     "source": "external",
-    "collection": "new",
     "online": true
   },
   {
@@ -2617,7 +2630,6 @@
     "title": "Among Us",
     "url": "https://civil-civix.github.io/AmongUsPort/",
     "source": "external",
-    "collection": "new",
     "online": true
   },
   {
@@ -2625,14 +2637,12 @@
     "title": "Counter-Strike",
     "url": "https://civil-civix.github.io/Global-Strike/",
     "source": "external",
-    "collection": "new",
     "online": true
   },
   {
     "id": "tomodachilife2",
     "title": "Tomodachi Life 2",
     "url": "https://civil-civix.github.io/Azahar-Web/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   }
 ]
