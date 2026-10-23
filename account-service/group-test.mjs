@@ -3,7 +3,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {chat} from './chat.mjs';
 const db=new DatabaseSync(':memory:');
-for(const file of ['schema.sql','chat-schema.sql','group-schema.sql','public-rooms.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
+for(const file of ['schema.sql','chat-schema.sql','group-schema.sql','public-rooms.sql','chat-notifications.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
 const DB={prepare(sql){const make=(args=[])=>({bind(...a){return make(a)},async first(){return db.prepare(sql).get(...args)||null},async all(){return {results:db.prepare(sql).all(...args)}},async run(){return {meta:db.prepare(sql).run(...args)}}});return make()},async batch(items){db.exec('BEGIN');try{const result=[];for(const s of items)result.push(await s.run());db.exec('COMMIT');return result}catch(e){db.exec('ROLLBACK');throw e}}};
 for(const id of ['a','b','c','outsider'])db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created) VALUES(?,?,?,?,?,?)').run(id,id,id,'s','h',1);
 let now=Date.now(),sequence=0;

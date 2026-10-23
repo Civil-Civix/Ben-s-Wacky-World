@@ -1,6 +1,28 @@
 // Authentication and origin checks run in worker.mjs before this handler.
 export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
- const path=url.pathname;
+ let path=url.pathname;
+ const guest=!me;
+ if(guest){
+  if(request.method!=='GET'||(path!=='/chat/public'&&!/^\/chat\/public\/photos\/\d+$/.test(path)))fail(401,'Please log in.');
+  if(url.searchParams.has('to'))fail(403,'Only World chat is public.');
+  path=path.replace('/chat/public/photos/','/chat/photos/').replace('/chat/public','/chat/messages');
+ }
+ const notices=async()=>{
+  const result=await env.DB.prepare(`SELECT m.id,m.text,u.username,m.group_id,g.name AS group_name,m.recipient,m.sender,m.mentions_everyone,
+   CASE WHEN p.sender=? THEN 1 ELSE 0 END AS reply
+   FROM chat_messages m JOIN users u ON u.id=m.sender
+   LEFT JOIN chat_messages p ON p.id=m.reply_to AND p.expires>?
+   LEFT JOIN chat_groups g ON g.id=m.group_id
+   LEFT JOIN chat_group_members gm ON gm.group_id=m.group_id AND gm.user_id=?
+   LEFT JOIN chat_reads dr ON dr.user_id=? AND dr.peer_id=m.sender
+   LEFT JOIN chat_room_reads rr ON rr.user_id=? AND rr.room=m.room
+   WHERE m.expires>? AND m.sender<>? AND m.created>=? AND (p.sender=? OR m.mentions_everyone=1)
+   AND ((m.group_id IS NOT NULL AND gm.user_id IS NOT NULL AND m.id>gm.last_id)
+    OR (m.group_id IS NULL AND m.recipient=? AND m.id>COALESCE(dr.last_id,0))
+    OR (m.group_id IS NULL AND m.recipient IS NULL AND m.room='world' AND m.id>COALESCE(rr.last_id,0)))
+   ORDER BY m.id DESC LIMIT 100`).bind(me.id,now,me.id,me.id,me.id,now,me.id,me.created,me.id,me.id).all();
+  return result.results.map(r=>({id:r.id,text:r.text,username:r.username,kind:r.reply?'reply':'everyone',to:r.group_id?'group:'+r.group_id:r.recipient?r.sender:'room:world',name:r.group_name||(r.recipient?r.username:'World chat')}));
+ };
  const person=u=>({id:u.id,username:u.username,avatarVersion:u.avatar_version,owner:!!u.owner,roles:JSON.parse(u.roles||'[]'),status:u.presence==='offline'||!(u.last_seen>now-90000)?'offline':u.presence||'online'});
  const member=async id=>typeof id==='string'&&await env.DB.prepare('SELECT 1 FROM chat_group_members WHERE group_id=? AND user_id=?').bind(id,me.id).first();
  if(path==='/chat/groups'&&request.method==='GET'){
@@ -31,6 +53,7 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  }
  if(path.startsWith('/chat/photos/')&&request.method==='GET'){
   const id=Number(path.slice('/chat/photos/'.length));if(!Number.isSafeInteger(id)||id<1)fail(404,'Photo unavailable.');
+  if(guest){const row=await env.DB.prepare("SELECT photo,expires FROM chat_messages WHERE id=? AND expires>? AND group_id IS NULL AND recipient IS NULL AND room='world'").bind(id,now).first();if(!row?.photo)fail(404,'Photo unavailable.');return json({photo:row.photo,expires:row.expires});}
   const row=await env.DB.prepare('SELECT photo,expires FROM chat_messages WHERE id=? AND expires>? AND ((group_id IS NULL AND (recipient IS NULL OR sender=? OR recipient=?)) OR EXISTS(SELECT 1 FROM chat_group_members gm WHERE gm.group_id=chat_messages.group_id AND gm.user_id=?))').bind(id,now,me.id,me.id,me.id).first();
   if(!row?.photo)fail(404,'Photo unavailable.');return json({photo:row.photo,expires:row.expires});
  }
@@ -38,11 +61,18 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
   const rows=await env.DB.prepare(`SELECT m.sender,count(*) AS count FROM chat_messages m LEFT JOIN chat_reads r ON r.user_id=? AND r.peer_id=m.sender WHERE m.group_id IS NULL AND m.recipient=? AND m.expires>? AND m.id>COALESCE(r.last_id,0) GROUP BY m.sender`).bind(me.id,me.id,now).all();
   const groups=await env.DB.prepare("SELECT 'group:'||m.group_id AS sender,COUNT(*) AS count FROM chat_messages m JOIN chat_group_members gm ON gm.group_id=m.group_id AND gm.user_id=? WHERE m.sender<>? AND m.expires>? AND m.id>gm.last_id GROUP BY m.group_id").bind(me.id,me.id,now).all();
   rows.results.push(...groups.results);
-  return json({count:rows.results.reduce((n,r)=>n+r.count,0),conversations:rows.results});
+  const notifications=await notices(),world=notifications.filter(n=>n.to==='room:world').length;
+  if(world)rows.results.push({sender:'room:world',count:world});
+  return json({count:rows.results.reduce((n,r)=>n+r.count,0),conversations:rows.results,notifications});
  }
  if(path==='/chat/read'&&request.method==='POST'){
   const data=await body(request);
   if(typeof data.to!=='string'||!Number.isSafeInteger(data.through)||data.through<1)fail(400,'Invalid read receipt.');
+  if(data.to==='room:world'){
+   const message=await env.DB.prepare("SELECT id FROM chat_messages WHERE id=? AND group_id IS NULL AND recipient IS NULL AND room='world' AND expires>?").bind(data.through,now).first();
+   if(!message)fail(400,'Message unavailable.');
+   await env.DB.prepare('INSERT INTO chat_room_reads(user_id,room,last_id) VALUES(?,?,?) ON CONFLICT(user_id,room) DO UPDATE SET last_id=MAX(chat_room_reads.last_id,excluded.last_id)').bind(me.id,'world',data.through).run();return json({ok:true});
+  }
   if(data.to.startsWith('group:')){
    const group=data.to.slice(6);if(!await member(group))fail(404,'Group unavailable.');
    const row=await env.DB.prepare('SELECT id FROM chat_messages WHERE id=? AND group_id=? AND expires>?').bind(data.through,group,now).first();if(!row)fail(400,'Message unavailable.');
@@ -73,6 +103,9 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  if(request.method==='POST'){
   if(me.muted_until>now)fail(403,'You are muted until '+new Date(me.muted_until).toISOString()+'.');
   if(typeof data.text!=='string'||data.text.length>1000||(!data.text.trim()&&!data.photo))fail(400,'Write a message or attach a photo.');
+  const everyone=/(^|[^a-z0-9_])@everyone(?![a-z0-9_])/i.test(data.text);
+  if(everyone&&!me.owner)fail(403,'Only admins can use @everyone.');
+  if(everyone&&to!==null)fail(400,'Use @everyone in World chat or a group.');
   let photo=null;
   if(data.photo!=null){
    if(typeof data.photo!=='string'||data.photo.length>100000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(data.photo)||!validJPEG(Buffer.from(data.photo.split(',')[1],'base64'),960))fail(400,'Use a JPEG photo under 960 pixels and 75 KB.');
@@ -88,8 +121,8 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
    const allowed=parent&&(group!==null?parent.group_id===group:parent.group_id===null&&(to===null?parent.recipient===null&&parent.room===room:((parent.sender===me.id&&parent.recipient===to)||(parent.sender===to&&parent.recipient===me.id))));
    if(!allowed)fail(400,'That message is unavailable in this conversation.');
   }
-  const result=await env.DB.prepare(`INSERT INTO chat_messages(sender,recipient,text,created,expires,client_id,reply_to,photo,group_id,room)
-   SELECT ?,?,?,?,?,?,?,?,?,? WHERE (? IS NULL OR EXISTS(SELECT 1 FROM chat_group_members WHERE group_id=? AND user_id=?)) AND NOT EXISTS(SELECT 1 FROM chat_messages WHERE sender=? AND created>?)`).bind(me.id,to,data.text.trim()||'Photo',now,now+86400000,data.clientId,replyId,photo,group,room,group,group,me.id,me.id,now-2000).run();
+  const result=await env.DB.prepare(`INSERT INTO chat_messages(sender,recipient,text,created,expires,client_id,reply_to,photo,group_id,room,mentions_everyone)
+   SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE (? IS NULL OR EXISTS(SELECT 1 FROM chat_group_members WHERE group_id=? AND user_id=?)) AND NOT EXISTS(SELECT 1 FROM chat_messages WHERE sender=? AND created>?)`).bind(me.id,to,data.text.trim()||'Photo',now,now+86400000,data.clientId,replyId,photo,group,room,everyone?1:0,group,group,me.id,me.id,now-2000).run();
   if(!result.meta.changes)fail(429,'Wait two seconds before sending another message.');
   return json({ok:true},201);
  }

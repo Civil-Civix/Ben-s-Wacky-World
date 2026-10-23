@@ -17,7 +17,7 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261022-new-badge">
+  <link rel="stylesheet" href="styles.css?v=20261023-chat-notifications">
   <script defer src="games.js?v=20261022-new-games"></script>
   <script defer src="home-quotes.js?v=20260918-random"></script>
   <script defer src="home.js?v=20260918-5"></script>
@@ -26,7 +26,7 @@
   <script defer src="accounts.js?v=20261022-elo"></script>
   <script defer src="friends.js?v=20261017-profile-icons"></script>
   <script defer src="admin.js?v=20261021-reports"></script>
-  <script defer src="messages.js?v=20261021-reports"></script>
+  <script defer src="messages.js?v=20261023-chat-notifications"></script>
   <script defer src="ai-files.js?v=20260929-upload"></script>
   <script defer src="ai.js?v=20261014-ai-scroll"></script>
   <script defer src="game-downloads.js?v=20261022-dual-host"></script>
@@ -63,7 +63,7 @@
   </section>
   <section id="messages-panel" hidden aria-labelledby="messages-title">
     <header><h1 id="messages-title">Chat</h1><p>Messages disappear after 24 hours.</p></header>
-    <p id="messages-login" hidden><a href="#account" data-open-account>Log in to chat</a> with your existing account.</p>
+    <p id="messages-login" hidden><a href="#account" data-open-account>Log in to send messages</a>. You can read World chat without an account.</p>
     <div id="messages-layout" hidden>
       <nav class="messages-people" aria-label="Conversations"><h2 class="messages-sidebar-title">Messages</h2><button id="messages-public" type="button">World chat</button><button type="button" class="friends-open" data-open-friends>Friends <span class="friend-count" hidden></span></button><div class="messages-section-heading"><span>Group chats</span><button id="messages-new-group" type="button" aria-label="Create a group chat" title="Create a group chat">+</button></div><div id="messages-groups"></div><div class="messages-section-heading"><span>Direct messages</span><button id="messages-new" type="button" aria-label="Start a direct message" title="Start a direct message">+</button></div><div id="messages-people"></div><div class="chat-self"><div id="chat-self-avatar"></div><div class="chat-self-info"><strong id="chat-self-name"></strong><label class="sr-only" for="chat-presence">Your chat status</label><button type="button" class="status-trigger" data-status-target="chat-presence" aria-haspopup="dialog"><i class="status-dot" data-status="online" aria-hidden="true"></i><span>Online</span><b aria-hidden="true">⌄</b></button><select id="chat-presence" hidden><option value="online">Online</option><option value="offline">Appear offline</option><option value="dnd">Do not disturb</option></select></div><p id="chat-presence-note" role="status"></p></div></nav>
       <div class="messages-room"><div class="messages-room-heading"><h2 id="messages-room-title">World chat</h2><button id="messages-leave-group" type="button" hidden>Leave group</button></div><button id="messages-older" type="button" hidden>Older messages</button><div id="messages-log" aria-label="Messages" tabindex="0"></div><p id="messages-status" role="status"></p><div id="messages-reply" hidden><span id="messages-reply-text"></span><button id="messages-reply-cancel" type="button" aria-label="Cancel reply">×</button></div><div id="messages-attachment" hidden><img alt="Photo preview"><span></span><button id="messages-remove-photo" type="button" aria-label="Remove photo">×</button></div><input id="messages-photo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><form id="messages-form"><button id="messages-attach" type="button" aria-label="Attach photo" title="Attach photo">+</button><button id="messages-emoji" type="button" aria-label="Choose emoji" title="Choose emoji" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1 3 4 3 4-3 4-3"/><circle cx="9" cy="9" r=".6"/><circle cx="15" cy="9" r=".6"/></svg></button><label class="sr-only" for="messages-text">Message</label><textarea id="messages-text" rows="2" maxlength="1000" placeholder="Write a message…"></textarea><button type="submit" aria-label="Send message" title="Send message"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z M22 2 11 13"/></svg></button></form></div>
@@ -85,8 +85,9 @@
       <a class="launch-tile" href="#account" data-open-account aria-label="Open Account"><span data-account-avatar aria-hidden="true"></span><span>Account</span></a>
     </div>
 <details class="home-updates">
-      <summary><span class="updates-summary-text"><strong>What’s new</strong><span>Six new games &amp; Showdown Elo</span></span><span class="updates-expand" aria-hidden="true">+</span></summary>
+      <summary><span class="updates-summary-text"><strong>What’s new</strong><span>Guest chat &amp; reply notifications</span></span><span class="updates-expand" aria-hidden="true">+</span></summary>
       <div class="updates-log">
+        <article><time datetime="2026-10-23">October 23, 2026</time><h2>Stay in the conversation</h2><ul><li>Read World chat without an account. Sign in to send messages, join groups, or use direct messages.</li><li>Replies and admin @everyone mentions now show a chat badge and an in-site pop-up. Do not disturb keeps notifications quiet.</li></ul></article>
         <article><time datetime="2026-10-22">October 22, 2026</time><h2>Six games to try</h2><ul><li>The New games lineup now features Hill Climb Racing, Toasterball, Dude, Stop, Gambonanza, DEEEER Simulator, and Trees Hate You.</li><li>Previous additions are still available in All games. A dot beside New lets you know when a fresh lineup is ready; opening New clears it.</li></ul></article>
         <article><time datetime="2026-10-22">October 22, 2026</time><h2>Climb the Showdown rankings</h2><ul><li>Showdown now ranks players by Elo. Wins increase your rating and losses decrease it, based on your opponent’s rating.</li><li>New players start at 1,000. Existing ratings include saved ranked battles; friendly challenges remain unranked.</li></ul></article>
         <article><time datetime="2026-10-22">October 22, 2026</time><h2>Open Wacky World anywhere</h2><ul><li>The site works directly through GitHub Pages again, as well as inside the Google Sites embed.</li></ul></article>
