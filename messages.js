@@ -7,23 +7,6 @@
  let selectedPerson=null,attachment=null,photoReading=false,photoGeneration=0,searchGeneration=0;
  const picker=$('#dm-picker'),groupPicker=$('#group-picker'),emojiPicker=$('#emoji-picker');
  const groupMembers=new Map();let groupSearchToken=0,groupSearchTimer,groupCreating=false;
- let toastTimer;
- const toast=document.createElement('aside');toast.id='chat-notification';toast.hidden=true;toast.setAttribute('aria-label','Chat notification');
- const toastText=document.createElement('span'),toastOpen=document.createElement('button'),toastClose=document.createElement('button');
- toastText.setAttribute('role','status');toastOpen.type=toastClose.type='button';toastOpen.textContent='Open chat';toastClose.textContent='×';toastClose.setAttribute('aria-label','Dismiss notification');toast.append(toastText,toastOpen,toastClose);document.body.append(toast);
- toastClose.onclick=()=>{toast.hidden=true;};
- let noticeHigh=0,noticeUser=null;
- function notify(items){
-  const id=account.user?.id;if(!id)return;
-  if(id!==noticeUser){noticeUser=id;try{noticeHigh=Number(localStorage.getItem('wacky-chat-notice:'+id))||0;}catch{noticeHigh=0;}}
-  const fresh=items.filter(n=>n.id>noticeHigh);if(!fresh.length)return;
-  noticeHigh=Math.max(...fresh.map(n=>n.id));try{localStorage.setItem('wacky-chat-notice:'+id,String(noticeHigh));}catch{}
-  const n=fresh[0],peer=to||'room:world';
-  if(account.user.presence==='dnd'||(active()&&peer===n.to&&$('#messages-log').scrollHeight-$('#messages-log').scrollTop-$('#messages-log').clientHeight<90))return;
-  toastText.textContent=n.username+(n.kind==='reply'?' replied to you':' mentioned @everyone')+' in '+n.name+': '+n.text.slice(0,140);
-  toastOpen.onclick=()=>{toast.hidden=true;const target=n.to==='room:world'?null:{id:n.to,username:n.name,group:n.to.startsWith('group:')};if(location.hash==='#messages')choose(target);else{location.hash='messages';window.addEventListener('hashchange',()=>choose(target),{once:true});}};
-  toast.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast.hidden=true;},10000);
- }
  const isPublic=()=>!to||to==='room:poke';
  const isGroup=()=>!!to?.startsWith('group:');
  function groupButton(group){const b=document.createElement('button');b.type='button';b.dataset.dmPerson='group:'+group.id;b.textContent=group.name+' · '+group.count;b.setAttribute('aria-pressed',String(to===b.dataset.dmPerson));b.addEventListener('click',()=>choose({id:b.dataset.dmPerson,username:group.name,group:true}));return b;}
@@ -87,10 +70,10 @@
  }
  async function refreshUnread(){
   const id=account.user?.id||null;
-  if(id!==unreadIdentity){unreadIdentity=id;unreadCounts.clear();readThrough.clear();toast.hidden=true;noticeUser=null;paintUnread();}
+  if(id!==unreadIdentity){unreadIdentity=id;unreadCounts.clear();readThrough.clear();paintUnread();}
   if(!id||document.hidden||unreadBusy)return;
   unreadBusy=true;
-  try{const data=await account.api('/chat/unread');if(account.user?.id===id){unreadCounts=new Map(data.conversations.map(c=>[c.sender,c.count]));paintUnread();notify(data.notifications||[]);}}catch(e){if(e.status===401){unreadCounts.clear();paintUnread();}}finally{unreadBusy=false;}
+  try{const data=await account.api('/chat/unread');if(account.user?.id===id){unreadCounts=new Map(data.conversations.map(c=>[c.sender,c.count]));paintUnread();}}catch(e){if(e.status===401){unreadCounts.clear();paintUnread();}}finally{unreadBusy=false;}
  }
  function scheduleUnread(){clearTimeout(unreadTimer);void refreshUnread().finally(()=>{if(account.user&&!document.hidden)unreadTimer=setTimeout(scheduleUnread,10000);});}
  async function markVisible(){
@@ -159,7 +142,7 @@
   $('#messages-login').hidden=!!id;$('#messages-layout').hidden=false;$('#messages-form').hidden=!id;
   $('#messages-panel').classList.toggle('messages-guest',!id);
   $('#messages-public').dataset.dmPerson='room:world';
-  if(!id||account.user?.presence==='dnd'){toast.hidden=true;paintUnread();}
+  if(!id||account.user?.presence==='dnd'){paintUnread();}
   if(active()){void refresh();void people();timer=setTimeout(tick,2000);}
  }
  async function tick(){if(!active())return;const token=generation;paint();await refresh();if(token!==generation)return;if(Date.now()-lastPeople>30000)await people();if(active()&&token===generation)timer=setTimeout(tick,2000);}

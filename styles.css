@@ -708,13 +708,12 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 /* Guest chat keeps only the public room visible. */
 .messages-guest .messages-people > :not(.messages-sidebar-title):not(#messages-public){display:none}
 #messages-form[hidden]{display:none}
-#chat-notification{position:fixed;right:20px;bottom:20px;z-index:1500;display:flex;align-items:center;gap:12px;max-width:min(460px,calc(100vw - 40px));padding:16px;border:1px solid var(--accent);border-radius:16px;background:var(--surface);color:var(--text);box-shadow:0 12px 40px #0005}
-#chat-notification[hidden]{display:none}
-#chat-notification span{flex:1;min-width:0;overflow-wrap:anywhere;font-size:14px;line-height:1.5}
-#chat-notification button{flex-shrink:0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer}
-@media(max-width:520px){#chat-notification{right:12px;bottom:12px;max-width:calc(100vw - 24px);gap:8px;padding:12px}}
 #messages-panel.messages-guest .messages-people{display:none}
 #messages-panel.messages-guest #messages-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .messages-guest .message-reply-button{display:none}
 #messages-login{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 16px}
 #messages-login a{color:var(--accent-text,var(--accent))}
+
+#messages-public{position:relative;padding-inline:28px!important}
+#messages-public .dm-person-unread{position:absolute;right:5px;bottom:3px;margin:0;min-width:16px;height:16px;box-sizing:border-box;padding:0 4px;display:grid;place-items:center;font-size:10px;line-height:1;border-radius:999px;pointer-events:none}
+#messages-public .dm-person-unread[hidden]{display:none}
