@@ -60,11 +60,12 @@ export default {
  async fetch(request,env){
   const url=new URL(request.url),path=url.pathname,now=Date.now();
   const origin=request.headers.get('Origin');
+  const allowedOrigin=origin===env.ALLOWED_ORIGIN||(Boolean(env.ADDITIONAL_ALLOWED_ORIGIN)&&origin===env.ADDITIONAL_ALLOWED_ORIGIN);
   const publicGet=url.searchParams.get('scope')!=='friends'&&request.method==='GET'&&(path==='/game-boosts'||path==='/leaderboard'||['/poly/tracks','/poly/board','/poly/replays'].includes(path)||path.startsWith('/profiles/')||path.startsWith('/avatars/'));
-  const cors=origin===env.ALLOWED_ORIGIN?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Vary':'Origin'}:publicGet?{'Access-Control-Allow-Origin':'*'}:{};
+  const cors=allowedOrigin?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Vary':'Origin'}:publicGet?{'Access-Control-Allow-Origin':'*'}:{};
   const json=(data,status=200,extra={})=>Response.json(data,{status,headers:{...cors,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});
   try{
-   if(!['/battle/verify','/battle/results'].includes(path)&&!publicGet&&origin!==env.ALLOWED_ORIGIN)fail(403,'Origin not allowed.');
+   if(!['/battle/verify','/battle/results'].includes(path)&&!publicGet&&!allowedOrigin)fail(403,'Origin not allowed.');
    if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'GET, POST, PATCH, DELETE, PUT, OPTIONS','Access-Control-Allow-Headers':'Content-Type, X-Wacky-Client','Access-Control-Max-Age':'86400'}});
    if(request.method!=='GET'&&request.headers.get('X-Wacky-Client')!=='1')fail(403,'Invalid client.');
    const ip=digest(now.toString().slice(0,5)+':'+(request.headers.get('CF-Connecting-IP')||'unknown'));

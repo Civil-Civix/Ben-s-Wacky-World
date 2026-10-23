@@ -1,6 +1,6 @@
 // Only accept appearance preferences from the direct, trusted site parent.
 (() => {
-  const parents=['https://civil-civix.github.io','http://127.0.0.1:4173'];
+  const parents=['https://civil-civix.github.io','https://bens-wacky-world.pages.dev','http://127.0.0.1:4173'];
   const palettes={
     obsidian:['#050505','#0c0c0f','#131316','#29272f','#a39fac'],
     midnight:['#101017','#191921','#202029','#35353f','#aaaabb'],

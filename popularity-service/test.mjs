@@ -16,16 +16,17 @@ const DB={
  },
  async batch(items){return Promise.all(items.map(item=>item.run()));}
 };
-const env={DB,ALLOWED_ORIGIN:'https://civil-civix.github.io',HASH_SECRET:'test-secret-only',
+const env={DB,ALLOWED_ORIGIN:'https://civil-civix.github.io',ADDITIONAL_ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',HASH_SECRET:'test-secret-only',
  IP_LIMIT:{limit:async()=>({success:true})},VISITOR_LIMIT:{limit:async()=>({success:true})}};
 const ctx={waitUntil:promise=>promise};
 const browser=crypto.randomUUID();
 const body={gameId:ids[0],visitorId:browser};
 function request(path='/play',value=body,options={}) {
+ const {headers:extraHeaders={},...init}=options;
  return new Request('https://example.test'+path,{
   method:path==='/popular'?'GET':'POST',
-  headers:{Origin:env.ALLOWED_ORIGIN,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.1',...options.headers},
-  ...(path!=='/popular'?{body:JSON.stringify(value)}:{}),...options
+  headers:{Origin:env.ALLOWED_ORIGIN,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.1',...extraHeaders},
+  ...(path!=='/popular'?{body:JSON.stringify(value)}:{}),...init
  });
 }
 async function send(req,bindings=env){return worker.fetch(req,bindings,ctx);}
@@ -40,7 +41,13 @@ assert.equal(sql.prepare('SELECT visitor_hash FROM visits LIMIT 1').get().visito
 assert.equal((await send(request('/play',{...body,gameId:'invalid-app'}))).status,400);
 assert.equal((await send(request('/play',{...body,visitorId:'not-a-uuid'}))).status,400);
 assert.equal((await send(new Request('https://example.test/play',{method:'POST',headers:{Origin:'https://evil.test'}}))).status,403);
+const pagesWrite=await send(request('/play',body,{headers:{Origin:env.ADDITIONAL_ALLOWED_ORIGIN}}));
+assert.equal(pagesWrite.status,200);
+assert.equal(pagesWrite.headers.get('Access-Control-Allow-Origin'),env.ADDITIONAL_ALLOWED_ORIGIN);
+assert.equal(pagesWrite.headers.get('Vary'),'Origin');
+assert.equal((await send(new Request('https://example.test/play',{method:'OPTIONS',headers:{Origin:'https://bens-wacky-world.pages.dev.evil.test'}}))).status,403);
 assert.equal((await send(new Request('https://example.test/play',{method:'OPTIONS',headers:{Origin:env.ALLOWED_ORIGIN}}))).status,204);
+assert.equal((await send(new Request('https://example.test/play',{method:'OPTIONS',headers:{Origin:env.ADDITIONAL_ALLOWED_ORIGIN}}))).status,204);
 assert.equal((await send(request('/play',{...body,padding:'x'.repeat(1025)}))).status,413);
 assert.equal((await send(request('/play',body,{body:'{'}))).status,400);
 const before=statements;

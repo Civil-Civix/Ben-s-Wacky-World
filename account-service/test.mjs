@@ -15,11 +15,11 @@ const DB={
  }};wrapper.all=()=>wrapper.bind().all();return wrapper;},
  async batch(items){return Promise.all(items.map(s=>s.run()));}
 };
-const yes={limit:async()=>({success:true})},env={DB,PASSWORD_PEPPER:'test-only-pepper',ALLOWED_ORIGIN:'https://civil-civix.github.io',REQUEST_LIMIT:yes,AUTH_LIMIT:yes,LOGIN_LIMIT:yes};
+const yes={limit:async()=>({success:true})},env={DB,PASSWORD_PEPPER:'test-only-pepper',ALLOWED_ORIGIN:'https://civil-civix.github.io',ADDITIONAL_ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',REQUEST_LIMIT:yes,AUTH_LIMIT:yes,LOGIN_LIMIT:yes};
 let cookie='';
 async function req(path,method='GET',data,extra={},bindings=env){
  const response=await worker.fetch(new Request('https://accounts.test'+path,{method,headers:{Origin:env.ALLOWED_ORIGIN,'X-Wacky-Client':'1',Cookie:cookie,'Content-Type':'application/json',...extra},...(data!==undefined?{body:JSON.stringify(data)}:{})}),bindings);
- return {status:response.status,data:await response.json(),cookie:response.headers.get('Set-Cookie')};
+ return {status:response.status,data:await response.json(),cookie:response.headers.get('Set-Cookie'),headers:response.headers};
 }
 assert.equal((await req('/me')).status,401);
 const registered=await req('/signup','POST',{username:'PlayerOne',password:'test-password-only',noRecovery:true});
@@ -28,6 +28,12 @@ assert(registered.cookie.includes('HttpOnly'));assert(registered.cookie.includes
 assert(!JSON.stringify(registered.data).includes('password'));
 const id=registered.data.user.id;
 assert.equal((await req('/me')).data.user.username,'PlayerOne');
+const pagesMe=await req('/me','GET',undefined,{Origin:env.ADDITIONAL_ALLOWED_ORIGIN});
+assert.equal(pagesMe.status,200);
+assert.equal(pagesMe.headers.get('Access-Control-Allow-Origin'),env.ADDITIONAL_ALLOWED_ORIGIN);
+assert.equal(pagesMe.headers.get('Access-Control-Allow-Credentials'),'true');
+assert.equal(pagesMe.headers.get('Vary'),'Origin');
+assert.equal((await req('/me','GET',undefined,{Origin:'https://bens-wacky-world.pages.dev.evil.test'})).status,403);
 assert.equal((await req('/signup','POST',{username:'playerone',password:'another-password',noRecovery:true})).status,409);
 assert.equal((await req('/signup','POST',{username:'WackyBen',password:'another-password',noRecovery:true})).status,409);
 assert.equal((await req('/login','POST',{username:'PlayerOne',password:'incorrect'})).status,401);

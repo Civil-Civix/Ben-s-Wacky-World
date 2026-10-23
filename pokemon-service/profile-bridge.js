@@ -1,15 +1,15 @@
 (() => {
- const parentOrigin='https://civil-civix.github.io',names=new Map(),requested=new Set();let challenge='',name='',invite=null,lastAction=0,requestAt=0,authPending=false,wasNamed=false;
+ const parentOrigins=['https://civil-civix.github.io','https://bens-wacky-world.pages.dev'],names=new Map(),requested=new Set();let challenge='',name='',invite=null,lastAction=0,requestAt=0,authPending=false,wasNamed=false;
  const panel=document.createElement('p');panel.id='bww-profile-state';panel.setAttribute('role','status');panel.textContent='Sign in through Ben’s Wacky World to battle with your profile.';
  const state=text=>{panel.textContent=text;};
- const send=(type,data={})=>{if(parent!==window)parent.postMessage({type,...data},parentOrigin);};
+ const send=(type,data={})=>{if(parent!==window)for(const origin of parentOrigins)parent.postMessage({type,...data},origin);};
  function restoreMenu(){
   const menu=document.querySelector('.bww-menu');
   if(menu&&!menu.contains(panel)){const heading=menu.querySelector('h1');if(heading)heading.after(panel);else menu.prepend(panel);}
   const footer=menu?.querySelector('.bww-footer>span');if(footer)footer.textContent='Uses your Ben’s Wacky World profile. Profile invitations use 6v6 Random Battle.';
   const help=menu?.querySelector('.bww-help');if(help)help.textContent='Your Ben’s Wacky World profile is connected. Choose a format, build a team, or challenge another player. Profile invitations use 6v6 Random Battle.';
  }
- window.addEventListener('message',e=>{if(e.source!==parent||e.origin!==parentOrigin)return;const d=e.data;
+ window.addEventListener('message',e=>{if(e.source!==parent||!parentOrigins.includes(e.origin))return;const d=e.data;
   if(d?.type==='bww:auth'&&typeof d.token==='string'&&/^bww[a-f0-9]{32}$/.test(d.name)){authPending=false;name=d.name;names.set(name,d.displayName);invite=d.invite;PS.connection.send('|/trn '+name+',0,BWW:'+d.token);state('Connecting as '+d.displayName+'...');}
   if(d?.type==='bww:auth-error'){authPending=false;state(d.message||'Please reopen the game.');}
   if(d?.type==='bww:names'&&Array.isArray(d.players))for(const p of d.players)if(/^bww[a-f0-9]{32}$/.test(p.name)&&typeof p.displayName==='string')names.set(p.name,p.displayName);

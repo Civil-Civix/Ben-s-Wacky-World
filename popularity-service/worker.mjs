@@ -39,9 +39,11 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const isRead = url.pathname === '/popular';
+    const origin = request.headers.get('Origin');
+    const allowedOrigin = origin === env.ALLOWED_ORIGIN || (Boolean(env.ADDITIONAL_ALLOWED_ORIGIN) && origin === env.ADDITIONAL_ALLOWED_ORIGIN);
     const cors = isRead ? {'Access-Control-Allow-Origin':'*'} :
-      request.headers.get('Origin') === env.ALLOWED_ORIGIN ?
-      {'Access-Control-Allow-Origin':env.ALLOWED_ORIGIN,'Vary':'Origin'} : {};
+      allowedOrigin ?
+      {'Access-Control-Allow-Origin':origin,'Vary':'Origin'} : {};
     if (!isRead && url.pathname !== '/play') return json({error:'Not found'},404);
     if (!isRead && !cors['Access-Control-Allow-Origin']) return json({error:'Origin not allowed'},403);
     if (request.method === 'OPTIONS') return new Response(null,{status:204,headers:{...cors,

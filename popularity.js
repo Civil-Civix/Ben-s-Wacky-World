@@ -38,7 +38,7 @@
   }
   async function track(game) {
     // Local previews and non-game sections never contribute to real rankings.
-    if(location.origin!=='https://civil-civix.github.io'||game.kind==='app'||game.kind==='stream'||!validIds.has(game.id))return;
+    if(!['https://civil-civix.github.io','https://bens-wacky-world.pages.dev'].includes(location.origin)||game.kind==='app'||game.kind==='stream'||!validIds.has(game.id))return;
     const day=new Date().toISOString().slice(0,10);
     if(seen.day!==day)seen={day,ids:[]};
     if(seen.ids.includes(game.id)||pending.has(game.id))return;
