@@ -344,7 +344,7 @@ fetch('./game-images.json?v=20261022-new-games').then(response => {
 
 window.WackyBattleGame={open(){const game=games.find(g=>g.id==='pokemonshowdown');if(game)openGame(game);},close:closeGame};
 
-window.WackyPolyGame={watch(id){if(!Number.isSafeInteger(id)||id<1)return;const game=games.find(g=>g.id==='polytrack');if(game){const url=new URL(game.url);url.searchParams.set('bwwReplay',id);openGame({...game,url:url.href});}}};
+window.WackyPolyGame={watch(id){if(!Number.isSafeInteger(id)||id<1)return;const game=games.find(g=>g.id==='polytrack');if(game){const url=new URL(game.url,document.baseURI);url.searchParams.set('bwwReplay',id);openGame({...game,url:url.href});}}};
 
 document.querySelector('.nav-instagram').addEventListener('click',event=>{event.preventDefault();document.querySelector('#instagram-dialog').showModal();});
 
