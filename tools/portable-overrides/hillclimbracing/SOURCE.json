@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Civil-Civix/HillClimbRacingPort",
+  "revision": "43c3f7537369a4f89d8c81f53f7bfc472d738459",
+  "path": "",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

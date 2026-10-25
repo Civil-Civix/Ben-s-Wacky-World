@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Civil-Civix/DEEEER-Simulator-Port",
+  "revision": "65828a1b161e7517f5dfe19753559d48efc15159",
+  "path": "",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

@@ -28,5 +28,35 @@
     "title": "Five Nights at Epstein",
     "url": "library/noah/games/2019.html",
     "source": "noah"
+  },
+  {
+    "id": "littlebigplanet",
+    "title": "Little Big Planet",
+    "url": "library/noah/games/351.html",
+    "source": "noah"
+  },
+  {
+    "id": "stationsaturn",
+    "title": "Station Saturn",
+    "url": "library/noah/games/144.html",
+    "source": "noah"
+  },
+  {
+    "id": "legobatman2",
+    "title": "Lego Batman 2",
+    "url": "library/noah/games/108.html",
+    "source": "noah"
+  },
+  {
+    "id": "repo",
+    "title": "R.E.P.O",
+    "url": "library/noah/games/34.html",
+    "source": "noah"
+  },
+  {
+    "id": "driftboss",
+    "title": "Drift Boss",
+    "url": "library/noah/games/196.html",
+    "source": "noah"
   }
 ]

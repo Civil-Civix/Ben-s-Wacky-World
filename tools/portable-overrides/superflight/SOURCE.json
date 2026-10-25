@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Civil-Civix/superflight-webport",
+  "revision": "74740feb058535c011725f95b84f6a51de96fe23",
+  "path": "",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

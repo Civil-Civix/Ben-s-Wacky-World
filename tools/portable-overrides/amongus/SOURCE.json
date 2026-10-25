@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Civil-Civix/AmongUsPort",
+  "revision": "7b6881186a73a3165ad7274b5e5dd31e3290cbfc",
+  "path": "",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

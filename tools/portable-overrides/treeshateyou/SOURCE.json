@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Civil-Civix/Trees-Hate-You",
+  "revision": "119c1d26bee0e785fe3b3d95c77514485a23a4ea",
+  "path": "",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

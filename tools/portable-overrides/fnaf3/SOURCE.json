@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/genizy/fnaf",
+  "revision": "7be68ae3d98c60a9a62b4164c2d61a416a0beb1a",
+  "path": "3/",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

@@ -94,3 +94,12 @@ test('fails if one of the expected external game entries disappears', async t =>
   const root = await fixture(t, games);
   await assert.rejects(buildPages({ root }), /Missing expected fallback game entries: mindustry/);
 });
+
+
+test('excludes the portable game pack from the live upload', async t => {
+ const root = await fixture(t);
+ await mkdir(path.join(root, 'library/bundled/example'), {recursive:true});
+ await writeFile(path.join(root, 'library/bundled/example/index.html'), 'portable only');
+ const result = await buildPages({root});
+ await assert.rejects(readFile(path.join(result.output, 'library/bundled/example/index.html')), {code:'ENOENT'});
+});

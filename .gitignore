@@ -13,3 +13,7 @@ node_modules/
 
 # Local staging for the private multiplayer server (never publish to Pages).
 .pokemon-runtime/
+
+# Downloaded portable game assets and generated portable site.
+/library/bundled/
+/.portable/

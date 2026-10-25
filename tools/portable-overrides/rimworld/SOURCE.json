@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/SomeRandomFella/portsandrips",
+  "revision": "67547cbcdb21614540b26405e30cb54085890480",
+  "path": "rimworld/",
+  "imported": "2026-10-24",
+  "changes": "Relative local assets; bundled JSZip for FNAF; existing site ad guard; removed unrelated FNAF redirect snippet."
+}

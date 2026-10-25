@@ -37,6 +37,8 @@ function githubPageUrl(relativeUrl) {
 
 async function copyTree(source, destination, relative = '', skipped = []) {
   for (const entry of await readdir(source, { withFileTypes: true })) {
+    // Portable game assets have their own build; exclude them from the live site.
+    if (relative === 'library' && entry.name === 'bundled') continue;
     const sourcePath = path.join(source, entry.name);
     const childRelative = relative ? `${relative}/${entry.name}` : entry.name;
     const destinationPath = path.join(destination, entry.name);
