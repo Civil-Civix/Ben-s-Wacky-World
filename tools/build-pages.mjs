@@ -1,6 +1,7 @@
 import { cp, lstat, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = '.wrangler/pages-static';
@@ -60,7 +61,7 @@ async function copyTree(source, destination, relative = '', skipped = []) {
   }
 }
 
-export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT) } = {}) {
+export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT), withBundled = false } = {}) {
   root = path.resolve(root);
   outDir = path.resolve(outDir);
   if (outDir !== path.resolve(root, OUTPUT)) {
@@ -87,6 +88,21 @@ export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT)
   }
 
   const skipped = [];
+  let bundledIds = [];
+  if (withBundled) {
+    const validator = path.join(root, 'tools', 'build-portable.mjs');
+    const validation = spawnSync(process.execPath, [validator, '--check'], { cwd: root, encoding: 'utf8' });
+    if (validation.error) throw new Error(`Could not validate the bundled game pack: ${validation.error.message}`);
+    if (validation.status !== 0) {
+      throw new Error(`Bundled game validation failed: ${(validation.stderr || validation.stdout || '').trim()}`);
+    }
+    const manifest = JSON.parse(await readFile(path.join(root, 'tools', 'portable-games.json'), 'utf8'));
+    if (!Array.isArray(manifest) || manifest.length !== 12 || manifest.some(game => !game?.id)) {
+      throw new Error('Expected exactly 12 bundled games in tools/portable-games.json.');
+    }
+    bundledIds = manifest.map(game => game.id);
+    await stat(path.join(root, 'library', 'bundled'));
+  }
   // Only recreate the explicitly configured output directory after verifying its boundary.
   await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
@@ -118,6 +134,11 @@ export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT)
     }
   }
 
+  if (withBundled) {
+    await mkdir(path.join(outDir, 'library', 'bundled'), { recursive: true });
+    await copyTree(path.join(root, 'library', 'bundled'), path.join(outDir, 'library', 'bundled'), 'library/bundled', skipped);
+  }
+
   const externalized = new Set();
   const externalizeGames = games => {
     if (!Array.isArray(games)) throw new Error('Expected a game array in the published catalog.');
@@ -143,13 +164,35 @@ export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT)
   const jsGames = externalizeGames(JSON.parse(gamesJsMatch[1]));
   await writeFile(gamesJsPath, `window.WACKY_GAMES = ${JSON.stringify(jsGames)};\n`, 'utf8');
 
+  if (withBundled) {
+    const rewriteBundled = games => {
+      const found = new Set();
+      for (const game of games) {
+        if (bundledIds.includes(game.id)) {
+          game.url = `library/bundled/${game.id}/index.html`;
+          found.add(game.id);
+        }
+      }
+      const missing = bundledIds.filter(id => !found.has(id));
+      if (missing.length) throw new Error(`Missing expected bundled game entries: ${missing.join(', ')}`);
+      return games;
+    };
+    const games = rewriteBundled(JSON.parse(await readFile(gamesPath, 'utf8')));
+    await writeFile(gamesPath, `${JSON.stringify(games, null, 2)}\n`, 'utf8');
+    const jsText = await readFile(gamesJsPath, 'utf8');
+    const jsMatch = jsText.match(/^window\.WACKY_GAMES\s*=\s*(\[[\s\S]*\])\s*;?\s*$/);
+    if (!jsMatch) throw new Error('Could not parse the window.WACKY_GAMES assignment in games.js.');
+    const jsGames = rewriteBundled(JSON.parse(jsMatch[1]));
+    await writeFile(gamesJsPath, `window.WACKY_GAMES = ${JSON.stringify(jsGames)};\n`, 'utf8');
+  }
+
   const unexpected = [...OVERSIZE_PATHS].filter(file => !skipped.includes(file));
   if (unexpected.length) throw new Error(`Expected oversize source files were not found: ${unexpected.join(', ')}`);
   return { output: outDir, skipped, externalized: [...externalized] };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  buildPages().then(result => {
+  buildPages({ withBundled: process.argv.includes('--with-bundled') }).then(result => {
     console.log(`Cloudflare Pages static output: ${result.output}`);
     console.log(`Copied allowlisted assets; externalized ${result.externalized.length} games; skipped ${result.skipped.length} oversized files.`);
   }).catch(error => {

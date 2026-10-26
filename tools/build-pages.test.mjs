@@ -103,3 +103,53 @@ test('excludes the portable game pack from the live upload', async t => {
  const result = await buildPages({root});
  await assert.rejects(readFile(path.join(result.output, 'library/bundled/example/index.html')), {code:'ENOENT'});
 });
+
+async function addPortableFixture(root, { omitFile = false, omitCatalogGame = null } = {}) {
+  const ids = Array.from({ length: 12 }, (_, i) => `portable-${i + 1}`);
+  const games = { ...gameUrls };
+  for (const id of ids) games[id] = `https://example.test/${id}`;
+  if (omitCatalogGame) delete games[omitCatalogGame];
+  const entries = Object.entries(games).map(([id, url]) => ({ id, url }));
+  await writeFile(path.join(root, 'games.json'), JSON.stringify(entries));
+  await writeFile(path.join(root, 'games.js'), `window.WACKY_GAMES = ${JSON.stringify(entries)};`);
+  await mkdir(path.join(root, 'tools'), { recursive: true });
+  await writeFile(path.join(root, 'tools', 'portable-games.json'), JSON.stringify(ids.map(id => ({ id }))));
+  await writeFile(path.join(root, 'tools', 'build-portable.mjs'), omitFile
+    ? "console.error('Missing library/bundled/portable-1/asset.bin'); process.exit(1);"
+    : 'process.exit(0);');
+  for (const id of ids) {
+    const dir = path.join(root, 'library', 'bundled', id);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), `<h1>${id}</h1>`);
+  }
+  return ids;
+}
+
+test('opt-in packages the 12 bundled games and rewrites both full catalogs', async t => {
+  const root = await fixture(t);
+  const ids = await addPortableFixture(root);
+  const result = await buildPages({ root, withBundled: true });
+  const jsonGames = JSON.parse(await readFile(path.join(result.output, 'games.json'), 'utf8'));
+  const jsText = await readFile(path.join(result.output, 'games.js'), 'utf8');
+  const jsGames = JSON.parse(jsText.match(/^window\.WACKY_GAMES = (.*);\n$/)[1]);
+  assert.equal(jsonGames.length, Object.keys(gameUrls).length + ids.length);
+  assert.equal(jsGames.length, jsonGames.length);
+  for (const id of ids) {
+    assert.equal(jsonGames.find(game => game.id === id).url, `library/bundled/${id}/index.html`);
+    assert.equal(jsGames.find(game => game.id === id).url, `library/bundled/${id}/index.html`);
+    assert.equal(await readFile(path.join(result.output, 'library', 'bundled', id, 'index.html'), 'utf8'), `<h1>${id}</h1>`);
+  }
+  assert.equal(jsonGames.find(game => game.id === 'mindustry').url, `https://civil-civix.github.io/Ben-s-Wacky-World/${gameUrls.mindustry.split('/').map(encodeURIComponent).join('/')}`);
+});
+
+test('opt-in fails when portable validation reports missing assets', async t => {
+  const root = await fixture(t);
+  await addPortableFixture(root, { omitFile: true });
+  await assert.rejects(buildPages({ root, withBundled: true }), /Bundled game validation failed: Missing library\/bundled\/portable-1\/asset\.bin/);
+});
+
+test('opt-in fails when a bundled game is missing from a published catalog', async t => {
+  const root = await fixture(t);
+  await addPortableFixture(root, { omitCatalogGame: 'portable-12' });
+  await assert.rejects(buildPages({ root, withBundled: true }), /Missing expected bundled game entries: portable-12/);
+});
