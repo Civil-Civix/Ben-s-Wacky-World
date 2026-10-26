@@ -10,7 +10,8 @@
   "preview_urls": false,
   "vars": {
     "ALLOWED_ORIGIN": "https://civil-civix.github.io",
-    "ADDITIONAL_ALLOWED_ORIGIN": "https://bens-wacky-world.pages.dev"
+    "ADDITIONAL_ALLOWED_ORIGIN": "https://bens-wacky-world.pages.dev",
+    "GITLAB_ALLOWED_ORIGIN": "https://wacky-project-84f094.gitlab.io"
   },
   "d1_databases": [
     {

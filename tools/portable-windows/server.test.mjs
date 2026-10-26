@@ -1,0 +1,23 @@
+import http from 'node:http';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createServer} from './server.mjs';
+test('local server streams assets, supports ranges, and rejects unsafe requests',async t=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'bww-server-'));
+ await writeFile(path.join(root,'index.html'),'hello world');
+ await writeFile(path.join(root,'test.wasm'),'0123456789');
+ const server=await createServer(root);await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(root,{recursive:true});});
+ const url='http://127.0.0.1:'+server.address().port;
+ assert.equal(await (await fetch(url)).text(),'hello world');
+ let res=await fetch(url+'/test.wasm',{headers:{Range:'bytes=2-4'}});assert.equal(res.status,206);assert.equal(res.headers.get('content-type'),'application/wasm');assert.equal(await res.text(),'234');
+ res=await fetch(url+'/test.wasm',{method:'HEAD'});assert.equal(res.headers.get('content-length'),'10');assert.equal(await res.text(),'');
+ assert.equal((await fetch(url+'/test.wasm',{headers:{Range:'bytes=20-'}})).status,416);
+ assert.equal((await fetch(url+'/%2e%2e%2foutside.txt')).status,403);
+ assert.equal(await new Promise(resolve=>http.get(url,{headers:{Host:'evil.example'}},r=>{r.resume();resolve(r.statusCode);})),403);
+ assert.equal((await fetch(url,{method:'POST'})).status,405);
+ assert.equal((await fetch(url+'/missing')).status,404);
+});

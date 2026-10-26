@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+if ! grep -Fq 'https://wacky-project-84f094.gitlab.io' /etc/caddy/Caddyfile; then
+ echo 'Deploy the updated Caddyfile.selfhosted first so GitLab Pages is an allowed Showdown frame ancestor.' >&2
+ exit 1
+fi
 root=/opt/showdown/pokemon-showdown
 client=/home/ubuntu/pokemon-showdown-client-master/play.pokemonshowdown.com
 site=/srv/bww-client-v1

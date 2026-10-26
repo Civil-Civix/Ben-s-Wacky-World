@@ -15,7 +15,7 @@ const DB={
  }};wrapper.all=()=>wrapper.bind().all();return wrapper;},
  async batch(items){return Promise.all(items.map(s=>s.run()));}
 };
-const yes={limit:async()=>({success:true})},env={DB,PASSWORD_PEPPER:'test-only-pepper',ALLOWED_ORIGIN:'https://civil-civix.github.io',ADDITIONAL_ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',REQUEST_LIMIT:yes,AUTH_LIMIT:yes,LOGIN_LIMIT:yes};
+const yes={limit:async()=>({success:true})},env={DB,PASSWORD_PEPPER:'test-only-pepper',ALLOWED_ORIGIN:'https://civil-civix.github.io',ADDITIONAL_ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',GITLAB_ALLOWED_ORIGIN:'https://wacky-project-84f094.gitlab.io',REQUEST_LIMIT:yes,AUTH_LIMIT:yes,LOGIN_LIMIT:yes};
 let cookie='';
 async function req(path,method='GET',data,extra={},bindings=env){
  const response=await worker.fetch(new Request('https://accounts.test'+path,{method,headers:{Origin:env.ALLOWED_ORIGIN,'X-Wacky-Client':'1',Cookie:cookie,'Content-Type':'application/json',...extra},...(data!==undefined?{body:JSON.stringify(data)}:{})}),bindings);
@@ -33,6 +33,12 @@ assert.equal(pagesMe.status,200);
 assert.equal(pagesMe.headers.get('Access-Control-Allow-Origin'),env.ADDITIONAL_ALLOWED_ORIGIN);
 assert.equal(pagesMe.headers.get('Access-Control-Allow-Credentials'),'true');
 assert.equal(pagesMe.headers.get('Vary'),'Origin');
+const gitlabMe=await req('/me','GET',undefined,{Origin:env.GITLAB_ALLOWED_ORIGIN});
+assert.equal(gitlabMe.status,200);
+assert.equal(gitlabMe.headers.get('Access-Control-Allow-Origin'),env.GITLAB_ALLOWED_ORIGIN);
+assert.equal(gitlabMe.headers.get('Access-Control-Allow-Credentials'),'true');
+assert.equal((await req('/me','GET',undefined,{Origin:env.GITLAB_ALLOWED_ORIGIN+'.evil.test'})).status,403);
+assert.equal((await req('/me','GET',undefined,{Origin:'null'})).status,403);
 assert.equal((await req('/me','GET',undefined,{Origin:'https://bens-wacky-world.pages.dev.evil.test'})).status,403);
 assert.equal((await req('/signup','POST',{username:'playerone',password:'another-password',noRecovery:true})).status,409);
 assert.equal((await req('/signup','POST',{username:'WackyBen',password:'another-password',noRecovery:true})).status,409);

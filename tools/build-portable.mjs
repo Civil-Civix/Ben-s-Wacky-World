@@ -46,4 +46,4 @@ await writeFile(path.join(output,'games.json'),JSON.stringify(games,null,2)+'\n'
 await writeFile(path.join(output,'games.js'),'window.WACKY_GAMES = '+JSON.stringify(games)+';\n');
 let html=await readFile(path.join(output,'index.html'),'utf8');html=html.replace('Guest chat &amp; reply notifications','Portable game pack preview');await writeFile(path.join(output,'index.html'),html);
 console.log('Built '+games.length+' locally bundled games at '+output);
-console.log('This is the game-pack preview. Online services and a platform-specific launcher are not packaged yet.');
+console.log('Game-pack preview built. Run node tools/package-windows.mjs to add the Windows browser launcher. Online service integration remains unfinished.');

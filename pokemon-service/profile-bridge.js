@@ -1,5 +1,5 @@
 (() => {
- const parentOrigins=['https://civil-civix.github.io','https://bens-wacky-world.pages.dev'],names=new Map(),requested=new Set();let challenge='',name='',invite=null,lastAction=0,requestAt=0,authPending=false,wasNamed=false;
+ const parentOrigins=['https://civil-civix.github.io','https://bens-wacky-world.pages.dev','https://wacky-project-84f094.gitlab.io'],names=new Map(),requested=new Set();let challenge='',name='',invite=null,lastAction=0,requestAt=0,authPending=false,wasNamed=false;
  const panel=document.createElement('p');panel.id='bww-profile-state';panel.setAttribute('role','status');panel.textContent='Sign in through Ben’s Wacky World to battle with your profile.';
  const state=text=>{panel.textContent=text;};
  const send=(type,data={})=>{if(parent!==window)for(const origin of parentOrigins)parent.postMessage({type,...data},origin);};

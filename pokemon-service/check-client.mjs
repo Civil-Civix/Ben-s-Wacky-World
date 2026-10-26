@@ -14,7 +14,7 @@ for (const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)) {
 }
 assert.match(home.headers.get('content-security-policy'), /frame-src 'none'/);
 const ancestors = home.headers.get('content-security-policy').match(/frame-ancestors ([^;]+)/)?.[1].split(/\s+/);
-for (const host of ['https://civil-civix.github.io','https://sites.google.com','https://www.gstatic.com']) {
+for (const host of ['https://civil-civix.github.io','https://bens-wacky-world.pages.dev','https://wacky-project-84f094.gitlab.io','https://sites.google.com','https://www.gstatic.com']) {
   assert.ok(ancestors?.includes(host),`Missing embedding ancestor: ${host}`);
 }
 for (const file of ['/config/config.js','/js/client-main.js','/data/pokedex.js','/data/teambuilder-tables.js','/sprites/gen5/pikachu.png','/sprites/ani/pikachu.gif','/sprites/pokemonicons-sheet.png','/LICENSE']) {

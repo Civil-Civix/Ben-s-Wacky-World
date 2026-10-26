@@ -1,0 +1,19 @@
+BEN'S WACKY WORLD - WINDOWS BROWSER PREVIEW
+
+Double-click "Start Bens Wacky World.cmd". Play in your normal browser.
+Keep the launcher window open. Press Q then Enter there to stop the server.
+No install or administrator access is needed. Everything is served only to this PC.
+
+Keep this entire folder together; do not move only the launcher.
+Use the same browser and its normal profile each time. Settings and game saves
+are stored by the browser, not beside the launcher. Clearing site data or using
+private browsing may erase them. Moving this folder does not move your saves
+to another PC. Do not run two copies at once.
+
+This preview includes 13 local games. Multiplayer and accounts, chat, AI and
+shared leaderboards require online services and are not yet release-tested
+from this portable version. Startup was tested; not every level or save system.
+
+To reopen manually: http://127.0.0.1:48763/
+The full pack is about 3 GB. Updates currently require replacing the supplied
+files while the launcher is closed. There is no automatic updater yet.

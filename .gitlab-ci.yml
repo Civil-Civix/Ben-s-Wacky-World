@@ -1,0 +1,22 @@
+# GitHub remains the source of truth. Each run publishes its current main branch.
+image: node:24-bookworm
+
+stages:
+  - deploy
+
+publish-site:
+  stage: deploy
+  resource_group: production-pages
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - git clone --depth 1 --branch main https://github.com/Civil-Civix/Ben-s-Wacky-World.git site-source
+    - node --test site-source/tools/build-pages.test.mjs
+    - node site-source/tools/build-pages.mjs
+    - mv site-source/.wrangler/pages-static public
+    - test -f public/index.html
+  pages:
+    publish: public
+    expire_in: never
+  artifacts:
+    expire_in: 1 day

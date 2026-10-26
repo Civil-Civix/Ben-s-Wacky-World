@@ -1,0 +1,37 @@
+import {Script} from 'node:vm';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>readFile(path.join(root,p),'utf8');
+const base='https://raw.githubusercontent.com/genizy/fnaf/7be68ae3d98c60a9a62b4164c2d61a416a0beb1a/1/';
+const inline=s=>s.replace(/<\/script/gi,'<\\/script');
+let html=await read('tools/portable-overrides/fnaf1/index.html');
+const css=await read('library/bundled/fnaf1/style.css');
+const zip=await read('tools/portable-overrides/shared/jszip.min.js');
+const runtime=await read('library/bundled/fnaf1/Runtime.js');
+let main=await read('tools/portable-overrides/fnaf1/main.js');
+main=main.replace("script.src = 'Runtime.js';",()=> 'script.src = URL.createObjectURL(new Blob(['+JSON.stringify(runtime)+'], {type:"application/javascript"}));');
+if(!main.includes('new Runtime("MMFCanvas", runtimecanvas);'))throw Error('Runtime startup template changed');
+main=main.replace('new Runtime("MMFCanvas", runtimecanvas);', 'try { new Runtime("MMFCanvas", runtimecanvas); document.documentElement.dataset.launchState="started"; document.getElementById("progress-container").style.display="none"; } catch(e) { window.showLaunchError(); }');
+main=main.replace("document.getElementById('progress-container').style.display = 'none';", '    script.onerror = window.showLaunchError;');
+main=main.replace('    wedone();','    return wedone();');
+main=main.replace(/\}\);\s*$/, '}).catch(window.showLaunchError);');
+html=html.replace('<head>','<head><base href="'+base+'">');
+html=html.replace('<link rel="stylesheet" type="text/css" href="style.css"/>',()=>'<style>'+css+'</style>');
+html=html.replace(new RegExp('<title>.*?</title>'),"<title>Ben's Wacky World - HTML preview</title>");
+html=html.replace('<body>',`<body><style>
+#launch-panel{position:fixed;inset:0;z-index:10000;background:#0b0b10;color:#eee;display:grid;place-items:center;font:16px system-ui;padding:24px;box-sizing:border-box}#launch-panel section{max-width:520px;border:1px solid #333;border-radius:20px;padding:32px;text-align:left}#launch-panel p{font:16px/1.6 system-ui;color:#bbb}#play{background:#ff4242;color:white;border:0;border-radius:10px;padding:14px 24px;font:700 16px system-ui;cursor:pointer}canvas{max-width:100vw;max-height:100vh;object-fit:contain}#launch-error{position:fixed;inset:20% 10%;background:#191920;color:white;padding:30px;z-index:11000;border-radius:16px;font:16px system-ui}#launch-error[hidden]{display:none}
+</style><div id="launch-panel"><section><h1 style="color:white;font:700 28px system-ui">Ben's Wacky World</h1><h2>HTML launcher preview</h2><p>Five Nights at Freddy's 1<br>Downloads about 167 MB when you press Play. Internet required. No installation or local server.</p><button id="play">Play FNAF 1</button><p>Single-game compatibility test. Saves have not yet been verified. Game files: genizy/fnaf on GitHub.</p></section></div><div id="launch-error" role="alert" hidden></div>`);
+html=html.replace('<script src="../shared/jszip.min.js"></script>',()=>'<script>'+inline(zip)+'</script>');
+const boot=`window.showLaunchError=()=>{const e=document.getElementById('launch-error');e.textContent='The game could not finish loading. Check your internet connection and whether the game host is accessible, then reopen this file to retry.';e.hidden=false;document.documentElement.dataset.launchState='error';};
+window.addEventListener('unhandledrejection',window.showLaunchError);
+window.addEventListener('error',window.showLaunchError);
+document.getElementById('play').addEventListener('click',()=>{document.getElementById('launch-panel').style.display='none';`+main+'},{once:true});';
+html=html.replace('<script src="main.js"></script>',()=>'<script>'+inline(boot)+'</script>');
+await mkdir(path.join(root,'.portable'),{recursive:true});
+const output=path.join(root,'.portable/Bens Wacky World HTML Preview.html');
+if(/<script[^>]+src=/i.test(html)||html.includes("script.src = 'Runtime.js';"))throw Error('External script remained in HTML launcher');
+for(const match of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi))new Script(match[1]);
+if(!html.includes('script.onerror = window.showLaunchError;'))throw Error('Runtime failure handler missing');
+await writeFile(output,html);console.log(output);

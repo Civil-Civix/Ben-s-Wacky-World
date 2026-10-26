@@ -60,7 +60,9 @@ export default {
  async fetch(request,env){
   const url=new URL(request.url),path=url.pathname,now=Date.now();
   const origin=request.headers.get('Origin');
-  const allowedOrigin=origin===env.ALLOWED_ORIGIN||(Boolean(env.ADDITIONAL_ALLOWED_ORIGIN)&&origin===env.ADDITIONAL_ALLOWED_ORIGIN);
+  const allowedOrigin=origin===env.ALLOWED_ORIGIN||
+   (Boolean(env.ADDITIONAL_ALLOWED_ORIGIN)&&origin===env.ADDITIONAL_ALLOWED_ORIGIN)||
+   (Boolean(env.GITLAB_ALLOWED_ORIGIN)&&origin===env.GITLAB_ALLOWED_ORIGIN);
   const publicGet=url.searchParams.get('scope')!=='friends'&&request.method==='GET'&&(path==='/game-boosts'||path==='/leaderboard'||['/poly/tracks','/poly/board','/poly/replays'].includes(path)||path.startsWith('/profiles/')||path.startsWith('/avatars/'));
   const cors=allowedOrigin?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Vary':'Origin'}:publicGet?{'Access-Control-Allow-Origin':'*'}:{};
   const json=(data,status=200,extra={})=>Response.json(data,{status,headers:{...cors,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});

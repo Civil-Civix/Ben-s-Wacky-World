@@ -1,0 +1,15 @@
+import {cp,mkdir,writeFile,readFile,access} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+if(process.platform!=='win32'||process.arch!=='x64')throw Error('Package using Windows x64 Node.');
+const output=path.join(root,'.portable');
+await access(path.join(output,'site/index.html'));
+await mkdir(path.join(output,'runtime'),{recursive:true});
+await cp(process.execPath,path.join(output,'runtime/node.exe'));
+const license=await fetch('https://raw.githubusercontent.com/nodejs/node/'+process.version+'/LICENSE');
+if(!license.ok)throw Error('Could not obtain the matching Node license');
+await writeFile(path.join(output,'runtime/LICENSE.txt'),await license.text());
+for(const name of ['server.mjs','Start Bens Wacky World.cmd','READ ME.txt'])await cp(path.join(root,'tools/portable-windows',name),path.join(output,name));
+await writeFile(path.join(output,'runtime/version.txt'),process.version+' Windows x64\n');
+console.log('Windows browser preview: '+output);

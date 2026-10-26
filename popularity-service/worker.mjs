@@ -40,7 +40,9 @@ export default {
     const url = new URL(request.url);
     const isRead = url.pathname === '/popular';
     const origin = request.headers.get('Origin');
-    const allowedOrigin = origin === env.ALLOWED_ORIGIN || (Boolean(env.ADDITIONAL_ALLOWED_ORIGIN) && origin === env.ADDITIONAL_ALLOWED_ORIGIN);
+    const allowedOrigin = origin === env.ALLOWED_ORIGIN ||
+      (Boolean(env.ADDITIONAL_ALLOWED_ORIGIN) && origin === env.ADDITIONAL_ALLOWED_ORIGIN) ||
+      (Boolean(env.GITLAB_ALLOWED_ORIGIN) && origin === env.GITLAB_ALLOWED_ORIGIN);
     const cors = isRead ? {'Access-Control-Allow-Origin':'*'} :
       allowedOrigin ?
       {'Access-Control-Allow-Origin':origin,'Vary':'Origin'} : {};
