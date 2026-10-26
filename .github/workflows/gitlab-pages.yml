@@ -1,0 +1,30 @@
+name: Update GitLab Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: gitlab-pages-sync
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Publish the latest site on GitLab
+        env:
+          GITLAB_TRIGGER_TOKEN: ${{ secrets.GITLAB_PAGES_TRIGGER_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$GITLAB_TRIGGER_TOKEN" ]; then
+            echo "::error::GITLAB_PAGES_TRIGGER_TOKEN has not been configured."
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 60 \
+            --request POST \
+            --form-string "token=$GITLAB_TRIGGER_TOKEN" \
+            --form-string "ref=main" \
+            --output "$RUNNER_TEMP/gitlab-pipeline.json" \
+            https://gitlab.com/api/v4/projects/87986460/trigger/pipeline
+          node -e 'const p=JSON.parse(require("fs").readFileSync(process.env.RUNNER_TEMP+"/gitlab-pipeline.json","utf8")); if(!p.id)process.exit(1); console.log("GitLab publishing started: "+p.web_url)'
