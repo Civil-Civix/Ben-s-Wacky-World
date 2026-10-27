@@ -17,3 +17,5 @@ Browser harness: Desktop/COdex/online-launcher-qa.cjs (Cloudflare URL); GitLab w
 Sign-in, session persistence, private chat, AI, game-save persistence and the entire game catalog have NOT been validated in this launcher. Existing browser restrictions on third-party/partitioned cookies can affect sign-in. The loading timeout offers retry/direct-site access; cross-origin frame load events cannot reliably distinguish all server error pages.
 
 Next check: user signs into their account in the launcher; do not infer authentication success from opening the account dialog. This supersedes the local-server Windows launcher for the user's online-only use case; prior portable experiments remain available and unchanged.
+
+Cloudflare's bundled-game build serves twelve imported games from its own library/bundled paths. The existing Cloudflare launcher automatically uses that version after deployment; no new HTML download is needed. GitLab retains the smaller independent build and previous game links, by user choice on October 26, 2026.

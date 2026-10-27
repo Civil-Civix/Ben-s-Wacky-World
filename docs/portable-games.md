@@ -40,3 +40,21 @@ The HTML embeds CSS, JSZip and the game runtime. The approximately 167 MB game a
 Actual file:// browser testing in Edge reached the FNAF menu and Night 1. The game wrote its freddy localStorage key, and that value survived reopening the file. A synthetic storage key also survived reload. This does not prove completing a night and restoring later progress, browser restart persistence, other browsers or managed school devices. Moving/renaming the HTML can change file-origin storage behavior. Failed downloads display a readable error. The runtime script has a separate error handler; build checks validate embedded JavaScript and reject leftover external script tags.
 
 Evidence: .audit-evidence/html-launcher.png and html-launcher-playing.png. Follow-up: test Continue after real saved progress, then select production asset hosting and expand the catalog. Chat, accounts and multiplayer have not been integrated into this HTML preview.
+
+## Cloudflare online game integration (October 26, 2026)
+
+Cloudflare now uses the opt-in build command:
+
+```
+node tools/build-portable.mjs --download --download-only && node tools/build-pages.mjs --with-bundled
+```
+
+The downloader fetches pinned source revisions during deployment, verifies their Git blob hashes, and applies the reviewed local launcher overrides. The deployed package includes all twelve games under `library/bundled/`; both output catalogs use those relative paths while retaining the full catalog. Players fetch the game assets from Wacky World's own Cloudflare hostname when launching a game. The HTML launcher remains online-required and does not contain 3 GB of assets itself.
+
+GitLab remains on the default, smaller build with its existing game links, by explicit user choice. It does not depend on Cloudflare for these imports. Source assets remain ignored by Git, and no paid storage was added. New site builds download the pinned pack again; updating an imported game requires updating its manifest revision/hashes and verifying overrides.
+
+The opt-in builder checks pack integrity and rejects oversized unexpected files or missing catalog entries. `node --test tools/build-pages.test.mjs` covers both default and bundled output. Deployment must pass browser startup checks before promotion to production.
+
+Validation: all twelve bundled games reached menus or first-run prompts locally with external HTTP blocked and no missing local assets or uncaught JavaScript errors. This verifies startup, not every level or multiplayer. RimWorld displays its upstream Steam-unavailable Ignore/Quit prompt; Gambonanza logs its upstream missing Steam integration. Preview deployment a861a9b5-9ad0-449e-b3ed-4970c94190e8 successfully published the full pack.
+
+Hosted preview QA: all twelve game entry pages returned HTTP 200. Superflight and FNAF 1 reached their menus through the normal site player with same-origin game frames and no missing game files, external game assets, or uncaught JavaScript errors. Preview account API CORS failures are expected for the unapproved preview hostname; production uses its existing allowed hostname.
