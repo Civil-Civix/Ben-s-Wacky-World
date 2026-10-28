@@ -40,12 +40,15 @@
  const dot=document.createElement('i');dot.setAttribute('aria-hidden','true');
  const label=document.createElement('span');label.textContent='Connecting…';
  badge.append(dot,label);panel.prepend(badge);
- const updates=document.querySelector('.home-updates');
+ const updates=document.querySelector('.updates-log');
  if(updates){
-  const entry=document.createElement('section');entry.className='update-entry';
-  const heading=document.createElement('h3');heading.textContent='See who’s here';
-  const text=document.createElement('p');text.textContent='October 28, 2026 · Home now shows how many players are online, including guests.';
-  entry.append(heading,text);updates.querySelector('summary').after(entry);
+  const entry=document.createElement('article');
+  const date=document.createElement('time');date.dateTime='2026-10-28';date.textContent='October 28, 2026';
+  const heading=document.createElement('h2');heading.textContent='See who’s here';
+  const list=document.createElement('ul'),item=document.createElement('li');
+  item.textContent='Home now shows how many players are online, including guests.';
+  list.append(item);entry.append(date,heading,list);updates.prepend(entry);
+  document.querySelector('.updates-summary-text > span').textContent='Live player count';
  }
  const key='wacky-online-browser',stateKey='wacky-online-state';
  let memoryId,busy=false;
