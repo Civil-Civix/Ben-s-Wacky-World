@@ -33,20 +33,23 @@
 // Cloudflare Portable and its hosted site share this anonymous browser count.
 (() => {
  if(location.hostname!=='bens-wacky-world.pages.dev')return;
- const panel=document.querySelector('#home-panel');if(!panel)return;
- const badge=document.createElement('div');badge.className='home-online';
- badge.setAttribute('role','status');badge.setAttribute('aria-live','polite');
- badge.title='Active browsers in the last 2½ minutes, including guests. Multiple tabs count once.';
- const dot=document.createElement('i');dot.setAttribute('aria-hidden','true');
- const label=document.createElement('span');label.textContent='Connecting…';
- badge.append(dot,label);panel.prepend(badge);
+ const badges=[...document.querySelectorAll('#home-panel,#catalog,#leaderboard-panel')].map(panel=>{
+  panel.classList.add('has-online-count');
+  const badge=document.createElement('div');badge.className='home-online';
+  badge.setAttribute('role','status');badge.setAttribute('aria-live','polite');
+  badge.title='Active browsers in the last 2½ minutes, including guests. Multiple tabs count once.';
+  const dot=document.createElement('i');dot.setAttribute('aria-hidden','true');
+  const label=document.createElement('span');label.textContent='Connecting…';
+  badge.append(dot,label);panel.prepend(badge);return {badge,label};
+ });
+ if(!badges.length)return;
  const updates=document.querySelector('.updates-log');
  if(updates){
   const entry=document.createElement('article');
   const date=document.createElement('time');date.dateTime='2026-10-28';date.textContent='October 28, 2026';
   const heading=document.createElement('h2');heading.textContent='See who’s here';
   const list=document.createElement('ul'),item=document.createElement('li');
-  item.textContent='Home now shows how many players are online, including guests.';
+  item.textContent='Home, Games and Leaderboard now show how many players are online, including guests.';
   list.append(item);entry.append(date,heading,list);updates.prepend(entry);
   document.querySelector('.updates-summary-text > span').textContent='Live player count';
  }
@@ -54,9 +57,11 @@
  let memoryId,busy=false;
  function read(){try{return JSON.parse(localStorage.getItem(stateKey));}catch{return null;}}
  function paint(state){
+  for(const {badge,label} of badges){
   if(state&&Number.isSafeInteger(state.online)&&state.online>=0&&Date.now()-state.at<150000){
    label.textContent=state.online.toLocaleString()+' online';badge.dataset.ready='true';
   }else{label.textContent='Online count unavailable';badge.dataset.ready='false';}
+  }
  }
  function visitor(){
   let id;try{id=localStorage.getItem(key);}catch{}

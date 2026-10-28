@@ -722,3 +722,6 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 .home-online{position:absolute;top:16px;right:clamp(18px,3vw,38px);display:flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:12px;line-height:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .home-online i{width:7px;height:7px;flex:none;border-radius:50%;background:currentColor}
 .home-online[data-ready=true] i{background:var(--accent)}
+
+#catalog.has-online-count{position:relative;padding-top:50px}
+#leaderboard-panel.has-online-count{padding-top:64px}
