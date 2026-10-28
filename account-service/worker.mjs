@@ -72,6 +72,17 @@ export default {
    if(request.method!=='GET'&&request.headers.get('X-Wacky-Client')!=='1')fail(403,'Invalid client.');
    const ip=digest(now.toString().slice(0,5)+':'+(request.headers.get('CF-Connecting-IP')||'unknown'));
    if(!(await env.REQUEST_LIMIT.limit({key:ip})).success)fail(429,'Too many requests. Please try again in a minute.');
+   // Anonymous presence deliberately uses the same browser ID before and after login.
+   if(path==='/visitors'&&request.method==='POST'){
+    if(origin!==env.ADDITIONAL_ALLOWED_ORIGIN)fail(403,'Origin not allowed.');
+    const data=await body(request,256);
+    if(typeof data.visitor!=='string'||! /^[a-f0-9]{32}$/.test(data.visitor))fail(400,'Invalid visitor.');
+    const results=await env.DB.batch([
+     env.DB.prepare('INSERT INTO online_visitors(visitor_hash,last_seen) VALUES(?,?) ON CONFLICT(visitor_hash) DO UPDATE SET last_seen=excluded.last_seen WHERE online_visitors.last_seen<?').bind(digest(data.visitor),now,now-45000),
+     env.DB.prepare('SELECT COUNT(*) AS online FROM online_visitors WHERE last_seen>?').bind(now-150000)
+    ]);
+    return json({online:results[1].results[0].online});
+   }
    let friendId=null;if(url.searchParams.get('scope')==='friends'&&['/leaderboard','/poly/board'].includes(path)){const viewer=await session(request,env,now);permitted(viewer,now);friendId=viewer.id;}
    if(path==='/battle/results')return await battleResult({request,env,now,body,fail,json});
    if(request.method==='GET'&&(['/poly/tracks','/poly/board','/poly/replays'].includes(path)||(path==='/leaderboard'&&url.searchParams.get('mode')==='showdown')))return await scoreRead({url,env,now,fail,json,publicUser,friendId});
@@ -177,5 +188,5 @@ export default {
    return json({error:'Account service is temporarily unavailable. Please try again.'},503);
   }
  },
- async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM battle_tickets WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM battle_invites WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM ai_requests WHERE expires<=?').bind(Date.now())]);}
+ async scheduled(controller,env){await env.DB.batch([env.DB.prepare('DELETE FROM online_visitors WHERE last_seen<?').bind(Date.now()-150000),env.DB.prepare('DELETE FROM battle_tickets WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM battle_invites WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM sessions WHERE expires<?').bind(Date.now()),env.DB.prepare('DELETE FROM chat_messages WHERE expires<=?').bind(Date.now()),env.DB.prepare('DELETE FROM ai_requests WHERE expires<=?').bind(Date.now())]);}
 };

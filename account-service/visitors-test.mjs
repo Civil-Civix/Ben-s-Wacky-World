@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import worker from './worker.mjs';
+const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('./visitors-schema.sql',import.meta.url),'utf8'));
+const DB={prepare(sql){return {bind(...args){return {async all(){return {results:db.prepare(sql).all(...args)};}};}};},async batch(items){return Promise.all(items.map(x=>x.all()));}};
+const env={DB,ADDITIONAL_ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',ALLOWED_ORIGIN:'https://civil-civix.github.io',REQUEST_LIMIT:{limit:async()=>({success:true})}};
+const a='a'.repeat(32),b='b'.repeat(32);
+async function pulse(visitor,origin=env.ADDITIONAL_ALLOWED_ORIGIN,headers={}){return worker.fetch(new Request('https://api.test/visitors',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','X-Wacky-Client':'1',...headers},body:JSON.stringify({visitor})}),env);}
+assert.equal((await pulse(a)).status,200);
+assert.equal((await (await pulse(a)).json()).online,1,'multiple tabs/reloads do not add players');
+assert.equal((await (await pulse(a,undefined,{Cookie:'__Host-wacky_session='+ 'c'.repeat(64)})).json()).online,1,'sign-in does not double count browser');
+assert.equal((await (await pulse(b)).json()).online,2,'independent guest counted');
+assert.equal((await pulse('invalid')).status,400);
+assert.equal((await pulse(a,'https://evil.test')).status,403);
+assert.equal((await pulse(a,env.ALLOWED_ORIGIN)).status,403);
+assert.equal((await pulse(a,undefined,{'X-Wacky-Client':'0'})).status,403);
+const rows=db.prepare('SELECT * FROM online_visitors').all();assert.equal(rows.length,2);assert(rows.every(r=>r.visitor_hash.length===64&&r.visitor_hash!==a));
+db.prepare('UPDATE online_visitors SET last_seen=?').run(Date.now()-151000);
+assert.equal((await (await pulse(a)).json()).online,1,'expired players excluded and returning visitor renewed');
+assert(db.prepare('EXPLAIN QUERY PLAN SELECT COUNT(*) FROM online_visitors WHERE last_seen>?').all(0).some(r=>r.detail.includes('online_visitors_seen')));
+console.log('PASS: guests, signed-in continuity, tab deduplication, expiry, origin/client validation, hashed IDs, indexed count');
