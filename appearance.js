@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'midnight',accent:'#FF4242',effect:'halloween',speed:1,amount:1,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};
+  const defaults = {background:'midnight',accent:'#FF4242',effect:'halloween',speed:1,amount:1,snow:true};
   const effects = ['none','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
   const backgrounds = ['midnight','obsidian','slate','mocha','moss','snow'];
   const root = document.documentElement;
@@ -72,7 +72,7 @@
   document.querySelector('#effect-speed').addEventListener('input',event=>{appearance.speed=Number(event.target.value);apply(true);});
   document.querySelector('#effect-amount').addEventListener('input',event=>{appearance.amount=Number(event.target.value);apply(true);});
   document.querySelector('#snow-enabled').addEventListener('change',event=>{appearance.snow=event.target.checked;apply(true);});
-  document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults,snow:!matchMedia('(prefers-reduced-motion: reduce)').matches};apply(true);});
+  document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults};apply(true);});
   window.addEventListener('storage',event=>{if(event.key===key || event.key===null){appearance=read();apply();}});
   document.addEventListener('visibilitychange',()=>{layer.classList.toggle('paused',document.hidden);});
   apply();
