@@ -3,6 +3,8 @@
  const $=s=>document.querySelector(s),account=window.WackyAccount;
  let open=false,to=null,rows=[],generation=0,timer,peopleTimer,busy=false,oldest=null,lastPeople=0,identity=null,replyTo=null;
  let unreadTimer,unreadBusy=false,unreadIdentity=null,unreadCounts=new Map(),readBusy=false,readTimer;
+ let guestRead=0;try{guestRead=Number(localStorage.getItem('wacky-world-guest-read'))||0;}catch{}
+ window.addEventListener('storage',e=>{if(e.key==='wacky-world-guest-read'){guestRead=Number(e.newValue)||0;if(!account.user)void refreshUnread();}});
  const readThrough=new Map(),photoCache=new Map();
  let selectedPerson=null,attachment=null,photoReading=false,photoGeneration=0,searchGeneration=0;
  const picker=$('#dm-picker'),groupPicker=$('#group-picker'),emojiPicker=$('#emoji-picker');
@@ -71,16 +73,19 @@
  async function refreshUnread(){
   const id=account.user?.id||null;
   if(id!==unreadIdentity){unreadIdentity=id;unreadCounts.clear();readThrough.clear();paintUnread();}
-  if(!id||document.hidden||unreadBusy)return;
+  if(document.hidden||unreadBusy)return;
   unreadBusy=true;
-  try{const data=await account.api('/chat/unread');if(account.user?.id===id){unreadCounts=new Map(data.conversations.map(c=>[c.sender,c.count]));paintUnread();}}catch(e){if(e.status===401){unreadCounts.clear();paintUnread();}}finally{unreadBusy=false;}
+  try{
+   if(!id){const data=await account.api('/chat/public/mentions?after='+guestRead);if(!account.user){unreadCounts=new Map(data.count?[['room:world',data.count]]:[]);paintUnread();}return;}
+   const data=await account.api('/chat/unread');if(account.user?.id===id){unreadCounts=new Map(data.conversations.map(c=>[c.sender,c.count]));paintUnread();}}catch(e){if(e.status===401){unreadCounts.clear();paintUnread();}}finally{unreadBusy=false;}
  }
- function scheduleUnread(){clearTimeout(unreadTimer);void refreshUnread().finally(()=>{if(account.user&&!document.hidden)unreadTimer=setTimeout(scheduleUnread,10000);});}
+ function scheduleUnread(){clearTimeout(unreadTimer);void refreshUnread().finally(()=>{if(!document.hidden)unreadTimer=setTimeout(scheduleUnread,account.user?10000:30000);});}
  async function markVisible(){
-  if(!active()||!account.user||to==='room:poke'||readBusy||document.querySelector('dialog[open]'))return;
-  const log=$('#messages-log').getBoundingClientRect(),peer=to||'room:world',id=account.user.id;
+  if(!active()||to==='room:poke'||readBusy||document.querySelector('dialog[open]'))return;
+  const log=$('#messages-log').getBoundingClientRect(),peer=to||'room:world',id=account.user?.id;
   const seen=rows.filter(m=>(peer==='room:world'?true:peer.startsWith('group:')?m.user.id!==id:m.user.id===peer)&&m.expires>Date.now()).filter(m=>{const el=document.getElementById('message-'+m.id);if(!el)return false;const r=el.getBoundingClientRect();return r.top<log.bottom&&r.bottom>log.top;});
   const through=Math.max(0,...seen.map(m=>m.id));if(through<=(readThrough.get(peer)||0))return;
+  if(!id){guestRead=Math.max(guestRead,through);try{localStorage.setItem('wacky-world-guest-read',String(guestRead));}catch{}readThrough.set(peer,through);await refreshUnread();return;}
   readBusy=true;try{await account.api('/chat/read',{method:'POST',data:{to:peer,through}});if(account.user?.id===id){readThrough.set(peer,through);await refreshUnread();}}catch{}finally{readBusy=false;}
  }
  $('#messages-log').addEventListener('scroll',()=>{clearTimeout(readTimer);readTimer=setTimeout(markVisible,200);});
@@ -98,6 +103,7 @@
    const replyAuthor=rows.find(parent=>parent.id===m.reply?.id)?.user;
    const repliesToMe=m.reply?.userId?m.reply.userId===account.user?.id:replyAuthor?replyAuthor.id===account.user?.id:m.reply?.username===account.user?.username;
    if((isPublic()||isGroup())&&m.user.id!==account.user?.id&&m.reply?.expires>Date.now()&&repliesToMe)article.classList.add('message-reply-to-me');
+   if(m.mentionsEveryone&&(isPublic()||isGroup()))article.classList.add('message-everyone');
    const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('button'),time=document.createElement('time'),text=document.createElement('p');
    name.textContent=m.user.username+(m.user.owner?' · Owner':'');time.dateTime=new Date(m.created).toISOString();time.textContent=new Date(m.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});text.textContent=m.text;
    name.type='button';name.className='message-profile';name.addEventListener('click',()=>void account.openProfile(m.user.id));

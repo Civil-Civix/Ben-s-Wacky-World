@@ -2,6 +2,12 @@
 export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  let path=url.pathname;
  const guest=!me;
+ if(guest&&path==='/chat/public/mentions'&&request.method==='GET'){
+  if(url.searchParams.has('to'))fail(403,'Only World chat is public.');
+  const after=Number(url.searchParams.get('after')||0);if(!Number.isSafeInteger(after)||after<0)fail(400,'Invalid read receipt.');
+  const result=await env.DB.prepare("SELECT id FROM chat_messages WHERE group_id IS NULL AND recipient IS NULL AND room='world' AND mentions_everyone=1 AND expires>? AND id>? ORDER BY id DESC LIMIT 100").bind(now,after).all();
+  return json({count:result.results.length});
+ }
  if(guest){
   if(request.method!=='GET'||(path!=='/chat/public'&&!/^\/chat\/public\/photos\/\d+$/.test(path)))fail(401,'Please log in.');
   if(url.searchParams.has('to'))fail(403,'Only World chat is public.');
@@ -130,6 +136,6 @@ export async function chat({request,url,env,me,now,body,fail,json,validJPEG}) {
  if(!Number.isSafeInteger(before)||before<1)fail(400,'Invalid page.');
  const filter=group!==null?'m.group_id=?':to===null?'m.group_id IS NULL AND m.recipient IS NULL AND m.room=?':'m.group_id IS NULL AND ((m.sender=? AND m.recipient=?) OR (m.sender=? AND m.recipient=?))';
  const args=group!==null?[now,before,group]:to===null?[now,before,room]:[now,before,me.id,to,to,me.id];
- const rows=await env.DB.prepare(`SELECT m.id,m.text,(m.photo IS NOT NULL) AS has_photo,u.presence,u.roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>${now}) AS last_seen,m.created,m.expires,u.id AS sender,u.username,u.avatar_version,u.owner,m.reply_to,r.sender AS reply_user,r.text AS reply_text,ru.username AS reply_name,r.expires AS reply_expires FROM chat_messages m JOIN users u ON u.id=m.sender LEFT JOIN chat_messages r ON r.id=m.reply_to LEFT JOIN users ru ON ru.id=r.sender WHERE m.expires>? AND m.id<? AND ${filter} ORDER BY m.id DESC LIMIT 101`).bind(...args).all();
- return json({messages:rows.results.slice(0,100).reverse().map(r=>({id:r.id,text:r.text,hasPhoto:!!r.has_photo,created:r.created,expires:r.expires,reply:r.reply_to?{id:r.reply_to,userId:r.reply_expires>now?r.reply_user:null,text:r.reply_expires>now?r.reply_text:null,username:r.reply_expires>now?r.reply_name:null,expires:r.reply_expires}:null,user:person({...r,id:r.sender})})),hasMore:rows.results.length>100});
+ const rows=await env.DB.prepare(`SELECT m.id,m.text,m.mentions_everyone,(m.photo IS NOT NULL) AS has_photo,u.presence,u.roles,(SELECT MAX(s.last_seen) FROM sessions s WHERE s.user_id=u.id AND s.expires>${now}) AS last_seen,m.created,m.expires,u.id AS sender,u.username,u.avatar_version,u.owner,m.reply_to,r.sender AS reply_user,r.text AS reply_text,ru.username AS reply_name,r.expires AS reply_expires FROM chat_messages m JOIN users u ON u.id=m.sender LEFT JOIN chat_messages r ON r.id=m.reply_to LEFT JOIN users ru ON ru.id=r.sender WHERE m.expires>? AND m.id<? AND ${filter} ORDER BY m.id DESC LIMIT 101`).bind(...args).all();
+ return json({messages:rows.results.slice(0,100).reverse().map(r=>({id:r.id,text:r.text,mentionsEveryone:!!r.mentions_everyone,hasPhoto:!!r.has_photo,created:r.created,expires:r.expires,reply:r.reply_to?{id:r.reply_to,userId:r.reply_expires>now?r.reply_user:null,text:r.reply_expires>now?r.reply_text:null,username:r.reply_expires>now?r.reply_name:null,expires:r.reply_expires}:null,user:person({...r,id:r.sender})})),hasMore:rows.results.length>100});
 }

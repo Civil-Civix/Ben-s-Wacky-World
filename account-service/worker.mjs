@@ -128,7 +128,7 @@ export default {
     if(!row||!timingSafeEqual(Buffer.from(candidate,'hex'),Buffer.from(row.password_hash,'hex')))fail(401,'Incorrect username or password.');
     permitted(row,now);const token=await newSession(env,row.id,now);return json({user:publicUser(row)},200,{'Set-Cookie':cookie(token)});
    }
-   if(request.method==='GET'&&(path==='/chat/public'||path.startsWith('/chat/public/photos/')))return await chat({request,url,env,me:null,now,body,fail,json,validJPEG});
+   if(request.method==='GET'&&(path==='/chat/public'||path==='/chat/public/mentions'||path.startsWith('/chat/public/photos/')))return await chat({request,url,env,me:null,now,body,fail,json,validJPEG});
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
    if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});

@@ -22,7 +22,7 @@ async function req(path,method='GET',data,extra={},bindings=env){
  return {status:response.status,data:await response.json(),cookie:response.headers.get('Set-Cookie'),headers:response.headers};
 }
 
-for(const file of ['chat-schema.sql','group-schema.sql','public-rooms.sql','chat-notifications.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
+for(const file of ['chat-schema.sql','group-schema.sql','public-rooms.sql','chat-notifications.sql','chat-guest-mentions-index.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
 const now=Date.now(),tokens={};
 for(const [i,name] of ['owner','alice','bob','outsider'].entries()){
  tokens[name]=(i+1).toString().repeat(64);
@@ -59,7 +59,14 @@ assert.equal((await send('owner',to,'@everyone group only')).status,201);
 as('alice');assert.equal((await req('/chat/unread')).data.notifications[0].to,to);
 as('outsider');assert(!(await req('/chat/unread')).data.notifications.some(n=>n.to===to));
 as('alice');await req('/chat/groups/'+created.data.group.id+'/leave','POST',{});assert(!(await req('/chat/unread')).data.notifications.some(n=>n.to===to));
-as(null);const publicChat=await req('/chat/public');assert.equal(publicChat.status,200);assert(publicChat.data.messages.length>=3);
+as(null);
+assert.equal((await req('/chat/public/mentions')).data.count,1);
+assert.equal((await req('/chat/public/mentions?after='+broadcast)).data.count,0);
+assert.equal((await req('/chat/public/mentions?after=-1')).status,400);
+assert.equal((await req('/chat/public/mentions?to='+to)).status,403);
+assert.equal((await req('/chat/public/mentions','POST',{})).status,401);
+const publicChat=await req('/chat/public');assert.equal(publicChat.status,200);assert(publicChat.data.messages.length>=3);
+assert.equal(publicChat.data.messages.find(m=>m.id===broadcast).mentionsEveryone,true);
 assert(publicChat.data.messages.every(m=>!m.text.includes('Private')&&!m.text.includes('group only')));
 assert.equal((await req('/chat/public?to=bob')).status,403);
 assert.equal((await req('/chat/public?to='+to)).status,403);
@@ -74,4 +81,5 @@ db.prepare('UPDATE chat_messages SET expires=? WHERE id=?').run(now-1,parent);
 assert.equal((await req('/chat/public/photos/'+parent)).status,404);
 assert(!(await req('/chat/public')).data.messages.some(m=>m.id===parent));
 as('bob');db.prepare('UPDATE chat_messages SET expires=?').run(now-1);assert.equal((await req('/chat/unread')).data.notifications.length,0);
+as(null);assert.equal((await req('/chat/public/mentions')).data.count,0);
 console.log('PASS: guest read-only access, private/group/photo isolation, admin mentions, targeted replies, room read receipts, group membership and expiry.');
