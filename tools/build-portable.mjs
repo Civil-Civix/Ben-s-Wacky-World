@@ -31,7 +31,7 @@ async function verifyOverrides(dir, relative='') {
 }
 await verifyOverrides(overrides);
 if(process.argv.includes('--download-only')){console.log('Validated bundled assets; download-only requested.');process.exit(0);}
-if(process.argv.includes('--check')){console.log('Verified all 297 source assets and launcher overrides.');process.exit(0);}
+if(process.argv.includes('--check')){console.log('Verified '+manifest.reduce((n,g)=>n+g.files.length,0)+' source assets and launcher overrides.');process.exit(0);}
 // Output is restricted to .portable/site; never remove a caller-selected folder.
 for(const p of [path.dirname(output),output]){try{if((await lstat(p)).isSymbolicLink())throw Error('Refusing symbolic link output');}catch(e){if(e.code!=='ENOENT')throw e;}}
 await rm(output,{recursive:true,force:true});await mkdir(output,{recursive:true});

@@ -97,8 +97,8 @@ export async function buildPages({ root = ROOT, outDir = path.join(root, OUTPUT)
       throw new Error(`Bundled game validation failed: ${(validation.stderr || validation.stdout || '').trim()}`);
     }
     const manifest = JSON.parse(await readFile(path.join(root, 'tools', 'portable-games.json'), 'utf8'));
-    if (!Array.isArray(manifest) || manifest.length !== 12 || manifest.some(game => !game?.id)) {
-      throw new Error('Expected exactly 12 bundled games in tools/portable-games.json.');
+    if (!Array.isArray(manifest) || manifest.length === 0 || new Set(manifest.map(game => game.id)).size !== manifest.length || manifest.some(game => !game?.id)) {
+      throw new Error('Expected a nonempty list of unique bundled games in tools/portable-games.json.');
     }
     bundledIds = manifest.map(game => game.id);
     await stat(path.join(root, 'library', 'bundled'));

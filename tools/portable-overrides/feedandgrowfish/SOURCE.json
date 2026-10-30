@@ -1,0 +1,5 @@
+{
+  "repo": "Civil-Civix/Feed-and-Grow-Port",
+  "revision": "d2e793be8d62f7755ef774bdafbf76a534e8e003",
+  "changes": "Load game files from the bundled same-origin directory."
+}

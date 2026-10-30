@@ -105,7 +105,7 @@ test('excludes the portable game pack from the live upload', async t => {
 });
 
 async function addPortableFixture(root, { omitFile = false, omitCatalogGame = null } = {}) {
-  const ids = Array.from({ length: 12 }, (_, i) => `portable-${i + 1}`);
+  const ids = Array.from({ length: 15 }, (_, i) => `portable-${i + 1}`);
   const games = { ...gameUrls };
   for (const id of ids) games[id] = `https://example.test/${id}`;
   if (omitCatalogGame) delete games[omitCatalogGame];
@@ -125,7 +125,7 @@ async function addPortableFixture(root, { omitFile = false, omitCatalogGame = nu
   return ids;
 }
 
-test('opt-in packages the 12 bundled games and rewrites both full catalogs', async t => {
+test('opt-in packages the expanded 15 bundled games and rewrites both full catalogs', async t => {
   const root = await fixture(t);
   const ids = await addPortableFixture(root);
   const result = await buildPages({ root, withBundled: true });

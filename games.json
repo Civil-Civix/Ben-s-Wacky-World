@@ -1,5 +1,26 @@
 [
   {
+    "id": "horseygame",
+    "title": "Horsey Game",
+    "url": "library/bundled/horseygame/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
+    "id": "feedandgrowfish",
+    "title": "Feed and Grow: Fish",
+    "url": "library/bundled/feedandgrowfish/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
+    "id": "minecraftstorymode",
+    "title": "Minecraft: Story Mode",
+    "url": "library/bundled/minecraftstorymode/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
     "id": "hillclimbracing",
     "title": "Hill Climb Racing",
     "url": "https://civil-civix.github.io/HillClimbRacingPort/",

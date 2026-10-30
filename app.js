@@ -335,7 +335,7 @@ window.addEventListener('storage', event => {
 });
 window.addEventListener('popularitychange',()=>{if(gameSort==='popular')render();});
 applyRoute();
-fetch('./game-images.json?v=20261022-new-games').then(response => {
+fetch('./game-images.json?v=20261030-three-games').then(response => {
   if(!response.ok) throw new Error('Image map unavailable');
   return response.json();
 }).then(map => {
