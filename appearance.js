@@ -76,6 +76,7 @@
     document.querySelectorAll('[data-accent]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.accent.toUpperCase()===appearance.accent)));
     document.querySelector('#custom-accent').value = appearance.accent==='RAINBOW'?accent:appearance.accent;
     document.querySelector('#accent-mode').value=appearance.accentMode;
+    syncColorModeMenu();
     document.querySelector('#secondary-accent-controls').hidden=appearance.accentMode==='single';
     document.querySelector('#secondary-accent').value=appearance.secondaryAccent;
     document.querySelector('#secondary-accent-value').textContent=appearance.secondaryAccent;
@@ -97,6 +98,16 @@
   document.querySelectorAll('button[data-background]').forEach(button=>button.addEventListener('click',()=>{appearance.background=button.dataset.background;apply(true);}));
   document.querySelectorAll('button[data-effect]').forEach(button=>button.addEventListener('click',()=>{appearance.effect=button.dataset.effect;apply(true);}));
   document.querySelectorAll('[data-accent]').forEach(button=>button.addEventListener('click',()=>{appearance.accent=button.dataset.accent.toUpperCase();if(appearance.accent==='RAINBOW')appearance.accentMode='single';apply(true);}));
+  const modeSelect=document.querySelector('#accent-mode'),modeTrigger=document.querySelector('#accent-mode-trigger'),modeMenu=document.querySelector('#accent-mode-menu'),modeWrap=modeTrigger.parentElement;
+  const modeOptions=[...modeMenu.querySelectorAll('[data-color-mode]')];
+  function syncColorModeMenu(){document.querySelector('#accent-mode-value').textContent=modeSelect.selectedOptions[0].textContent;modeOptions.forEach(o=>o.setAttribute('aria-selected',String(o.dataset.colorMode===modeSelect.value)));}
+  function closeColorMode(focus=false){modeMenu.hidden=true;modeTrigger.setAttribute('aria-expanded','false');if(focus)modeTrigger.focus();}
+  function openColorMode(){modeMenu.hidden=false;modeTrigger.setAttribute('aria-expanded','true');modeOptions.find(o=>o.dataset.colorMode===modeSelect.value).focus();}
+  modeTrigger.addEventListener('click',()=>modeMenu.hidden?openColorMode():closeColorMode());
+  modeTrigger.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();openColorMode();}});
+  modeOptions.forEach(o=>o.addEventListener('click',()=>{modeSelect.value=o.dataset.colorMode;modeSelect.dispatchEvent(new Event('change',{bubbles:true}));closeColorMode(true);}));
+  modeMenu.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closeColorMode(true);}if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();const i=modeOptions.indexOf(document.activeElement);modeOptions[e.key==='Home'?0:e.key==='End'?modeOptions.length-1:(i+(e.key==='ArrowDown'?1:-1)+modeOptions.length)%modeOptions.length].focus();}});
+  modeWrap.addEventListener('focusout',e=>{if(!modeWrap.contains(e.relatedTarget))closeColorMode();});document.addEventListener('click',e=>{if(!modeWrap.contains(e.target))closeColorMode();});window.addEventListener('hashchange',()=>closeColorMode());
   const secondOptions=document.querySelector('#secondary-accent-options');
   document.querySelectorAll('[data-accent]:not([data-accent="RAINBOW"])').forEach(original=>{const button=original.cloneNode(true);button.dataset.secondaryAccent=button.dataset.accent;delete button.dataset.accent;button.setAttribute('aria-label',original.getAttribute('aria-label').replace('accent','second accent'));button.addEventListener('click',()=>{appearance.secondaryAccent=button.dataset.secondaryAccent;apply(true);});secondOptions.append(button);});
   document.querySelector('#secondary-accent').addEventListener('input',e=>{appearance.secondaryAccent=e.target.value.toUpperCase();apply(true);});
