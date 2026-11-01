@@ -731,3 +731,9 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 .message-everyone{background:rgb(var(--accent-rgb)/.12);box-shadow:inset 3px 0 var(--accent)}
 
 .effect-sample.nova{display:grid;place-items:center;font-size:25px;color:var(--accent-text,var(--accent));background:radial-gradient(ellipse at 35% 65%,rgb(var(--accent-rgb)/.4),transparent 70%),var(--surface)}
+
+.rainbow-swatch{--swatch:conic-gradient(#ff4242,#ffdd00,#20c392,#3399ff,#9b6dff,#fa4d92,#ff4242)}
+@keyframes popup-fade-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:no-preference){
+ dialog[open],dialog[open]::backdrop,[popover]:popover-open,[role="listbox"]:not([hidden]),[role="menu"]:not([hidden]),[role="dialog"]:not([hidden]){animation:popup-fade-in 150ms ease-out}
+}

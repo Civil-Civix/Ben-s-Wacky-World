@@ -25,7 +25,7 @@
  }
  function dot(x,y,r,a){ctx.globalAlpha=Math.min(1,(a)*(light?1.65:1));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
  function draw(dt){
-  dt*=speed*(effect==='halloween'?2:1);time+=dt;ctx.clearRect(0,0,w,h);ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=.7;
+  dt*=speed*(effect==='halloween'?2:effect==='nova'?3:1);time+=dt;ctx.clearRect(0,0,w,h);ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=.7;
   if(effect==='nova'){
    ctx.save();ctx.globalCompositeOperation=light?'source-over':'screen';
    gas.forEach((p,i)=>{novaMove(p,dt,true);const radius=p.radius*(1+Math.sin(time*.17+p.phase)*.1);
@@ -128,7 +128,9 @@
  }
  new ResizeObserver(updateChatMask).observe(document.querySelector('#ai-content'));
  function sync(){updateChatMask();cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;color=settings.effectColor||settings.accent;highlight='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join('');ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
+ function setPalette(next){color=next;highlight='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join('');ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');}
+ window.setBackgroundEffectColor=next=>{setPalette(next);if(!animate&&!paused())draw(0);};
+ window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;setPalette(settings.effectColor||settings.accent);animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();

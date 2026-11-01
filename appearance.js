@@ -12,7 +12,7 @@
       const saved = JSON.parse(localStorage.getItem(key) || '{}');
       return {
         background:backgrounds.includes(saved?.background) ? saved.background : defaults.background,
-        accent:/^#[0-9a-f]{6}$/i.test(saved?.accent) ? (saved.accent.toUpperCase()==='#FFAE00'?'#FFDD00':saved.accent.toUpperCase()) : defaults.accent,
+        accent:saved?.accent==='RAINBOW' ? 'RAINBOW' : /^#[0-9a-f]{6}$/i.test(saved?.accent) ? (saved.accent.toUpperCase()==='#FFAE00'?'#FFDD00':saved.accent.toUpperCase()) : defaults.accent,
         speed:Number.isFinite(saved?.speed) ? Math.max(.25,Math.min(5,saved.speed)) : 1,
         amount:Number.isFinite(saved?.amount) ? Math.max(.25,Math.min(3,saved.amount)) : 1,
         effect:effects.includes(saved?.effect) ? saved.effect : defaults.effect,
@@ -30,6 +30,30 @@
     fragment.append(flake);
   }
   layer.append(fragment);
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  function currentAccent(){
+    if(appearance.accent!=='RAINBOW')return appearance.accent;
+    if(reducedMotion.matches)return '#3399FF';
+    const hue=(210+performance.now()/1000*12)%360;
+    const channel=n=>{const k=(n+hue/30)%12;return Math.round((.6-.32*Math.max(-1,Math.min(k-3,9-k,1)))*255).toString(16).padStart(2,'0');};
+    return '#'+channel(0)+channel(8)+channel(4);
+  }
+  function paintAccent(accent,updateIcon=false){
+    root.style.setProperty('--accent',accent);
+    const rgb = accent.slice(1).match(/../g).map(x=>parseInt(x,16));
+    root.style.setProperty('--accent-rgb',rgb.join(' '));
+    const effectColor=appearance.background==='snow' && appearance.effect!=='cherry-blossom' ? '#'+rgb.map(v=>Math.round(v*.5).toString(16).padStart(2,'0')).join('') : accent;
+    root.style.setProperty('--effect-color',effectColor);
+    root.style.setProperty('--accent-ink',rgb[0]*.299+rgb[1]*.587+rgb[2]*.114>145?'#101014':'#ffffff');
+    document.querySelector('meta[name="theme-color"]').content = accent;
+    if(updateIcon){
+    const favicon = document.querySelector('link[rel="icon"]');
+    const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="'+accent+'"/><text x="16" y="23" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="23" fill="'+root.style.getPropertyValue('--accent-ink')+'">W</text></svg>';
+    favicon.href = 'data:image/svg+xml,' + encodeURIComponent(icon);
+    }
+    return effectColor;
+  }
+  setInterval(()=>{if(appearance.accent!=='RAINBOW'||reducedMotion.matches||document.hidden||document.body.classList.contains('playing'))return;const accent=currentAccent(),effectColor=paintAccent(accent);window.setBackgroundEffectColor(effectColor);},80);
   function apply(save=false) {
     root.dataset.background = appearance.background;
     root.dataset.effect = appearance.effect;
@@ -37,28 +61,19 @@
     root.style.setProperty('--effect-speed',appearance.speed);
     document.querySelector('#effect-speed').value=appearance.speed;
     document.querySelector('#speed-value').textContent=appearance.speed.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')+'×';
-    root.style.setProperty('--accent',appearance.accent);
-    const rgb = appearance.accent.slice(1).match(/../g).map(x=>parseInt(x,16));
-    root.style.setProperty('--accent-rgb',rgb.join(' '));
-    const effectColor=appearance.background==='snow' && appearance.effect!=='cherry-blossom' ? '#'+rgb.map(v=>Math.round(v*.5).toString(16).padStart(2,'0')).join('') : appearance.accent;
-    root.style.setProperty('--effect-color',effectColor);
+    const accent=currentAccent(),effectColor=paintAccent(accent,true);
     document.querySelector('#effect-amount').value=appearance.amount;
     document.querySelector('#amount-value').textContent=Number(appearance.amount.toFixed(2))+'×';
     Array.from(layer.children).forEach((flake,i)=>{flake.hidden=i>=Math.round(80*appearance.amount);});
-    root.style.setProperty('--accent-ink',rgb[0]*.299+rgb[1]*.587+rgb[2]*.114>145?'#101014':'#ffffff');
-    document.querySelector('meta[name="theme-color"]').content = appearance.accent;
-    const favicon = document.querySelector('link[rel="icon"]');
-    const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="'+appearance.accent+'"/><text x="16" y="23" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="23" fill="'+root.style.getPropertyValue('--accent-ink')+'">W</text></svg>';
-    favicon.href = 'data:image/svg+xml,' + encodeURIComponent(icon);
     document.querySelectorAll('button[data-background]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.background===appearance.background)));
     document.querySelectorAll('[data-accent]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.accent.toUpperCase()===appearance.accent)));
-    document.querySelector('#custom-accent').value = appearance.accent;
-    document.querySelector('#accent-value').textContent = appearance.accent;
+    document.querySelector('#custom-accent').value = accent;
+    document.querySelector('#accent-value').textContent = appearance.accent==='RAINBOW'?'Rainbow':appearance.accent;
     document.querySelector('#snow-enabled').checked = appearance.snow;
     layer.hidden = appearance.effect !== 'snow';
     layer.classList.toggle('still',!appearance.snow);
     document.querySelectorAll('button[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
-    window.setBackgroundEffect({...appearance,effectColor});
+    window.setBackgroundEffect({...appearance,accent,effectColor});
     window.dispatchEvent(new Event('bww:appearance'));
     if(save) {
       try {localStorage.setItem(key,JSON.stringify(appearance));warning.hidden=true;}
