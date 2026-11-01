@@ -2,6 +2,7 @@
 (() => {
  const canvas=document.querySelector('#theme-canvas'),ctx=canvas.getContext('2d');
  let effect='none',color='#8B7BFF',ink='#382f66',highlight='#b4a8ff',animate=true,speed=1,amount=1,light=false,w=0,h=0,points=[],raf=0,last=0,time=0;
+ let primaryPalette=null,secondaryPalette=null,splitColors=false;
  let gas=[],pointer={x:-1000,y:-1000,active:false};
  window.addEventListener('pointermove',e=>{if(effect==='nova'){pointer.x=e.clientX;pointer.y=e.clientY;pointer.active=true;}},{passive:true});
  const release=()=>{pointer.active=false;};
@@ -25,31 +26,31 @@
  }
  function dot(x,y,r,a){ctx.globalAlpha=Math.min(1,(a)*(light?1.65:1));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
  function draw(dt){
-  dt*=speed*(effect==='halloween'?2:effect==='nova'?3:1);time+=dt;ctx.clearRect(0,0,w,h);ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=.7;
+  dt*=speed*(effect==='halloween'?2:effect==='nova'?3:1);time+=dt;ctx.clearRect(0,0,w,h);selectPalette(0);ctx.lineWidth=.7;
   if(effect==='nova'){
    ctx.save();ctx.globalCompositeOperation=light?'source-over':'screen';
-   gas.forEach((p,i)=>{novaMove(p,dt,true);const radius=p.radius*(1+Math.sin(time*.17+p.phase)*.1);
+   gas.forEach((p,i)=>{selectPalette(i);novaMove(p,dt,true);const radius=p.radius*(1+Math.sin(time*.17+p.phase)*.1);
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.phase+Math.sin(time*.04)*.15);ctx.scale(1,.65);const glow=ctx.createRadialGradient(0,0,0,0,0,radius);glow.addColorStop(0,i%3===0?highlight:color);glow.addColorStop(.38,color);glow.addColorStop(1,color+'00');
     ctx.globalAlpha=light?.12:.14;ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();ctx.restore();});
-   points.forEach((p,i)=>{novaMove(p,dt);const twinkle=.45+.25*Math.sin(time*(.6+p.z)+p.phase),r=.5+p.z*1.6;
+   points.forEach((p,i)=>{selectPalette(i);novaMove(p,dt);const twinkle=.45+.25*Math.sin(time*(.6+p.z)+p.phase),r=.5+p.z*1.6;
     ctx.fillStyle=light?color:(i%4===0?color:highlight);dot(p.x,p.y,r,twinkle);
     if(i%17===0){ctx.strokeStyle=light?color:highlight;ctx.globalAlpha=twinkle*.55;ctx.beginPath();ctx.moveTo(p.x-r*3,p.y);ctx.lineTo(p.x+r*3,p.y);ctx.moveTo(p.x,p.y-r*3);ctx.lineTo(p.x,p.y+r*3);ctx.stroke();}
    });ctx.restore();
   }else if(effect==='matrix'){
    ctx.font='13px monospace';
-   points.forEach((p,i)=>{
+   points.forEach((p,i)=>{selectPalette(i);
     p.y=(p.y+dt*p.speed)%(h+220);
     for(let j=0;j<12;j++){ctx.globalAlpha=Math.min(1,((1-j/12)*.28)*(light?1.65:1));const char='01アイウエオカキクケコ'[Math.floor((i*13+j*7+Math.floor(time*2))%12)];ctx.fillText(char,i*w/points.length,p.y-j*19);}
    });
   }else if(effect==='constellation'){
    points.forEach(p=>{p.x=(p.x+dt*3)%w;p.y=(p.y+dt*2)%h;});
    for(let i=0;i<points.length;i++){
-    const a=points[i];dot(a.x,a.y,1.5,.5);
+    selectPalette(i);const a=points[i];dot(a.x,a.y,1.5,.5);
     for(let j=i+1;j<points.length;j++){const b=points[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<155){ctx.globalAlpha=Math.min(1,((1-d/155)*.23)*(light?1.65:1));ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
    }
   }else if(effect==='topography'){
    ctx.globalAlpha=Math.min(1,(.19)*(light?1.65:1));
-   for(let k=-8;k<Math.ceil(h*amount/24)+8;k++){
+   for(let k=-8;k<Math.ceil(h*amount/24)+8;k++){selectPalette(k);
     ctx.beginPath();
     for(let x=-20;x<=w+20;x+=12){
      const y=k*26/amount+Math.sin(x/180+k*.22+time*.04)*46+Math.cos(x/310-k*.17)*62+Math.sin(x/85+k*.1)*9;
@@ -57,14 +58,14 @@
     }ctx.stroke();
    }
   }else if(effect==='starfield'){
-   points.forEach(p=>{
+   points.forEach((p,i)=>{selectPalette(i);
     p.z+=dt*.014;if(p.z>1){p.z=.05;p.x=Math.random()*w;p.y=Math.random()*h;}
     const scale=.3+p.z*1.25,x=w/2+(p.x-w/2)*scale,y=h/2+(p.y-h/2)*scale;
     dot(x,y,.5+p.z*1.25,.18+p.z*.5);
    });
   }
   if(['casino','cherry-blossom','halloween'].includes(effect)){
-   points.forEach((p,i)=>{
+   points.forEach((p,i)=>{selectPalette(i);
     const size=(.65+p.z*.65)*(effect==='halloween'?.6:1);
     if(effect==='casino'){
      p.y+=dt*(p.speed+18);p.x+=Math.sin(time*.6+p.phase)*dt*6;
@@ -128,9 +129,11 @@
  }
  new ResizeObserver(updateChatMask).observe(document.querySelector('#ai-content'));
  function sync(){updateChatMask();cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
- function setPalette(next){color=next;highlight='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join('');ink='#'+color.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('');}
+ function palette(next){return {color:next,highlight:'#'+next.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join(''),ink:'#'+next.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('')};}
+ function selectPalette(i){const p=splitColors&&Math.abs(i%2)===1?secondaryPalette:primaryPalette;if(p){color=p.color;ink=p.ink;highlight=p.highlight;}ctx.fillStyle=color;ctx.strokeStyle=color;}
+ function setPalette(next){primaryPalette=palette(next);selectPalette(0);}
  window.setBackgroundEffectColor=next=>{setPalette(next);if(!animate&&!paused())draw(0);};
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;setPalette(settings.effectColor||settings.accent);animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
+ window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;splitColors=settings.accentMode==='split';secondaryPalette=palette(settings.secondaryEffectColor||settings.effectColor||settings.accent);setPalette(settings.effectColor||settings.accent);animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();

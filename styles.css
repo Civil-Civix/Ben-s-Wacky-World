@@ -737,3 +737,5 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 @media(prefers-reduced-motion:no-preference){
  dialog[open],dialog[open]::backdrop,[popover]:popover-open,[role="listbox"]:not([hidden]),[role="menu"]:not([hidden]),[role="dialog"]:not([hidden]){animation:popup-fade-in 150ms ease-out}
 }
+
+.accent-mode-label{display:block;margin:20px 0 10px;font-size:13px;font-weight:600}#accent-mode{width:100%;max-width:340px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:13px}#accent-mode-help{font-size:12px;color:var(--muted);line-height:1.6;margin:12px 0 0}#secondary-accent-controls[hidden]{display:none}:root[data-accent-mode=split] .snowflake:nth-child(even){background:var(--effect-secondary);box-shadow:0 0 9px var(--effect-secondary)}
