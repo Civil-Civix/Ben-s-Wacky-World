@@ -33,14 +33,15 @@
   }
   layer.append(fragment);
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  let colorTime=0,colorFrame=0,colorLast=0,colorSignature='';
   function currentAccent(){
     if(appearance.accent!=='RAINBOW'){
       if(appearance.accentMode!=='fade'||reducedMotion.matches)return appearance.accent;
-      const blend=(1-Math.cos(performance.now()/1000*Math.PI/4))/2;
+      const blend=(1-Math.cos(colorTime/1000*Math.PI/4))/2;
       return '#'+appearance.accent.slice(1).match(/../g).map((v,i)=>Math.round(parseInt(v,16)*(1-blend)+parseInt(appearance.secondaryAccent.slice(1+i*2,3+i*2),16)*blend).toString(16).padStart(2,'0')).join('');
     }
     if(reducedMotion.matches)return '#3399FF';
-    const hue=(210+performance.now()/1000*12)%360;
+    const hue=(210+colorTime/1000*12)%360;
     const channel=n=>{const k=(n+hue/30)%12;return Math.round((.6-.32*Math.max(-1,Math.min(k-3,9-k,1)))*255).toString(16).padStart(2,'0');};
     return '#'+channel(0)+channel(8)+channel(4);
   }
@@ -59,8 +60,20 @@
     }
     return effectColor;
   }
-  setInterval(()=>{if((appearance.accent!=='RAINBOW'&&appearance.accentMode!=='fade')||reducedMotion.matches||document.hidden||document.body.classList.contains('playing'))return;const accent=currentAccent(),effectColor=paintAccent(accent);window.setBackgroundEffectColor(effectColor);},80);
+  function colorAnimationEnabled(){return (appearance.accent==='RAINBOW'||appearance.accentMode==='fade')&&!reducedMotion.matches&&!document.hidden&&!document.body.classList.contains('playing');}
+  function colorTick(now){
+    colorFrame=0;if(!colorAnimationEnabled())return;
+    colorTime+=Math.min(64,Math.max(0,now-colorLast));colorLast=now;
+    const accent=currentAccent(),effectColor=paintAccent(accent);
+    window.setBackgroundEffectColor(effectColor);
+    colorFrame=requestAnimationFrame(colorTick);
+  }
+  function syncColorAnimation(){cancelAnimationFrame(colorFrame);colorFrame=0;colorLast=performance.now();if(colorAnimationEnabled())colorFrame=requestAnimationFrame(colorTick);}
+  new MutationObserver(syncColorAnimation).observe(document.body,{attributes:true,attributeFilter:['class']});
+
   function apply(save=false) {
+    const signature=[appearance.accent,appearance.secondaryAccent,appearance.accentMode].join('|');
+    if(signature!==colorSignature){colorTime=0;colorSignature=signature;}
     root.dataset.accentMode=appearance.accentMode;
     root.dataset.background = appearance.background;
     root.dataset.effect = appearance.effect;
@@ -89,6 +102,7 @@
     layer.classList.toggle('still',!appearance.snow);
     document.querySelectorAll('button[data-effect]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.effect===appearance.effect)));
     window.setBackgroundEffect({...appearance,accent,effectColor,secondaryEffectColor});
+    syncColorAnimation();
     window.dispatchEvent(new Event('bww:appearance'));
     if(save) {
       try {localStorage.setItem(key,JSON.stringify(appearance));warning.hidden=true;}
@@ -119,6 +133,6 @@
   document.querySelector('#snow-enabled').addEventListener('change',event=>{appearance.snow=event.target.checked;apply(true);});
   document.querySelector('#reset-appearance').addEventListener('click',()=>{appearance={...defaults};apply(true);});
   window.addEventListener('storage',event=>{if(event.key===key || event.key===null){appearance=read();apply();}});
-  document.addEventListener('visibilitychange',()=>{layer.classList.toggle('paused',document.hidden);});
+  document.addEventListener('visibilitychange',()=>{layer.classList.toggle('paused',document.hidden);syncColorAnimation();});
   apply();
 })();
