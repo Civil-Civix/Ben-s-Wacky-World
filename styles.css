@@ -744,3 +744,12 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 .accent-mode-picker{position:relative;width:100%;max-width:340px}#accent-mode-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--text,#f5f5f5);font:inherit;font-size:13px;text-align:left;cursor:pointer}#accent-mode-trigger svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2}#accent-mode-trigger:hover,#accent-mode-trigger[aria-expanded=true]{border-color:var(--accent)}#accent-mode-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:3px}#accent-mode-menu{position:absolute;top:calc(100% + 7px);left:0;right:0;z-index:20;padding:6px;background:var(--surface);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:13px;box-shadow:0 14px 36px #0006}#accent-mode-menu button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:12px;border:0;border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:13px;text-align:left;cursor:pointer}#accent-mode-menu button:hover,#accent-mode-menu button:focus-visible{background:rgb(var(--accent-rgb)/.12);color:var(--accent-text,var(--accent));outline:none}#accent-mode-menu button[aria-selected=true]{background:rgb(var(--accent-rgb)/.08);color:var(--accent-text,var(--accent))}#accent-mode-menu button span{visibility:hidden}#accent-mode-menu button[aria-selected=true] span{visibility:visible}
 
 @media(prefers-reduced-motion:no-preference){.snowflake{transition:background-color 120ms linear,box-shadow 120ms linear}}
+
+/* Crimson background and readable AI equations. */
+:root[data-background=crimson]{--page:#200b12;--surface:#30131d;--panel:#2a1019ed;--line:#60303f;--muted:#d0a9b5}
+.background-sample.crimson{background-color:#701f39}
+.ai-answer{min-width:0}
+.ai-math{display:inline-block;max-width:100%;overflow-x:auto;vertical-align:middle}
+.ai-math-display{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:8px 2px;margin:8px 0;overscroll-behavior-x:contain}
+.ai-math-display .katex-display{margin:0;text-align:left}
+.ai-math .katex{font-size:1.1em;white-space:nowrap}

@@ -17,10 +17,10 @@
   <title>Ben's Wacky World</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FFDD00'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='23'%3EW%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261101-smooth-color">
+  <link rel="stylesheet" href="styles.css?v=20261102-math-crimson">
   <script defer src="games.js?v=20261030-three-games"></script>
   <script defer src="home-quotes.js?v=20260918-random"></script>
-  <script defer src="home.js?v=20261101-smooth-color"></script>
+  <script defer src="home.js?v=20261102-math-crimson"></script>
   <script defer src="popularity.js?v=20261022-dual-host"></script>
   <script defer src="weekly-track.js?v=20261102-summer4"></script>
   <script defer src="accounts.js?v=20261022-elo"></script>
@@ -28,13 +28,15 @@
   <script defer src="admin.js?v=20261021-reports"></script>
   <script defer src="messages.js?v=20261029-mentions"></script>
   <script defer src="ai-files.js?v=20260929-upload"></script>
-  <script defer src="ai.js?v=20261014-ai-scroll"></script>
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <script defer src="vendor/katex/katex.min.js"></script>
+  <script defer src="ai.js?v=20261102-math-crimson"></script>
   <script defer src="game-downloads.js?v=20261022-dual-host"></script>
   <script defer src="app.js?v=20261030-three-games"></script>
   <script defer src="battles.js?v=20260930-polish"></script>
   <script defer src="sort-menu.js?v=20260919-menu"></script>
   <script defer src="background-effects.js?v=20261101-dual-accent"></script>
-  <script defer src="appearance.js?v=20261101-smooth-color"></script>
+  <script defer src="appearance.js?v=20261102-math-crimson"></script>
 </head>
 <body>
   <canvas id="theme-canvas" aria-hidden="true"></canvas>
@@ -122,6 +124,7 @@
           <button type="button" data-background="obsidian" aria-pressed="true"><span class="background-sample obsidian" aria-hidden="true"></span>Obsidian</button>
           <button type="button" data-background="slate" aria-pressed="false"><span class="background-sample slate" aria-hidden="true"></span>Slate</button>
           <button type="button" data-background="mocha" aria-pressed="false"><span class="background-sample mocha" aria-hidden="true"></span>Mocha</button>
+          <button type="button" data-background="crimson" aria-pressed="false"><span class="background-sample crimson" aria-hidden="true"></span>Crimson</button>
           <button type="button" data-background="moss" aria-pressed="false"><span class="background-sample moss" aria-hidden="true"></span>Moss</button>
           <button type="button" data-background="snow" aria-pressed="false"><span class="background-sample snow" aria-hidden="true"></span>Snow</button>
         </div>

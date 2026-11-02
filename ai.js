@@ -2,7 +2,9 @@
  'use strict';
  const $=s=>document.querySelector(s),account=window.WackyAccount;
  let open=false,identity=null,generation=0,state=null,busy=false,timer,pending=null,attachment=null,reading=false,fileGeneration=0;
- function inlineText(el,text){
+ function inlineText(el,text,math=[]){
+  const pieces=text.split(/(\uE000\d+\uE001)/g);
+  if(pieces.length>1){for(const piece of pieces){const match=/^\uE000(\d+)\uE001$/.exec(piece);if(match&&math[+match[1]]){const entry=math[+match[1]],span=document.createElement('span');span.className=entry.display?'ai-math ai-math-display':'ai-math';try{if(!window.katex)throw Error('Math unavailable');window.katex.render(entry.tex,span,{displayMode:entry.display,throwOnError:false,trust:false,maxExpand:1000,maxSize:20,output:'htmlAndMathml'});}catch{span.textContent=entry.raw;}el.append(span);}else inlineText(el,piece);}return;}
   for(const part of text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g)){
    if(part.startsWith('**')&&part.endsWith('**')){const b=document.createElement('strong');b.textContent=part.slice(2,-2);el.append(b);}
    else if(part.startsWith('`')&&part.endsWith('`')){const c=document.createElement('code');c.textContent=part.slice(1,-1);el.append(c);}
@@ -11,12 +13,20 @@
  }
  function formatAnswer(text){
   const root=document.createElement('div');root.className='ai-answer';let list=null,pre=null;
+  const math=[];
+  // Protect code first; keep multiline equations intact through paragraph formatting.
+  text=text.replace(/\uE000|\uE001/g,'').replace(/```[\s\S]*?(?:```|$)|`[^`\n]*`|\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([\s\S]+?)\\\)|\$([^\s$](?:[^$\n]*?[^\s$])?)\$(?!\d)/g,(raw,dollars,brackets,inline,single)=>{
+   if(raw.startsWith('`'))return raw;
+   const tex=dollars??brackets??inline??single;
+   const index=math.push({raw,tex,display:dollars!==undefined||brackets!==undefined})-1;
+   return '\uE000'+index+'\uE001';
+  });
   for(const line of text.split('\n')){
    if(line.trim().startsWith('```')){if(pre){pre=null;}else{list=null;pre=document.createElement('pre');root.append(pre);}continue;}
    if(pre){pre.append(document.createTextNode(line+'\n'));continue;}
    const item=/^\s*(?:[-*] |\d+\. )(.*)/.exec(line);
-   if(item){const tag=/^\s*\d/.test(line)?'OL':'UL';if(!list||list.tagName!==tag){list=document.createElement(tag.toLowerCase());root.append(list);}const li=document.createElement('li');inlineText(li,item[1]);list.append(li);}
-   else{list=null;if(!line.trim())continue;const p=document.createElement('p');inlineText(p,line);root.append(p);}
+   if(item){const tag=/^\s*\d/.test(line)?'OL':'UL';if(!list||list.tagName!==tag){list=document.createElement(tag.toLowerCase());root.append(list);}const li=document.createElement('li');inlineText(li,item[1],math);list.append(li);}
+   else{list=null;if(!line.trim())continue;const p=document.createElement('p');inlineText(p,line,math);root.append(p);}
   }
   return root;
  }
