@@ -3,22 +3,22 @@
  if(location.hostname!=='bens-wacky-world.pages.dev')return;
  const account=window.WackyAccount,id='next-big-thing-20261102',dismissKey='wacky-poll-later:'+id;
  const choices=[
-  ['tournaments','🏆','Tournaments','Compete. Collect. Brag.','Community competitions, championship trophies, and achievements to earn.','#ffcb54'],
-  ['wacky-phone','☎️','Wacky Phone','One prompt. Total chaos.','Write, draw, and guess as your friends turn a simple idea into something ridiculous.','#b699ff'],
-  ['daily-games','🗓️','Daily Games','A fresh challenge every day.','Krillion and other daily games, together in one place. Come back for your next challenge.','#60dbbc'],
-  ['music','🎧','Music App','Your games. Your soundtrack.','A place for music, playlists, and playback controls while you browse and play.','#ff8cb5']
+  ['tournaments','🏆','Tournaments','Join tournaments against other players and earn trophies and profile achievements.','#ffcb54'],
+  ['wacky-phone','☎️','Wacky Phone','Play drawing telephone with friends. Write a prompt, draw someone else’s, then guess what their drawing is.','#b699ff'],
+  ['daily-games','🗓️','Daily Games','Play Krillion and other daily games directly on the site.','#60dbbc'],
+  ['music','🎧','Music App','Listen to music, make playlists, and control playback without leaving your game.','#ff8cb5']
  ];
  const home=document.querySelector('#home-panel'),button=document.createElement('button');
- button.type='button';button.className='feature-poll-launch';button.innerHTML='<span aria-hidden="true">✦</span><span><strong>You pick what’s next</strong><small>Four big ideas. One community vote.</small></span><span aria-hidden="true">Vote →</span>';
+ button.type='button';button.className='feature-poll-launch';button.innerHTML='<span aria-hidden="true">✦</span><span><strong>You pick what’s next</strong><small>Choose between four new features.</small></span><span aria-hidden="true">Vote →</span>';
  home.querySelector('.updates-log')?.closest('details')?.before(button);
  if(!button.isConnected)home.append(button);
  const dialog=document.createElement('dialog');dialog.id='feature-poll-dialog';dialog.setAttribute('aria-labelledby','feature-poll-title');
  dialog.innerHTML='<button type="button" class="poll-x" aria-label="Close voting">×</button><h2 id="feature-poll-title">Vote for the next feature!</h2><p class="poll-intro">What should we build next for Wacky World? Pick your favorite.</p><form><fieldset class="poll-choices"><legend class="sr-only">Choose the next feature</legend></fieldset><p class="poll-status" role="status" aria-live="polite"></p><div class="poll-actions"><button type="button" class="poll-later">Maybe later</button><button type="button" class="poll-retry" hidden>Try again</button><button type="submit" class="poll-vote">Cast my vote ✦</button></div></form><p class="poll-fine">One vote per account. Change your pick until November 9, 12 AM Arizona time.<br>These are ideas for what comes next—not features available yet.</p>';
  document.body.append(dialog);
  const $=s=>dialog.querySelector(s),field=$('fieldset'),status=$('.poll-status'),vote=$('.poll-vote');
- for(const [key,icon,title,tagline,description,color] of choices){
+ for(const [key,icon,title,description,color] of choices){
   const label=document.createElement('label');label.className='poll-card';label.style.setProperty('--poll-color',color);
-  label.innerHTML='<input type="radio" name="feature" value="'+key+'"><span class="poll-art" aria-hidden="true">'+icon+'</span><span class="poll-check" aria-hidden="true">✓</span><strong>'+title+'</strong><span class="poll-tagline">'+tagline+'</span><span class="poll-description">'+description+'</span><span class="poll-result" hidden><span class="poll-meter"><span></span></span><span class="poll-tally"></span></span>';
+  label.innerHTML='<input type="radio" name="feature" value="'+key+'"><span class="poll-art" aria-hidden="true">'+icon+'</span><span class="poll-check" aria-hidden="true">✓</span><strong>'+title+'</strong><span class="poll-description">'+description+'</span><span class="poll-result" hidden><span class="poll-meter"><span></span></span><span class="poll-tally"></span></span>';
   field.append(label);
  }
  let data=null,selected=null,busy=false,loaded=false,sequence=0,opener=null,autoStarted=false,pendingLogin=false;
