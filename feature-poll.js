@@ -4,7 +4,7 @@
  const account=window.WackyAccount,id='next-big-thing-20261102',dismissKey='wacky-poll-later:'+id;
  const choices=[
   ['tournaments','🏆','Tournaments','Join tournaments against other players and earn trophies and profile achievements.','#ffcb54'],
-  ['wacky-phone','☎️','Wacky Phone','Play drawing telephone with friends. Write a prompt, draw someone else’s, then guess what their drawing is.','#b699ff'],
+  ['wacky-phone','☎️','Wacky Phone','Based on Gartic Phone. Play drawing telephone with friends: write a prompt, draw someone else’s, then guess what their drawing is.','#b699ff'],
   ['daily-games','🗓️','Daily Games','Play Krillion and other daily games directly on the site.','#60dbbc'],
   ['music','🎧','Music App','Listen to music, make playlists, and control playback without leaving your game.','#ff8cb5']
  ];
