@@ -753,3 +753,25 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 .ai-math-display{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:8px 2px;margin:8px 0;overscroll-behavior-x:contain}
 .ai-math-display .katex-display{margin:0;text-align:left}
 .ai-math .katex{font-size:1.1em;white-space:nowrap}
+/* Community ballot: bright collectible cards on the site's own surfaces. */
+.feature-poll-launch{display:flex;align-items:center;gap:14px;width:min(960px,100%);margin:24px auto 16px;padding:18px 22px;text-align:left;border:1px solid var(--line);border-radius:18px;background:linear-gradient(110deg,rgb(var(--accent-rgb)/.12),var(--surface));color:var(--text,#f5f5f5)}
+.feature-poll-launch>span:first-child{font-size:28px;color:var(--accent)}.feature-poll-launch>span:nth-child(2){flex:1}.feature-poll-launch strong,.feature-poll-launch small{display:block}.feature-poll-launch small{margin-top:5px;color:var(--muted)}.feature-poll-launch>span:last-child{font-weight:700;color:var(--accent)}
+#feature-poll-dialog{font-family:Inter,Arial,sans-serif;width:min(780px,calc(100% - 24px));max-height:calc(100dvh - 24px);padding:34px;border:1px solid var(--line);border-radius:26px;background:var(--page,#101017);color:var(--text,#f5f5f5);overflow-y:auto;text-align:center;box-shadow:0 25px 100px #0008}
+#feature-poll-dialog::backdrop{background:#070812b8;backdrop-filter:blur(7px)}
+.poll-x{position:absolute;right:14px;top:12px;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:inherit;font-size:24px}
+.poll-kicker{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent);margin:6px 28px 15px}
+#feature-poll-title{font-size:clamp(27px,4.5vw,40px);line-height:1.1;letter-spacing:-1.2px;margin:0;text-align:center}#feature-poll-title span{color:var(--accent)}
+.poll-intro{color:var(--muted);font-size:14px;line-height:1.5;margin:14px auto 22px;max-width:440px}
+.poll-choices{font-family:Inter,Arial,sans-serif;display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0;margin:0;padding:0;min-width:0;text-align:left}
+.poll-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);cursor:pointer;min-width:0;transition:border-color .15s,transform .15s,background .15s}
+.poll-card:hover{border-color:var(--poll-color);transform:translateY(-2px)}.poll-card.is-picked{border-color:var(--poll-color);background:color-mix(in srgb,var(--poll-color) 12%,var(--surface));box-shadow:inset 0 0 0 1px var(--poll-color)}
+.poll-card input{position:absolute;opacity:0;width:1px;height:1px}.poll-card:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.poll-art{font-size:34px;line-height:1.3;display:grid;place-items:center;width:58px;height:54px;background:color-mix(in srgb,var(--poll-color) 15%,transparent);border-radius:14px;margin-bottom:6px;transform:rotate(-5deg)}
+.poll-card:nth-of-type(even) .poll-art{transform:rotate(5deg)}.poll-card strong{font-size:18px}.poll-tagline{font-size:12px;font-weight:700;color:var(--muted)}.poll-description{font-size:12px;line-height:1.5;color:var(--muted);margin-top:4px}
+.poll-check{position:absolute;right:16px;top:16px;width:23px;height:23px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:transparent}.is-picked .poll-check{background:var(--poll-color);border-color:var(--poll-color);color:#17131d}
+.poll-result{width:100%;margin-top:auto;padding-top:14px}.poll-result[hidden]{display:none}.poll-meter{display:block;height:6px;border-radius:9px;background:color-mix(in srgb,var(--muted) 20%,transparent);overflow:hidden}.poll-meter>span{display:block;height:100%;background:var(--poll-color);border-radius:9px;transition:width .4s ease}.poll-tally{display:block;margin-top:7px;font-size:12px;color:var(--muted)}
+.poll-status{min-height:20px;font-size:13px;margin:18px 0 12px;color:var(--muted)}.poll-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.poll-actions button{padding:12px 20px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:inherit;font-weight:700}.poll-actions .poll-vote{background:var(--accent);color:var(--accent-ink,#111);border-color:transparent}.poll-actions button:disabled{opacity:.5;cursor:default}.poll-fine{font-size:11px;line-height:1.6;color:var(--muted);margin:16px 0 0}
+@keyframes poll-pop{0%,100%{transform:rotate(-5deg) scale(1)}45%{transform:rotate(7deg) scale(1.16)}}
+@media(prefers-reduced-motion:no-preference){.poll-celebrate .is-picked .poll-art{animation:poll-pop .5s ease}}
+@media(max-width:480px){#feature-poll-dialog{padding:28px 16px 20px}.poll-card{padding:12px;gap:4px}.poll-card strong{font-size:15px}.poll-art{font-size:28px;width:46px;height:44px}.poll-description{font-size:11px}.poll-check{right:10px;top:10px}.poll-kicker{letter-spacing:1px}.feature-poll-launch{padding:14px;gap:9px}.feature-poll-launch small{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.poll-card,.poll-meter>span{transition:none}}

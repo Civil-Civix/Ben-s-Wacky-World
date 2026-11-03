@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import worker,{digest} from './worker.mjs';
 import {aiDay} from './ai.mjs';
 const db=new DatabaseSync(':memory:');
-for(const file of ['schema.sql','chat-schema.sql','ai-schema.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
+for(const file of ['schema.sql','chat-schema.sql','ai-schema.sql','visitors-schema.sql'])db.exec(readFileSync(new URL(file,import.meta.url),'utf8'));
 const DB={prepare(sql){return {bind(...args){return {async first(){return db.prepare(sql).get(...args)||null;},async all(){return {results:db.prepare(sql).all(...args)};},async run(){return {meta:db.prepare(sql).run(...args)};}};}};},async batch(items){return Promise.all(items.map(x=>x.run()));}};
 const yes={limit:async()=>({success:true})};
 const env={DB,PASSWORD_PEPPER:'test',GROQ_API_KEY:'mock-only',ALLOWED_ORIGIN:'https://civil-civix.github.io',REQUEST_LIMIT:yes};

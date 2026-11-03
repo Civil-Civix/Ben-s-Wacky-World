@@ -1,3 +1,4 @@
+import {featurePoll} from './feature-poll.mjs';
 import {friends,friendFilter} from './friends.mjs';
 import {battleResult,scoreRead,polySubmit} from './scores.mjs';
 import {battle,verifyBattle} from './battle.mjs';
@@ -129,8 +130,13 @@ export default {
     permitted(row,now);const token=await newSession(env,row.id,now);return json({user:publicUser(row)},200,{'Set-Cookie':cookie(token)});
    }
    if(request.method==='GET'&&(path==='/chat/public'||path==='/chat/public/mentions'||path.startsWith('/chat/public/photos/')))return await chat({request,url,env,me:null,now,body,fail,json,validJPEG});
+   if(path==='/feature-poll'&&request.method==='GET'){
+    let viewer=null;try{viewer=await session(request,env,now);}catch(error){if(error.status!==401)throw error;}
+    return await featurePoll({request,env,me:viewer,now,body,fail,json});
+   }
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
+   if(path==='/feature-poll')return await featurePoll({request,env,me,now,body,fail,json});
    if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});
    if(path==='/game-reports')return await reportGame({request,env,me,now,body,fail,json,games});
    if(path.startsWith('/admin/'))return await admin({request,url,env,me,now,body,fail,json,games});
