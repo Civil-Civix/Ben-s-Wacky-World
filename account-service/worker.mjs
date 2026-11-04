@@ -139,6 +139,24 @@ export default {
    if(path==='/feature-poll')return await featurePoll({request,env,me,now,body,fail,json});
    if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});
    if(path==='/game-reports')return await reportGame({request,env,me,now,body,fail,json,games});
+   if(path==='/admin/reset-password'){
+    if(!me.owner)fail(403,'Only the owner can reset passwords.');
+    if(request.method!=='POST')fail(405,'Use POST.');
+    const data=await body(request,2048);
+    if(!data||typeof data.password!=='string'||data.password.length<8||data.password.length>128)fail(400,'Use a password with 8–128 characters.');
+    const reason=typeof data.reason==='string'?data.reason.trim():'';
+    if(!reason||reason.length>280)fail(400,'Add a short reason (up to 280 characters).');
+    const target=await env.DB.prepare('SELECT id,username,owner FROM users WHERE id=?').bind(typeof data.userId==='string'?data.userId:'').first();
+    if(!target)fail(404,'Account not found.');
+    if(target.owner)fail(403,'The owner account is protected.');
+    const salt=randomBytes(16).toString('hex'),hash=await passwordHash(data.password,salt,env.PASSWORD_PEPPER);
+    await env.DB.batch([
+     env.DB.prepare('UPDATE users SET salt=?,password_hash=? WHERE id=? AND owner=0').bind(salt,hash,target.id),
+     env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(target.id),
+     env.DB.prepare('INSERT INTO admin_log(actor,target,action,details,created) VALUES(?,?,?,?,?)').bind(me.id,target.id,'reset-password',JSON.stringify({username:target.username,reason}),now)
+    ]);
+    return json({ok:true,username:target.username});
+   }
    if(path.startsWith('/admin/'))return await admin({request,url,env,me,now,body,fail,json,games});
    if(path==='/poly/best')return await polySubmit({request,env,me,now,body,fail,json});
    if(path.startsWith('/battle/'))return await battle({request,url,env,me,now,body,fail,json});

@@ -15,6 +15,27 @@
   const actions=el('div',undefined,'admin-actions'),choice=el('select');choice.id='admin-action';
   for(const [action,label] of [['mute','Mute chat'],['unmute','Remove mute'],['suspend','Suspend account'],['unsuspend','Lift suspension'],['ban','Ban account'],['unban','Unban account']]){const option=el('option',label);option.value=action;choice.append(option);}
   const apply=el('button','Review action');apply.type='button';apply.className='admin-primary';apply.addEventListener('click',()=>void applyUser(choice.value));actions.append(field('Action',choice),apply);panel.append(actions);
+  if(!selected.owner){
+   const reset=el('details',undefined,'admin-role-editor');reset.append(el('summary','Reset password'),el('p','Set a new password for this account. This signs out its existing sessions.'));
+   const password=el('input'),repeat=el('input');
+   for(const input of [password,repeat]){input.type='password';input.autocomplete='new-password';input.minLength=8;input.maxLength=128;input.setAttribute('data-admin-password','');}
+   const resetButton=el('button','Reset password');resetButton.type='button';
+   resetButton.addEventListener('click',async()=>{
+    if(busy||!selected||!account.user?.owner)return;
+    const user=selected,reason=$('#admin-reason').value.trim();
+    if(!reason){note('Add a reason first.');$('#admin-reason').focus();return;}
+    if(password.value.length<8){note('Use a password with at least 8 characters.');password.focus();return;}
+    if(password.value!==repeat.value){note('The passwords do not match.');repeat.focus();return;}
+    busy=true;resetButton.disabled=true;
+    try{
+     if(!await confirm('Reset the password for '+user.username+' and sign out their existing sessions?'))return;
+     if(!account.user?.owner)return;
+     await account.api('/admin/reset-password',{method:'POST',data:{userId:user.id,password:password.value,reason}});
+     note('Password reset for '+user.username+'. Existing sessions were signed out.');reset.open=false;await audit();
+    }catch(error){note(error.message);}finally{password.value='';repeat.value='';busy=false;resetButton.disabled=false;}
+   });
+   reset.append(field('New password',password),field('Confirm new password',repeat),resetButton);panel.append(reset);
+  }
   const roleEditor=el('details',undefined,'admin-role-editor');roleEditor.append(el('summary','Profile roles'),el('p','Colored labels only. No moderation permissions.'));panel.append(roleEditor);
   const roleList=el('div');roleList.id='admin-role-list';roleEditor.append(roleList);paintRoles();
   const scores=el('details',undefined,'admin-role-editor');scores.append(el('summary','Leaderboard scores'));const list=el('div',undefined,'admin-score-list');scores.append(list);scores.addEventListener('toggle',()=>{if(scores.open)void loadScores(selected.id,list);});panel.append(scores);
@@ -27,6 +48,7 @@
   const data={action,reason,hours,roles:roles.map(r=>({...r}))};busy=true;
   try{if(!await confirm(action+' for '+user.username+(action==='mute'||action==='suspend'?' for '+hours+' hours':'')+'? Reason: '+reason))return;if(!account.user?.owner)return;const result=await account.api('/admin/users/'+encodeURIComponent(user.id),{method:'POST',data});selected=result.user;roles=selected.roles;detail();note('Saved: '+action+' for '+user.username+'.');await audit();}catch(e){note(e.message);}finally{busy=false;}
  }
+ dialog.addEventListener('close',()=>dialog.querySelectorAll('[data-admin-password]').forEach(input=>{input.value='';}));
  const games=window.WACKY_GAMES||[];for(const game of games){const o=el('option');o.value=game.title||game.name||game.id;o.label=game.id;$('#admin-games').append(o);}
  async function boosts(){try{const data=await account.api('/game-boosts');if(!account.user?.owner)return;$('#admin-boosts').replaceChildren(...data.games.map(g=>el('p',(games.find(x=>x.id===g.id)?.title||g.id)+': +'+g.bonus)));}catch(e){note(e.message);}}
  $('#admin-boost-form').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;const value=$('#admin-game').value,game=games.find(g=>g.id===value||(g.title||g.name)===value);if(!game){note('Choose a game from the list.');return;}const data={gameId:game.id,bonus:Number($('#admin-bonus').value),reason:$('#admin-boost-reason').value.trim()};busy=true;try{if(!await confirm('Set '+(game.title||game.id)+' bonus to '+data.bonus+'?'))return;if(!account.user?.owner)return;await account.api('/admin/boost',{method:'POST',data});note('Popularity bonus saved.');await boosts();await audit();void window.WackyPopularity?.invalidate();}catch(error){note(error.message);}finally{busy=false;}});

@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import worker,{digest,passwordHash} from './worker.mjs';
+const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
+const DB={prepare(sql){let args=[];const stmt={bind(...values){args=values;return stmt;},async first(){return db.prepare(sql).get(...args)||null;},async run(){return {meta:db.prepare(sql).run(...args)};}};return stmt;},async batch(items){return Promise.all(items.map(x=>x.run()));}};
+const yes={limit:async()=>({success:true})},env={DB,PASSWORD_PEPPER:'local-test-only',ALLOWED_ORIGIN:'https://bens-wacky-world.pages.dev',REQUEST_LIMIT:yes,AUTH_LIMIT:yes,LOGIN_LIMIT:yes};
+for(const id of ['owner','target','other']){db.prepare('INSERT INTO users(id,username,username_key,salt,password_hash,created,owner,play_ms) VALUES(?,?,?,?,?,?,?,?)').run(id,id,id,'a'.repeat(32),await passwordHash('old-test-password','a'.repeat(32),env.PASSWORD_PEPPER),Date.now(),id==='owner'?1:0,12345);db.prepare('INSERT INTO sessions VALUES(?,?,?,?)').run(digest((id==='owner'?'a':id==='target'?'b':'c').repeat(64)),id,Date.now()+86400000,0);}
+const req=async(path,token,data,method='POST',origin=env.ALLOWED_ORIGIN)=>worker.fetch(new Request('https://api.test'+path,{method,headers:{Origin:origin,'X-Wacky-Client':'1','Content-Type':'application/json',...(token?{Cookie:'__Host-wacky_session='+token.repeat(64)}:{})},...(method==='GET'?{}:{body:JSON.stringify(data)})}),env);
+const data={userId:'target',password:'new-test-password',reason:'Requested recovery'};
+assert.equal((await req('/admin/reset-password',null,data)).status,401);
+assert.equal((await req('/admin/reset-password','c',data)).status,403);
+assert.equal((await req('/admin/reset-password','a',data,'POST','https://evil.test')).status,403);
+assert.equal((await req('/admin/reset-password','a',{...data,userId:'owner'})).status,403);
+assert.equal((await req('/admin/reset-password','a',{...data,password:'short'})).status,400);
+assert.equal((await req('/admin/reset-password','a',{...data,reason:''})).status,400);
+const before=db.prepare('SELECT * FROM users WHERE id=?').get('target');
+assert.equal((await req('/admin/reset-password','a',data)).status,200);
+const after=db.prepare('SELECT * FROM users WHERE id=?').get('target');assert.notEqual(before.salt,after.salt);assert.equal(after.password_hash,await passwordHash(data.password,after.salt,env.PASSWORD_PEPPER));assert.equal(after.play_ms,before.play_ms);assert.equal(after.bio,before.bio);
+assert.equal((await req('/me','b',null,'GET')).status,401);assert.equal((await req('/me','a',null,'GET')).status,200);assert.equal((await req('/me','c',null,'GET')).status,200);
+assert.equal((await req('/login',null,{username:'target',password:'old-test-password'})).status,401);
+assert.equal((await req('/login',null,{username:'target',password:data.password})).status,200);
+const log=db.prepare('SELECT * FROM admin_log').all();assert.equal(log.length,1);assert.equal(log[0].action,'reset-password');assert(!JSON.stringify(log).includes(data.password));assert(!JSON.stringify(log).includes(after.password_hash));
+console.log('PASS: owner-only, protected owner, validation/origin, new hash, old password/session revoked, other accounts/stats preserved, password-free audit');
