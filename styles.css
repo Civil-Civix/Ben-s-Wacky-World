@@ -760,7 +760,7 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 #feature-poll-dialog::backdrop{background:#070812b8;backdrop-filter:blur(7px)}
 .poll-x{position:absolute;right:14px;top:12px;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:inherit;font-size:24px}
 .poll-kicker{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent);margin:6px 28px 15px}
-#feature-poll-title{font-size:clamp(27px,4.5vw,40px);line-height:1.1;letter-spacing:-1.2px;margin:0;text-align:center}#feature-poll-title span{color:var(--accent)}
+#feature-poll-title{font-size:clamp(27px,4.5vw,40px);line-height:1.1;letter-spacing:-1.2px;margin:-12px 0 12px;text-align:center}#feature-poll-title span{color:var(--accent)}
 .poll-intro{color:var(--muted);font-size:14px;line-height:1.5;margin:14px auto 22px;max-width:440px}
 .poll-choices{font-family:Inter,Arial,sans-serif;display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0;margin:0;padding:0;min-width:0;text-align:left}
 .poll-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);cursor:pointer;min-width:0;transition:border-color .15s,transform .15s,background .15s}
