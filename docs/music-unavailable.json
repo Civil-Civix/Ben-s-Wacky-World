@@ -1,0 +1,21 @@
+{
+  "checked": "2026-11-07T16:31:45.721Z",
+  "note": "Excluded from the playable catalogue. Drive originals are unchanged. Quota failures may recover; re-audit and test playback before restoring.",
+  "entries": [
+    {
+      "track": {
+        "id": "1tFQcxLWKpHWaramETO-5BSjoppMC5OfN",
+        "title": "Anime Hits 5 - Anime Allstars",
+        "album": "Anime Hits Anime Allstars / Anime Hits 5 - Anime Allstars",
+        "artist": "",
+        "composer": "",
+        "creditSource": "Not available in audio metadata",
+        "artists": []
+      },
+      "reason": "non-audio",
+      "checked": "2026-11-07T16:22:58.917Z",
+      "sourceStatus": 206,
+      "sourceType": "application/octet-stream"
+    }
+  ]
+}

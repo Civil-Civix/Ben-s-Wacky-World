@@ -1,3 +1,6 @@
+import {communityMusic} from './community-music.mjs';
+import {musicPlaylists} from './music-playlists.mjs';
+import {musicAudio} from './music.mjs';
 import {featurePoll} from './feature-poll.mjs';
 import {friends,friendFilter} from './friends.mjs';
 import {battleResult,scoreRead,polySubmit} from './scores.mjs';
@@ -69,10 +72,11 @@ export default {
   const json=(data,status=200,extra={})=>Response.json(data,{status,headers:{...cors,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});
   try{
    if(!['/battle/verify','/battle/results'].includes(path)&&!publicGet&&!allowedOrigin)fail(403,'Origin not allowed.');
-   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'GET, POST, PATCH, DELETE, PUT, OPTIONS','Access-Control-Allow-Headers':'Content-Type, X-Wacky-Client','Access-Control-Max-Age':'86400'}});
+   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'GET, POST, PATCH, DELETE, PUT, OPTIONS','Access-Control-Allow-Headers':'Content-Type, X-Wacky-Client, Range','Access-Control-Max-Age':'86400'}});
    if(request.method!=='GET'&&request.headers.get('X-Wacky-Client')!=='1')fail(403,'Invalid client.');
    const ip=digest(now.toString().slice(0,5)+':'+(request.headers.get('CF-Connecting-IP')||'unknown'));
    if(!(await env.REQUEST_LIMIT.limit({key:ip})).success)fail(429,'Too many requests. Please try again in a minute.');
+   if(path==='/music/audio'){if(await env.DB.prepare('SELECT song_id FROM music_blocks WHERE song_id=?').bind(url.searchParams.get('id')).first())return json({error:'This song was removed from the library.',code:'SOURCE_MISSING'},404);return await musicAudio(request,cors);}
    // Anonymous presence deliberately uses the same browser ID before and after login.
    if(path==='/visitors'&&request.method==='POST'){
     if(origin!==env.ADDITIONAL_ALLOWED_ORIGIN)fail(403,'Origin not allowed.');
@@ -134,8 +138,12 @@ export default {
     let viewer=null;try{viewer=await session(request,env,now);}catch(error){if(error.status!==401)throw error;}
     return await featurePoll({request,env,me:viewer,now,body,fail,json});
    }
+   if(path.startsWith('/music/playlists/')&&request.method==='GET')return await musicPlaylists({request,url,env,me:null,now,body,fail,json,validJPEG});
+   if(['/music/community','/music/community/audio'].includes(path)&&request.method==='GET')return await communityMusic({request,url,env,me:null,now,body,fail,json,cors});
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
+   if(path.startsWith('/music/community'))return await communityMusic({request,url,env,me,now,body,fail,json,cors});
+   if(path==='/music/playlists'||path.startsWith('/music/playlists/'))return await musicPlaylists({request,url,env,me,now,body,fail,json,validJPEG});
    if(path==='/feature-poll')return await featurePoll({request,env,me,now,body,fail,json});
    if(path==='/friends'||path==='/friends/search')return await friends({request,url,env,me,now,body,fail,json,publicUser});
    if(path==='/game-reports')return await reportGame({request,env,me,now,body,fail,json,games});

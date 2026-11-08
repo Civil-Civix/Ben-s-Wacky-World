@@ -106,6 +106,8 @@
    if(m.mentionsEveryone&&(isPublic()||isGroup()))article.classList.add('message-everyone');
    const content=document.createElement('div'),head=document.createElement('div'),name=document.createElement('button'),time=document.createElement('time'),text=document.createElement('p');
    name.textContent=m.user.username+(m.user.owner?' · Owner':'');time.dateTime=new Date(m.created).toISOString();time.textContent=new Date(m.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});text.textContent=m.text;
+   const shares=[...String(m.text).matchAll(/https:\/\/bens-wacky-world\.pages\.dev\/#music-playlist=([a-f0-9-]{36})/g)].slice(0,3);
+   for(const match of shares){const listen=document.createElement('button');listen.type='button';listen.className='message-playlist-link';listen.textContent='Listen to shared playlist';listen.addEventListener('click',()=>window.WackyMusic?.openShared(match[1]));text.append(document.createElement('br'),listen);}
    name.type='button';name.className='message-profile';name.addEventListener('click',()=>void account.openProfile(m.user.id));
    const photo=document.createElement('button');photo.type='button';photo.className='message-profile message-photo';photo.setAttribute('aria-label','View '+m.user.username+' profile');photo.append(account.avatar(m.user));photo.addEventListener('click',()=>void account.openProfile(m.user.id));
    if(m.reply){const quote=document.createElement('div');quote.className='message-quote';quote.textContent=m.reply.text&&m.reply.expires>Date.now()?m.reply.username+': '+m.reply.text.slice(0,180):'Original message expired';content.append(quote);}
@@ -152,7 +154,7 @@
   if(active()){void refresh();void people();timer=setTimeout(tick,2000);}
  }
  async function tick(){if(!active())return;const token=generation;paint();await refresh();if(token!==generation)return;if(Date.now()-lastPeople>30000)await people();if(active()&&token===generation)timer=setTimeout(tick,2000);}
- window.WackyMessages={dm(user){if(location.hash==='#messages')choose(user);else{location.hash='messages';window.addEventListener('hashchange',()=>choose(user),{once:true});}}};
+ window.WackyMessages={draftPlaylist({name,url}){const input=$('#messages-text'),draft='Listen to '+name+'\n'+url;const combined=input.value?input.value+'\n'+draft:draft;if(combined.length>input.maxLength){note('Your draft is full. Copy the playlist link and send it separately.');return;}input.value=combined;location.hash='messages';requestAnimationFrame(()=>input.focus());},dm(user){if(location.hash==='#messages')choose(user);else{location.hash='messages';window.addEventListener('hashchange',()=>choose(user),{once:true});}}};
  window.addEventListener('wacky-message-removed',event=>{rows=rows.filter(m=>m.id!==event.detail);if(replyTo?.id===event.detail)setReply();paint();void refresh();});
  $('#messages-reply-cancel').addEventListener('click',()=>setReply());
  window.showMessages=value=>{document.body.classList.toggle('messages-open',value);open=value;$('#messages-panel').hidden=!value;sync();};

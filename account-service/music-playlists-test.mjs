@@ -1,0 +1,26 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import fs from 'node:fs';
+import {musicPlaylists,playlistStore} from './music-playlists.mjs';import {validJPEG} from './worker.mjs';import catalogue from '../music-library.json' with {type:'json'};
+test('shared playlists: storage, access, sync, validation and conflicts',async()=>{
+ const sql=new DatabaseSync(':memory:');sql.exec('CREATE TABLE users(id TEXT PRIMARY KEY,username TEXT,banned INTEGER DEFAULT 0)');sql.exec(fs.readFileSync(new URL('./music-playlists.sql',import.meta.url),'utf8'));
+ sql.exec(fs.readFileSync(new URL('./music-reports.sql',import.meta.url),'utf8'));
+ const owner={id:crypto.randomUUID(),username:'Owner'},other={id:crypto.randomUUID(),username:'Listener'};for(const u of [owner,other])sql.prepare('INSERT INTO users(id,username) VALUES(?,?)').run(u.id,u.username);
+ const db={prepare:s=>({bind:(...a)=>({first:async()=>sql.prepare(s).get(...a),all:async()=>({results:sql.prepare(s).all(...a)}),run:async()=>({meta:{changes:sql.prepare(s).run(...a).changes}})})})};const store=playlistStore(db);
+ const call=async(method,path,data,me=owner)=>{const url=new URL('https://unit.test/music/playlists'+path);return musicPlaylists({url,request:new Request(url,{method,...(data?{body:JSON.stringify(data)}:{})}),env:{DB:db},store,me,now:Date.now(),body:r=>r.json(),fail:(status,message)=>{throw Object.assign(new Error(message),{status})},json:(data,status=200)=>({data,status}),validJPEG});};
+ const base={clientId:crypto.randomUUID(),name:'Test mix',tracks:[catalogue.tracks[0].id],cover:''};
+ await assert.rejects(call('POST','',base,null),{status:401});const made=await call('POST','',base);assert.equal(made.status,201);const id=made.data.id;
+ assert.equal((await call('POST','',base)).data.id,id);assert.equal(await store.count(owner.id),1);
+ assert.equal((await call('GET','/'+id,null,null)).data.by,'Owner');
+ await assert.rejects(call('PATCH','/'+id,{...base,version:1},other),{status:403});
+ await assert.rejects(call('PATCH','/'+id,{...base,version:9}),{status:409});
+ const changed=await call('PATCH','/'+id,{...base,name:'Renamed',tracks:[...base.tracks,catalogue.tracks[1].id],version:1});assert.equal(changed.data.version,2);assert.equal(changed.data.tracks.length,2);
+ const concurrent=await Promise.allSettled([call('PATCH','/'+id,{...base,version:2}),call('PATCH','/'+id,{...base,version:2})]);assert.equal(concurrent.filter(r=>r.status==='fulfilled').length,1);assert.equal(concurrent.find(r=>r.status==='rejected').reason.status,409);
+ for(const patch of [{name:''},{tracks:['unknown']},{tracks:Array(201).fill(base.tracks[0])},{cover:'https://bad.test/photo'},{cover:'x'.repeat(50001)},{cover:false},{cover:'data:image/jpeg;base64,AAAA'}])await assert.rejects(call('POST','',{...base,...patch,clientId:crypto.randomUUID()}),{status:400});
+ await assert.rejects(call('GET','/'+id+'/extra'),{status:404});await assert.rejects(call('GET','/'+crypto.randomUUID()),{status:404});
+ sql.prepare('UPDATE users SET banned=1 WHERE id=?').run(owner.id);await assert.rejects(call('GET','/'+id,null,null),{status:404});sql.prepare('UPDATE users SET banned=0 WHERE id=?').run(owner.id);
+ for(let i=1;i<30;i++)await call('POST','',{...base,clientId:crypto.randomUUID()});await assert.rejects(call('POST','',{...base,clientId:crypto.randomUUID()}),{status:429});
+ const copy=await call('POST','',{...base,clientId:crypto.randomUUID()},other);
+ await assert.rejects(call('DELETE','/'+id,null,null),{status:401});await assert.rejects(call('DELETE','/'+id,null,other),{status:403});
+ assert.equal((await call('DELETE','/'+id)).data.ok,true);await assert.rejects(call('GET','/'+id,null,null),{status:404});
+ assert.equal((await call('DELETE','/'+id)).data.ok,true);assert.equal((await call('GET','/'+copy.data.id,null,null)).data.ownerId,other.id);
+ sql.close();
+});

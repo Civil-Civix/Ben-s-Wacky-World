@@ -11,7 +11,7 @@ const GITHUB_PAGES_ROOT = 'https://civil-civix.github.io/Ben-s-Wacky-World/';
 const ROOT_FILES = [
   'index.html', 'styles.css', 'games.js', 'home-quotes.js', 'home.js',
   'popularity.js', 'weekly-track.js', 'accounts.js', 'friends.js', 'admin.js',
-  'feature-poll.js', 'messages.js', 'ai-files.js', 'ai.js', 'game-downloads.js', 'app.js',
+  'community-music.js', 'community-music.css', 'music.js', 'music.css', 'music-library.json', 'feature-poll.js', 'messages.js', 'ai-files.js', 'ai.js', 'game-downloads.js', 'app.js',
   'battles.js', 'sort-menu.js', 'background-effects.js', 'appearance.js',
   'game-ad-guard.js', 'games.json', 'game-images.json', 'home-quotes.json', 'disabled-games.json',
 ];
