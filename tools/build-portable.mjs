@@ -18,6 +18,8 @@ if(process.argv.includes('--download')){
  await Promise.all(Array.from({length:6},worker));
  await cp(overrides,bundled,{recursive:true});
 }
+// Split oversized sources into Pages-safe pieces; keep the verified original locally.
+for(const g of manifest)for(const f of g.files)if(f.splitBytes){const source=await readFile(target(g,f));for(let offset=0,n=1;offset<source.length;offset+=f.splitBytes,n++){const part=target(g,f)+'.part'+n,expected=source.subarray(offset,offset+f.splitBytes);if(process.argv.includes('--download'))await writeFile(part,expected);else if(!(await readFile(part)).equals(expected))throw Error('Split asset mismatch: '+part);}}
 // Validate every downloaded file. Intentional launcher changes are checked against overrides.
 for(const g of manifest)for(const f of g.files){const dest=target(g,f),override=path.join(overrides,g.id,f.path.slice(g.prefix.length));let expected;try{expected=await readFile(override);}catch{}const b=await readFile(dest).catch(()=>{throw Error('Missing '+dest+'; run with --download first.');});if(expected?!b.equals(expected):(b.length!==f.bytes||digest(b)!==f.sha))throw Error('Unexpected local modification: '+dest);}
 // Verify added helpers, attribution and the shared ZIP library too.

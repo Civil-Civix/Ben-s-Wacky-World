@@ -1,66 +1,85 @@
 [
   {
+    "id": "krillion",
+    "title": "Krillion",
+    "url": "https://bens-wacky-krillion.mr-ellis1009.workers.dev/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
+    "id": "leafblowerrevolution",
+    "title": "Leaf Blower Revolution",
+    "url": "library/bundled/leafblowerrevolution/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
+    "id": "fnafintothepit",
+    "title": "Five Nights at Freddy’s: Into the Pit",
+    "url": "library/bundled/fnafintothepit/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
+    "id": "roam0120",
+    "title": "ROAM0120",
+    "url": "library/bundled/roam0120/index.html",
+    "source": "bundled",
+    "collection": "new"
+  },
+  {
     "id": "horseygame",
     "title": "Horsey Game",
     "url": "library/bundled/horseygame/index.html",
-    "source": "bundled",
-    "collection": "new"
+    "source": "bundled"
   },
   {
     "id": "feedandgrowfish",
     "title": "Feed and Grow: Fish",
     "url": "library/bundled/feedandgrowfish/index.html",
-    "source": "bundled",
-    "collection": "new"
+    "source": "bundled"
   },
   {
     "id": "minecraftstorymode",
     "title": "Minecraft: Story Mode",
     "url": "library/bundled/minecraftstorymode/index.html",
-    "source": "bundled",
-    "collection": "new"
+    "source": "bundled"
   },
   {
     "id": "hillclimbracing",
     "title": "Hill Climb Racing",
     "url": "https://civil-civix.github.io/HillClimbRacingPort/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "toasterball",
     "title": "Toasterball",
     "url": "library/imported-20261022/toasterball/play.html",
-    "source": "user-upload",
-    "collection": "new"
+    "source": "user-upload"
   },
   {
     "id": "dudestop",
     "title": "Dude, Stop",
     "url": "library/imported-20261022/dudestop/play.html",
-    "source": "user-upload",
-    "collection": "new"
+    "source": "user-upload"
   },
   {
     "id": "gambonanza",
     "title": "Gambonanza",
     "url": "https://civil-civix.github.io/Gambonanza-Port/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "deeeersimulator",
     "title": "DEEEER Simulator",
     "url": "https://civil-civix.github.io/DEEEER-Simulator-Port/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "treeshateyou",
     "title": "Trees Hate You",
     "url": "https://civil-civix.github.io/Trees-Hate-You/",
-    "source": "external",
-    "collection": "new"
+    "source": "external"
   },
   {
     "id": "pokemonshowdown",

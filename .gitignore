@@ -17,3 +17,5 @@ node_modules/
 # Downloaded portable game assets and generated portable site.
 /library/bundled/
 /.portable/
+
+/krillion-service/output/

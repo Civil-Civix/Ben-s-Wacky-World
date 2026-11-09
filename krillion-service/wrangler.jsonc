@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bens-wacky-krillion",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-17",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bens-wacky-krillion",
+      "database_id": "3e61ef1c-c0e2-47f4-88d4-73b8318b13ee",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://bens-wacky-krillion.mr-ellis1009.workers.dev",
+    "REFERENCE_SYNC": "true",
+    "LOCAL_DEVELOPMENT": "false"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
