@@ -1,14 +1,22 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'midnight',accent:'#3399FF',effect:'nova',speed:1,amount:1,musicSensitivity:1,musicPosition:53,snow:true,secondaryAccent:'#FA578C',accentMode:'single'};
+  const defaults = {background:'obsidian',accent:'RAINBOW',effect:'audio-bars',speed:1,amount:1,musicSensitivity:1,musicPosition:53,snow:true,secondaryAccent:'#FA578C',accentMode:'single'};
   const effects = ['none','audio-bars','nova','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
   const backgrounds = ['midnight','obsidian','slate','mocha','moss','crimson','violet','snow'];
   const root = document.documentElement;
   const layer = document.querySelector('#snow');
   const warning = document.querySelector('#appearance-notice');
+  // Apply the owner's new default once per browser; later choices remain saved.
+  const resetKey = key + '.reset';
+  const resetVersion = '2026-11-09-music-rainbow';
   function read() {
     try {
+      if (localStorage.getItem(resetKey) !== resetVersion) {
+        localStorage.setItem(key, JSON.stringify(defaults));
+        localStorage.setItem(resetKey, resetVersion);
+        return {...defaults};
+      }
       const saved = JSON.parse(localStorage.getItem(key) || '{}');
       return {
         background:backgrounds.includes(saved?.background) ? saved.background : defaults.background,
@@ -132,7 +140,7 @@
   const secondOptions=document.querySelector('#secondary-accent-options');
   document.querySelectorAll('[data-accent]:not([data-accent="RAINBOW"])').forEach(original=>{const button=original.cloneNode(true);button.dataset.secondaryAccent=button.dataset.accent;delete button.dataset.accent;button.setAttribute('aria-label',original.getAttribute('aria-label').replace('accent','second accent'));button.addEventListener('click',()=>{appearance.secondaryAccent=button.dataset.secondaryAccent;apply(true);});secondOptions.append(button);});
   document.querySelector('#secondary-accent').addEventListener('input',e=>{appearance.secondaryAccent=e.target.value.toUpperCase();apply(true);});
-  document.querySelector('#accent-mode').addEventListener('change',e=>{appearance.accentMode=e.target.value;if(appearance.accentMode!=='single'&&appearance.accent==='RAINBOW')appearance.accent=defaults.accent;apply(true);});
+  document.querySelector('#accent-mode').addEventListener('change',e=>{appearance.accentMode=e.target.value;if(appearance.accentMode!=='single'&&appearance.accent==='RAINBOW')appearance.accent='#3399FF';apply(true);});
   reducedMotion.addEventListener('change',()=>apply());
   document.querySelector('#custom-accent').addEventListener('input',event=>{appearance.accent=event.target.value.toUpperCase();apply(true);});
   document.querySelector('#music-sensitivity').addEventListener('input',event=>{appearance.musicSensitivity=Number(event.target.value);apply(true);});
