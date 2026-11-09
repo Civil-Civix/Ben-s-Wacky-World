@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
-  const defaults = {background:'midnight',accent:'#3399FF',effect:'nova',speed:1,amount:1,snow:true,secondaryAccent:'#FA578C',accentMode:'single'};
+  const defaults = {background:'midnight',accent:'#3399FF',effect:'nova',speed:1,amount:1,musicSensitivity:1,musicPosition:53,snow:true,secondaryAccent:'#FA578C',accentMode:'single'};
   const effects = ['none','audio-bars','nova','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
   const backgrounds = ['midnight','obsidian','slate','mocha','moss','crimson','violet','snow'];
   const root = document.documentElement;
@@ -17,6 +17,8 @@
         accentMode:saved?.accent!=='RAINBOW'&&['split','fade'].includes(saved?.accentMode)?saved.accentMode:'single',
         speed:Number.isFinite(saved?.speed) ? Math.max(.25,Math.min(5,saved.speed)) : 1,
         amount:Number.isFinite(saved?.amount) ? Math.max(.25,Math.min(3,saved.amount)) : 1,
+        musicSensitivity:Number.isFinite(saved?.musicSensitivity)?Math.max(.25,Math.min(5,saved.musicSensitivity)):1,
+        musicPosition:Number.isFinite(saved?.musicPosition)?Math.max(0,Math.min(100,saved.musicPosition)):53,
         effect:effects.includes(saved?.effect) ? saved.effect : defaults.effect,
         snow:typeof saved?.snow === 'boolean' ? saved.snow : defaults.snow
       };
@@ -77,6 +79,11 @@
     root.dataset.accentMode=appearance.accentMode;
     root.dataset.background = appearance.background;
     root.dataset.effect = appearance.effect;
+    document.querySelector('#music-reactivity-settings').hidden=appearance.effect!=='audio-bars';
+    document.querySelector('#music-sensitivity').value=appearance.musicSensitivity;
+    document.querySelector('#music-sensitivity-value').textContent=appearance.musicSensitivity+'×';
+    document.querySelector('#music-position').value=appearance.musicPosition;
+    document.querySelector('#music-position-value').textContent=appearance.musicPosition+'%';
     root.dataset.animateEffects = String(appearance.snow);
     root.style.setProperty('--effect-speed',appearance.speed);
     document.querySelector('#effect-speed').value=appearance.speed;
@@ -128,6 +135,8 @@
   document.querySelector('#accent-mode').addEventListener('change',e=>{appearance.accentMode=e.target.value;if(appearance.accentMode!=='single'&&appearance.accent==='RAINBOW')appearance.accent=defaults.accent;apply(true);});
   reducedMotion.addEventListener('change',()=>apply());
   document.querySelector('#custom-accent').addEventListener('input',event=>{appearance.accent=event.target.value.toUpperCase();apply(true);});
+  document.querySelector('#music-sensitivity').addEventListener('input',event=>{appearance.musicSensitivity=Number(event.target.value);apply(true);});
+  document.querySelector('#music-position').addEventListener('input',event=>{appearance.musicPosition=Number(event.target.value);apply(true);});
   document.querySelector('#effect-speed').addEventListener('input',event=>{appearance.speed=Number(event.target.value);apply(true);});
   document.querySelector('#effect-amount').addEventListener('input',event=>{appearance.amount=Number(event.target.value);apply(true);});
   document.querySelector('#snow-enabled').addEventListener('change',event=>{appearance.snow=event.target.checked;apply(true);});

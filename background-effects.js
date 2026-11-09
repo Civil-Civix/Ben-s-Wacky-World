@@ -3,7 +3,7 @@
  const canvas=document.querySelector('#theme-canvas'),ctx=canvas.getContext('2d');
  let effect='none',color='#8B7BFF',ink='#382f66',highlight='#b4a8ff',animate=true,speed=1,amount=1,light=false,w=0,h=0,points=[],raf=0,last=0,time=0;
  let primaryPalette=null,secondaryPalette=null,splitColors=false;
- const barsReducedMotion=matchMedia('(prefers-reduced-motion: reduce)');let barLevels=[];
+ const barsReducedMotion=matchMedia('(prefers-reduced-motion: reduce)');let barLevels=[],musicSensitivity=1,musicPosition=53;
  barsReducedMotion.addEventListener('change',sync);
  let gas=[],pointer={x:-1000,y:-1000,active:false};
  window.addEventListener('pointermove',e=>{if(effect==='nova'){pointer.x=e.clientX;pointer.y=e.clientY;pointer.active=true;}},{passive:true});
@@ -31,14 +31,14 @@
   dt*=speed*(effect==='halloween'?2:effect==='nova'?3:1);time+=dt;ctx.clearRect(0,0,w,h);selectPalette(0);ctx.lineWidth=.7;
   if(effect==='audio-bars'){
    const moving=animate&&!barsReducedMotion.matches,spectrum=moving?window.getMusicSpectrum?.():null;
-   const count=Math.max(24,Math.min(240,Math.round(w/9*amount))),step=w/count,barWidth=Math.max(1,step*.42),center=h*.53,maxHeight=Math.min(h*.25,190);
+   const count=Math.max(24,Math.min(240,Math.round(w/9*amount))),step=w/count,barWidth=Math.max(1,step*.42),center=h*musicPosition/100,maxHeight=Math.min(h*.25,190);
    if(barLevels.length!==count)barLevels=Array(count).fill(0);
    ctx.save();
    for(let i=0;i<count;i++){
     selectPalette(i);const x=(i+.5)*step,position=i/(count-1),envelope=.3+.7*Math.pow(Math.sin(position*Math.PI),.7);
     const idle=(.19+.15*Math.sin(time*1.7+i*.63)+.1*Math.sin(time*.8+i*1.71))*envelope;
     const bin=spectrum?Math.min(spectrum.length-1,Math.floor(2*Math.pow(150,position))):0;
-    const target=spectrum?Math.pow(spectrum[bin]/255,1.3)*envelope:Math.max(.035,idle);
+    const target=spectrum?Math.min(1,Math.pow(spectrum[bin]/255,1.3)*musicSensitivity)*envelope:Math.max(.035,idle);
     const blend=dt>0?1-Math.exp(-dt*12):1;barLevels[i]+=(target-barLevels[i])*blend;
     const height=3+barLevels[i]*maxHeight;
     const fade=ctx.createLinearGradient(0,center-height,0,center+height);fade.addColorStop(0,color+'00');fade.addColorStop(.3,color);fade.addColorStop(.5,light?color:highlight);fade.addColorStop(.7,color);fade.addColorStop(1,color+'00');
@@ -152,7 +152,7 @@
  function selectPalette(i){const p=splitColors&&Math.abs(i%2)===1?secondaryPalette:primaryPalette;if(p){color=p.color;ink=p.ink;highlight=p.highlight;}ctx.fillStyle=color;ctx.strokeStyle=color;}
  function setPalette(next){primaryPalette=palette(next);selectPalette(0);}
  window.setBackgroundEffectColor=next=>{setPalette(next);if(!animate&&!paused())draw(0);};
- window.setBackgroundEffect=(settings)=>{const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;splitColors=settings.accentMode==='split';secondaryPalette=palette(settings.secondaryEffectColor||settings.effectColor||settings.accent);setPalette(settings.effectColor||settings.accent);animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
+ window.setBackgroundEffect=(settings)=>{musicSensitivity=Number.isFinite(settings.musicSensitivity)?Math.max(.25,Math.min(5,settings.musicSensitivity)):1;musicPosition=Number.isFinite(settings.musicPosition)?Math.max(0,Math.min(100,settings.musicPosition)):53;const changed=effect!==settings.effect||amount!==(settings.amount||1);amount=settings.amount||1;light=settings.background==='snow'&&settings.effect!=='cherry-blossom';effect=settings.effect;splitColors=settings.accentMode==='split';secondaryPalette=palette(settings.secondaryEffectColor||settings.effectColor||settings.accent);setPalette(settings.effectColor||settings.accent);animate=settings.snow;speed=settings.speed||1;if(changed)resize();sync();};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('resize',()=>{resize();sync();});
  resize();
