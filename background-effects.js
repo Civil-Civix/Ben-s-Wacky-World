@@ -3,6 +3,8 @@
  const canvas=document.querySelector('#theme-canvas'),ctx=canvas.getContext('2d');
  let effect='none',color='#8B7BFF',ink='#382f66',highlight='#b4a8ff',animate=true,speed=1,amount=1,light=false,w=0,h=0,points=[],raf=0,last=0,time=0;
  let primaryPalette=null,secondaryPalette=null,splitColors=false;
+ const barsReducedMotion=matchMedia('(prefers-reduced-motion: reduce)');let barLevels=[];
+ barsReducedMotion.addEventListener('change',sync);
  let gas=[],pointer={x:-1000,y:-1000,active:false};
  window.addEventListener('pointermove',e=>{if(effect==='nova'){pointer.x=e.clientX;pointer.y=e.clientY;pointer.active=true;}},{passive:true});
  const release=()=>{pointer.active=false;};
@@ -27,7 +29,24 @@
  function dot(x,y,r,a){ctx.globalAlpha=Math.min(1,(a)*(light?1.65:1));ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
  function draw(dt){
   dt*=speed*(effect==='halloween'?2:effect==='nova'?3:1);time+=dt;ctx.clearRect(0,0,w,h);selectPalette(0);ctx.lineWidth=.7;
-  if(effect==='nova'){
+  if(effect==='audio-bars'){
+   const moving=animate&&!barsReducedMotion.matches,spectrum=moving?window.getMusicSpectrum?.():null;
+   const count=Math.max(24,Math.min(240,Math.round(w/9*amount))),step=w/count,barWidth=Math.max(1,step*.42),center=h*.53,maxHeight=Math.min(h*.25,190);
+   if(barLevels.length!==count)barLevels=Array(count).fill(0);
+   ctx.save();
+   for(let i=0;i<count;i++){
+    selectPalette(i);const x=(i+.5)*step,position=i/(count-1),envelope=.3+.7*Math.pow(Math.sin(position*Math.PI),.7);
+    const idle=(.19+.15*Math.sin(time*1.7+i*.63)+.1*Math.sin(time*.8+i*1.71))*envelope;
+    const bin=spectrum?Math.min(spectrum.length-1,Math.floor(2*Math.pow(150,position))):0;
+    const target=spectrum?Math.pow(spectrum[bin]/255,1.3)*envelope:Math.max(.035,idle);
+    const blend=dt>0?1-Math.exp(-dt*12):1;barLevels[i]+=(target-barLevels[i])*blend;
+    const height=3+barLevels[i]*maxHeight;
+    const fade=ctx.createLinearGradient(0,center-height,0,center+height);fade.addColorStop(0,color+'00');fade.addColorStop(.3,color);fade.addColorStop(.5,light?color:highlight);fade.addColorStop(.7,color);fade.addColorStop(1,color+'00');
+    ctx.fillStyle=fade;ctx.globalAlpha=light?.48:.5;ctx.fillRect(x-barWidth/2,center-height,barWidth,height*2);
+    ctx.globalAlpha=light?.06:.08;ctx.fillStyle=color;ctx.fillRect(x-step*.7,center-height*.65,step*1.4,height*1.3);
+    ctx.globalAlpha=light?.6:.7;ctx.fillStyle=light?color:highlight;ctx.fillRect(x-step/2,center-1,step+1,2);
+   }ctx.restore();
+  }else if(effect==='nova'){
    ctx.save();ctx.globalCompositeOperation=light?'source-over':'screen';
    gas.forEach((p,i)=>{selectPalette(i);novaMove(p,dt,true);const radius=p.radius*(1+Math.sin(time*.17+p.phase)*.1);
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.phase+Math.sin(time*.04)*.15);ctx.scale(1,.65);const glow=ctx.createRadialGradient(0,0,0,0,0,radius);glow.addColorStop(0,i%3===0?highlight:color);glow.addColorStop(.38,color);glow.addColorStop(1,color+'00');
@@ -114,7 +133,7 @@
   ctx.globalAlpha=Math.min(1,(1)*(light?1.65:1));
  }
  function paused(){return document.hidden||document.body.classList.contains('playing')||document.body.classList.contains('messages-open');}
- function tick(now){raf=0;if(paused()||!animate||effect==='none'||effect==='snow')return;
+ function tick(now){raf=0;if(paused()||!animate||(effect==='audio-bars'&&barsReducedMotion.matches)||effect==='none'||effect==='snow')return;
   if(now-last>=32){draw(Math.min((now-last)/1000,.06));last=now;}
   raf=requestAnimationFrame(tick);
  }

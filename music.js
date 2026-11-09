@@ -247,9 +247,24 @@
     seek.setAttribute('aria-valuetext',formatTime(audio.currentTime)+' of '+formatTime(duration));
     $('#music-elapsed').textContent=formatTime(audio.currentTime);$('#music-duration').textContent=formatTime(duration);
   }
+  // One audio source per player; the analyser is a read-only branch.
+  let spectrumContext=null,spectrumSource=null,spectrumAnalyser=null,spectrumBytes=null;
+  function prepareSpectrum(){
+    if(!spectrumContext&&document.documentElement.dataset.effect!=='audio-bars')return;
+    try{
+      if(!spectrumContext){const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;spectrumContext=new AudioCtx();}
+      if(!spectrumSource){spectrumSource=spectrumContext.createMediaElementSource(audio);spectrumSource.connect(spectrumContext.destination);}
+      if(!spectrumAnalyser){spectrumAnalyser=spectrumContext.createAnalyser();spectrumAnalyser.fftSize=1024;spectrumAnalyser.smoothingTimeConstant=.8;spectrumSource.connect(spectrumAnalyser);spectrumBytes=new Uint8Array(spectrumAnalyser.frequencyBinCount);}
+      if(spectrumContext.state==='suspended')void spectrumContext.resume().catch(()=>{});
+    }catch{/* Visualization must never prevent the player from starting. */}
+  }
+  window.getMusicSpectrum=()=>{if(!spectrumAnalyser||spectrumContext.state!=='running'||audio.paused||audio.ended||audio.readyState<2)return null;spectrumAnalyser.getByteFrequencyData(spectrumBytes);return spectrumBytes;};
+  window.addEventListener('bww:appearance',()=>{if(!audio.paused&&document.documentElement.dataset.effect==='audio-bars')prepareSpectrum();});
+  audio.addEventListener('play',prepareSpectrum);
   async function play(){
     if(!active)return;const attempt=++playAttempt;
     if(audio.error)audio.load();
+    prepareSpectrum();
     try{await audio.play();if(attempt===playAttempt)announce();}
     catch(error){if(attempt!==playAttempt||error.name==='AbortError'||audio.error)return;announce(error.name==='NotAllowedError'?'Press Play to start listening.':'This song could not play. Try Play again or choose another song.');}
     paintPlayback();

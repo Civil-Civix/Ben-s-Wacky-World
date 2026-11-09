@@ -2,8 +2,8 @@
 (() => {
   const key = 'bens-wacky-world.appearance.v1';
   const defaults = {background:'midnight',accent:'#3399FF',effect:'nova',speed:1,amount:1,snow:true,secondaryAccent:'#FA578C',accentMode:'single'};
-  const effects = ['none','nova','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
-  const backgrounds = ['midnight','obsidian','slate','mocha','moss','crimson','snow'];
+  const effects = ['none','audio-bars','nova','snow','matrix','constellation','topography','starfield','casino','cherry-blossom','halloween'];
+  const backgrounds = ['midnight','obsidian','slate','mocha','moss','crimson','violet','snow'];
   const root = document.documentElement;
   const layer = document.querySelector('#snow');
   const warning = document.querySelector('#appearance-notice');

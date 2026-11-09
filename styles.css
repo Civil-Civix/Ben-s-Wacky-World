@@ -775,3 +775,7 @@ body.ai-open #theme-canvas,body.ai-open #snow{
 @media(prefers-reduced-motion:no-preference){.poll-celebrate .is-picked .poll-art{animation:poll-pop .5s ease}}
 @media(max-width:480px){#feature-poll-dialog{padding:28px 16px 20px}.poll-card{padding:12px;gap:4px}.poll-card strong{font-size:15px}.poll-art{font-size:28px;width:46px;height:44px}.poll-description{font-size:11px}.poll-check{right:10px;top:10px}.poll-kicker{letter-spacing:1px}.feature-poll-launch{padding:14px;gap:9px}.feature-poll-launch small{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.poll-card,.poll-meter>span{transition:none}}
+
+:root[data-background=violet]{--page:#120b21;--surface:#20152f;--panel:#1a1129ed;--line:#49345e;--muted:#bdb0ce}
+.background-sample.violet{background-color:#392052}
+.effect-sample.audio-bars{background:linear-gradient(var(--accent),var(--accent)) center/100% 1px no-repeat,repeating-linear-gradient(90deg,transparent 0 3px,var(--accent) 3px 5px,transparent 5px 8px);clip-path:polygon(0 44%,12% 32%,24% 12%,38% 38%,50% 0,62% 30%,76% 17%,88% 36%,100% 44%,100% 56%,88% 64%,76% 83%,62% 70%,50% 100%,38% 62%,24% 88%,12% 68%,0 56%)}
