@@ -147,7 +147,14 @@
   document.documentElement.style.setProperty('--chat-effect-right',right+'px');
  }
  new ResizeObserver(updateChatMask).observe(document.querySelector('#ai-content'));
- function sync(){updateChatMask();cancelAnimationFrame(raf);raf=0;canvas.hidden=effect==='none'||effect==='snow';if(!paused()){draw(0);last=performance.now();if(animate&&!canvas.hidden)raf=requestAnimationFrame(tick);}}
+ function sync(){
+  updateChatMask();canvas.hidden=effect==='none'||effect==='snow';
+  const running=!paused()&&animate&&!canvas.hidden&&!(effect==='audio-bars'&&barsReducedMotion.matches);
+  // Keep a running frame and its clock. Frequent UI updates must not reset elapsed time.
+  if(!running){cancelAnimationFrame(raf);raf=0;}
+  if(!paused())draw(0);
+  if(running&&!raf){last=performance.now();raf=requestAnimationFrame(tick);}
+ }
  function palette(next){return {color:next,highlight:'#'+next.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.65+255*.35).toString(16).padStart(2,'0')).join(''),ink:'#'+next.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.35).toString(16).padStart(2,'0')).join('')};}
  function selectPalette(i){const p=splitColors&&Math.abs(i%2)===1?secondaryPalette:primaryPalette;if(p){color=p.color;ink=p.ink;highlight=p.highlight;}ctx.fillStyle=color;ctx.strokeStyle=color;}
  function setPalette(next){primaryPalette=palette(next);selectPalette(0);}
