@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#394547">
+  <meta name="description" content="Classic Counter-Strike surfing in your browser. Seventeen maps, Source-style movement, saved personal bests.">
+  <title>CS Surf</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233e4637'/%3E%3Cpath d='M4 24L16 6L28 24Z' fill='%23b9cbb0'/%3E%3C/svg%3E">
+  <script>window.CSSURF_BASE = 'https://cdn.jsdelivr.net/gh/thirstygithub/cssurf@b61601b2b1aa433622125dd14c7dd16b8bfd857c/';</script>
+  <script>
+  (function () {
+    var base = window.CSSURF_BASE;
+    var tries = 0;
+    var style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.crossOrigin = 'anonymous';
+    style.href = base + 'assets/game-CeFEDiXz.css';
+    document.head.appendChild(style);
+    var preload = document.createElement('link');
+    preload.rel = 'modulepreload';
+    preload.crossOrigin = 'anonymous';
+    preload.href = base + 'assets/email-auth-9VgsY3Lt.js';
+    document.head.appendChild(preload);
+    function boot() {
+      var tag = document.createElement('script');
+      tag.type = 'module';
+      tag.crossOrigin = 'anonymous';
+      tag.onerror = function () { if (++tries < 6) setTimeout(boot, 600 * tries); };
+      tag.src = base + 'assets/game-DMQX3t25.js';
+      document.head.appendChild(tag);
+    }
+    boot();
+  })();
+  </script>
+  <style>
+    #leaderboard, #account, #play-tab-online, #play-online, #online-panel, #settings-tab-community, #settings-community, .room-players, .room-chat, .room-nominate, .room-extend, .room-rtv, .room-leave, .room-reports { display: none !important; }
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="surf_boreas game"></canvas>
+  <div id="hud">
+    <div class="server-info"><span id="map-name">surf_boreas</span><small>66 tick <span class="hud-separator">/</span> Source-style surf <span id="fps" hidden></span></small></div>
+    <div class="top-right"><span id="mode">NORMAL + AUTO BHOP</span><small id="best">Personal best: —</small></div>
+    <div class="route" aria-label="Course progress"><span id="route-start" class="active">Start</span><span id="route-cp1">CP 1</span><span id="route-cp2">CP 2</span><span id="route-finish">Finish</span></div>
+    <div id="crosshair" aria-hidden="true"></div>
+    <div id="telemetry"><div id="run-time">00:00.000</div><div class="speed-line"><strong id="speed">0</strong><span> units/s</span></div><div id="run-status">In start zone</div><div id="section"></div></div>
+    <div id="center-speed-hud" hidden aria-label="Centre speed"><strong id="center-speed">0</strong><small>units/s</small></div>
+    <section id="split-comparison" hidden aria-label="Checkpoint comparison"><span id="split-comparison-label"></span><div><span>PB <strong id="split-pb">—</strong></span><span>WR <strong id="split-wr">—</strong></span></div></section>
+    <div id="keys" aria-hidden="true"><span data-key="w">W</span><div><span data-key="a">A</span><span data-key="s">S</span><span data-key="d">D</span></div></div>
+    <div id="toast" role="status"></div>
+    <div class="bottom-right" id="shortcut-hint">R restart &nbsp; Esc menu</div>
+    <div id="turn-speed-hud" hidden></div>
+    <pre id="diagnostics" hidden></pre>
+  </div>
+
+  <div id="menu" class="screen lobby-mode">
+    <section class="main-menu" aria-labelledby="menu-title">
+      <div class="game-title"><svg class="surfd-mark" viewBox="0 0 64 48" aria-hidden="true"><path d="M4 36 27 10h16L20 36Zm21 0L48 10h12L37 36Z" fill="currentColor"/><path d="M4 44h56" stroke="currentColor" stroke-width="2"/></svg><span id="brand-title">surfd<span class="brand-period">.</span></span><small>Surf the web.</small></div>
+      <div class="menu-map">
+        <p class="menu-eyebrow">Current map</p>
+        <h1 id="menu-title">surf_boreas</h1>
+        <div class="map-credit">by Syncronyze · Linear · Tier 1 · 2 checkpoints</div>
+      </div>
+      <nav class="menu-actions" aria-label="Game menu">
+        <button id="home" class="lobby-nav-current" aria-current="page">Play surf <span aria-hidden="true">›</span></button>
+        <button id="play" class="button-primary" disabled>Loading map…</button>
+        <div class="pause-play-options" data-play-options></div>
+        <button id="maps">Change map</button>
+        <button id="options">Settings</button>
+        <button id="restart" class="menu-secondary">Restart run</button>
+        <button id="watch" class="menu-secondary">Watch route</button>
+        <button id="lab" class="menu-secondary">Practice facility</button>
+      </nav>
+      <button id="client-resume" class="button-primary" hidden>Resume surfing <span aria-hidden="true">↗</span></button>
+      <div id="practice-stations" hidden><label for="station">Practice station</label><select id="station"></select><button id="visit-station">Go to station</button></div>
+      <div class="lobby-sidebar-note"><span class="connection-dot" aria-hidden="true"></span> Free to play. No download.<small>Desktop · Keyboard &amp; mouse</small></div>
+      <div class="menu-status-group"><p id="menu-status" role="status">Loading the map…</p></div>
+      <details class="quick-guide">
+        <summary>How to surf <span aria-hidden="true">+</span></summary>
+        <div class="guide-body">
+          <div id="move-hint">W A S D — move / strafe</div>
+          <div id="jump-hint">Space / Wheel down — jump</div>
+          <div id="duck-hint">Shift — duck</div>
+          <div>Mouse — look &nbsp; Esc — menu</div>
+          <p>On a ramp, release W and hold the strafe key toward the face. Turn the mouse gently to shape your line.</p>
+          <p><span class="zone-key">Green</span> is the start. <span class="zone-key zone-finish">Gold</span> is the finish.</p>
+        </div>
+      </details>
+      <footer class="menu-links">
+        <a class="creator-credit" href="https://x.com/0yield" target="_blank" rel="noopener noreferrer">made by <strong>@0yield</strong> <span aria-hidden="true">↗</span></a>
+      </footer>
+    </section>
+
+    <section id="settings" class="vgui-window client-page" hidden role="region" aria-labelledby="settings-title">
+      <header class="window-title"><span id="settings-title">Settings — Surfd</span><button id="close-options" aria-label="Close settings">×</button></header>
+      <div class="tabs" role="tablist" aria-label="Settings categories">
+        <button id="settings-tab-controls" class="selected" data-tab="controls" role="tab" aria-selected="true" aria-controls="settings-controls">Controls</button>
+        <button id="settings-tab-mouse" data-tab="mouse" role="tab" aria-selected="false" aria-controls="settings-mouse" tabindex="-1">Mouse &amp; view</button>
+        <button id="settings-tab-gameplay" data-tab="gameplay" role="tab" aria-selected="false" aria-controls="settings-gameplay" tabindex="-1">Gameplay</button>
+        <button id="settings-tab-display" data-tab="display" role="tab" aria-selected="false" aria-controls="settings-display" tabindex="-1">Video &amp; audio</button>
+        <button id="settings-tab-hud" data-tab="hud" role="tab" aria-selected="false" aria-controls="settings-hud" tabindex="-1">HUD</button>
+        <button id="settings-tab-community" data-tab="community" role="tab" aria-selected="false" aria-controls="settings-community" tabindex="-1">Community</button>
+      </div>
+      <div id="settings-controls" class="tab-page" data-page="controls" role="tabpanel" aria-labelledby="settings-tab-controls">
+        <h2 class="settings-heading">Keyboard &amp; mouse bindings</h2>
+        <p class="setting-intro">Bind keys, mouse buttons, or the scroll wheel. You can use more than one binding for each action.</p>
+        <div class="binding-header"><span>Action</span><span>Bindings</span></div>
+        <div id="bindings" class="bindings"></div>
+        <p id="binding-help" role="status">Choose a binding, then press a key or scroll. Escape cancels.</p>
+        <button id="reset-bindings" class="button-secondary">Reset controls</button>
+        <details id="turn-options" class="settings-advanced">
+          <summary><span class="turn-summary-copy"><strong>Turn binds</strong><span>Turn keys and yaw-speed presets</span></span><span id="turn-status" class="turn-status">Off</span><span class="turn-expand" aria-hidden="true">›</span></summary>
+          <div class="turn-panel">
+            <label class="check"><input id="turns-enabled" type="checkbox" aria-controls="turn-settings" aria-expanded="false"> Enable turn binds</label>
+            <div id="turn-settings" hidden>
+              <p class="setting-intro">Hold a bound key to turn. Mouse look still works. All turn controls start unbound.</p>
+              <div id="turn-bindings" class="bindings turn-bindings"></div>
+              <div class="yaw-heading"><h3 id="yaw-speeds-title">Yaw speeds</h3><span>°/s</span></div>
+              <div id="yaw-presets" role="radiogroup" aria-labelledby="yaw-speeds-title"></div>
+              <div class="yaw-add"><label class="visually-hidden" for="new-yaw-speed">New yaw speed</label><input id="new-yaw-speed" type="number" min="-100000" max="100000" step="any" placeholder="e.g. 105"><button id="add-yaw-speed" type="button">+ Add speed</button><span id="yaw-preset-count"></span></div>
+              <p id="yaw-speed-help" role="status">Cycle follows the order above and returns to the first speed.</p>
+              <p class="setting-note">Select a speed to use it. Bind “Cycle yaw speed” to switch while surfing. CSS cl_yawspeed defaults to 210. Negative values reverse the direction.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+      <div id="settings-mouse" class="tab-page" data-page="mouse" hidden role="tabpanel" aria-labelledby="settings-tab-mouse">
+        <h2 class="settings-heading">Mouse &amp; camera</h2>
+        <label class="setting-label" for="sensitivity">Mouse sensitivity <input id="sensitivity-number" aria-label="Mouse sensitivity value" type="number" min="0" max="20" step="any" value="2.5" aria-describedby="sensitivity-note"></label>
+        <input id="sensitivity" type="range" min="0" max="20" step="0.01" value="2.5"><output id="sensitivity-value" hidden>2.5</output>
+        <p id="sensitivity-note" class="setting-note">Type an exact value, including 0.001 or 0.00000001. Zero disables mouse look. Uses the CSS scale: 0.022° × sensitivity per mouse count. Raw input is requested; smoothing is off.</p>
+        <label class="setting-label" for="fov">Field of view <output id="fov-value">90°</output></label>
+        <input id="fov" type="range" min="75" max="120" step="1" value="90">
+        <p class="setting-note">Source FOV at 4:3. Wider screens show more to the sides.</p>
+        <hr>
+        <label class="check"><input id="interpolate" type="checkbox" checked aria-describedby="interpolate-note"> Interpolate camera position <span class="setting-inline-note">Recommended</span></label>
+        <p id="interpolate-note" class="setting-note">Smoother movement between physics ticks, with about 15 ms of visual delay. Mouse look stays immediate. Allowed on leaderboards with either setting.</p>
+        <p id="raw-status" class="setting-status">Click Play to capture the mouse.</p>
+      </div>
+      <div id="settings-gameplay" class="tab-page" data-page="gameplay" hidden role="tabpanel" aria-labelledby="settings-tab-gameplay">
+        <h2 class="settings-heading">Movement rules</h2>
+        <label class="check"><input id="autobhop" type="checkbox" checked> Auto bunnyhop <span class="setting-inline-note">Hold jump</span></label>
+        <label class="check"><input id="prehop" type="checkbox"> Unrestricted start speed <span class="setting-inline-note">Unranked</span></label>
+        <p class="setting-note">Leaderboard runs use auto bunnyhop with capped starting speed. You can jump in the start zone, but excess horizontal speed is reduced when you leave: 325 units/s grounded, 350 airborne. Unrestricted starts keep separate local bests and never enter the leaderboard. Changing a rule restarts your run.</p>
+        <hr>
+        <h2 class="settings-heading">Practice</h2>
+        <label class="check"><input id="practice-setting" type="checkbox"> Practice mode <span class="setting-inline-note">No records</span></label>
+        <div class="practice-buttons"><button id="save">Save position</button><button id="load">Load position</button></div>
+        <p class="setting-note">Save a tricky approach and try it again. Restoring a position keeps the run in practice mode.</p>
+        <details class="settings-advanced"><summary>Replays &amp; diagnostics</summary><div><label class="check"><input id="diagnostic-setting" type="checkbox"> Show movement diagnostics</label><button id="export">Download command replay</button><p class="setting-note">Movement and view commands only. This is not a video recording.</p></div></details>
+      </div>
+      <div id="settings-display" class="tab-page" data-page="display" hidden role="tabpanel" aria-labelledby="settings-tab-display">
+        <h2 class="settings-heading">Video</h2>
+        <label class="setting-label" for="quality">Rendering quality</label>
+        <select id="quality"><option value="balanced">Balanced — recommended</option><option value="native">Native — sharper on high-DPI screens</option><option value="performance">Performance — lower resolution</option></select>
+        <p class="setting-note">Adjusts resolution and texture filtering. Movement and mouse response stay the same.</p>
+        <label class="check"><input id="show-fps" type="checkbox"> Show frame rate</label>
+        <hr>
+        <h2 class="settings-heading">Audio</h2>
+        <label class="check"><input id="ambience" type="checkbox" checked> Environmental ambience</label>
+        <label class="setting-label" for="volume">Volume <output id="volume-value">14%</output></label>
+        <input id="volume" type="range" min="0" max="100" value="14">
+        <p class="setting-note">Quiet wind and air. Fades out when paused.</p>
+      </div>
+      <div id="settings-hud" class="tab-page" data-page="hud" hidden role="tabpanel" aria-labelledby="settings-tab-hud">
+        <h2 class="settings-heading">Keep your eyes on the ramp</h2>
+        <label class="check"><input id="center-speed-setting" type="checkbox"> Centre speed display</label>
+        <p class="setting-note">Moves your speed just below the crosshair, like a classic surf server. Your timer stays at the bottom.</p>
+        <label class="check"><input id="checkpoint-comparisons-setting" type="checkbox" checked> Checkpoint time comparisons</label>
+        <p class="setting-note">See time gained or lost against your personal best and the top verified run. Minus means ahead; plus means behind. Comparisons use the same map and movement rules. No reference time? You’ll see a dash.</p>
+        <div class="hud-setting-preview" aria-label="Example HUD"><strong>1,248 <small>units/s</small></strong><span>CHECKPOINT 2 · 00:24.381</span><div><span>PB <b class="split-ahead">−0.428</b></span><span>WR <b class="split-behind">+0.215</b></span></div><small>Example — your run is faster than your PB, but behind the record.</small></div>
+      </div>
+      <div id="settings-community" class="tab-page" data-page="community" hidden role="tabpanel" aria-labelledby="settings-tab-community"></div>
+      <footer class="window-footer"><span class="footer-note">Changes are saved automatically</span><button id="options-done" class="button-primary">Done</button></footer>
+    </section>
+
+    <section id="map-picker" class="lobby-browser vgui-window" aria-labelledby="maps-title">
+      <header class="window-title"><span id="maps-title">Play — Surfd</span><span class="window-badge">SURF CLIENT / 01</span></header>
+      <div class="tabs play-tabs" role="tablist" aria-label="Play mode"><button id="play-tab-online" role="tab" aria-selected="false" aria-controls="play-online" tabindex="-1">Online</button><button id="play-tab-solo" role="tab" class="selected" aria-selected="true" aria-controls="play-solo">Solo</button></div>
+      <section id="play-solo" class="play-page" role="tabpanel" aria-labelledby="play-tab-solo">
+        <div class="browser-toolbar"><label class="search-box"><span>Find map</span><input id="map-search" type="search" placeholder="Name or author…" autocomplete="off"></label><label class="sort-box">Sort <select id="map-sort"><option value="collection">Collection</option><option value="name">Name</option><option value="tier">Difficulty</option><option value="type">Course type</option></select></label></div>
+        <div class="course-browser"><div class="course-directory"><div class="directory-heading"><span>Map</span><span>Type</span><span>Tier</span></div><div id="map-list" class="lobby-map-list" role="group" aria-label="Choose a surf map"></div><p id="map-empty" hidden>No maps match that search.</p></div>
+          <aside id="featured-map" class="course-detail" aria-label="Selected map"><img id="lobby-preview" src="https://cdn.jsdelivr.net/gh/thirstygithub/cssurf@b61601b2b1aa433622125dd14c7dd16b8bfd857c/previews/boreas.jpg" alt="Snowy ramps on surf_boreas" width="640" height="360" fetchpriority="high"><div class="detail-copy"><p class="menu-eyebrow">Selected course</p><h2 id="lobby-map-title">Boreas</h2><p id="lobby-map-credit">surf_boreas · by Syncronyze</p><p id="lobby-description">Snowy ravines, long glass ramps and high-speed transfers.</p><dl class="course-facts"><div><dt>Course</dt><dd id="lobby-checkpoints">Linear · 2 checkpoints</dd></div><div><dt>Difficulty</dt><dd id="lobby-tier">Unrated</dd></div><div><dt>Local best</dt><dd id="lobby-best">—</dd></div></dl></div></aside>
+        </div>
+        <footer class="browser-action"><div><span id="map-count">17 classic courses</span><p id="lobby-load-status" role="status">Preparing your last played map…</p></div><button id="join" class="button-primary">Join map <span aria-hidden="true">→</span></button></footer>
+      </section>
+      <section id="play-online" class="play-page" role="tabpanel" aria-labelledby="play-tab-online" hidden>
+        <div class="browser-toolbar"><div><strong>Find a server</strong><p>Join a few other surfers.</p></div><button id="servers-refresh">Refresh</button></div>
+        <div class="server-directory"><table><thead><tr><th>Server</th><th>Map</th><th>Players</th><th>Ping</th></tr></thead><tbody id="server-list"></tbody></table></div>
+        <div class="server-detail"><div><p class="menu-eyebrow">Community servers</p><h2 id="server-title">Choose a server</h2><p id="server-description">Pick a server and come surf. Choose the next map together, or stay a little longer on a favourite.</p></div><dl><div><dt>Movement</dt><dd>Normal · Auto bhop</dd></div><div><dt>Players</dt><dd>Non-colliding · Hide any time</dd></div><div><dt>Map duration</dt><dd id="server-time">30 minutes + extensions</dd></div></dl></div>
+        <footer class="browser-action"><p id="server-status" role="status">Checking servers…</p><button id="server-connect" class="button-primary" disabled>Connect <span aria-hidden="true">→</span></button></footer>
+      </section>
+      <div data-play-options></div>
+      <footer class="lobby-footer"><span>Classic surf · 66 tick</span><span>Keyboard &amp; mouse</span><button id="close-maps" hidden>Return to current run</button><a class="creator-credit" href="https://x.com/0yield" target="_blank" rel="noopener noreferrer">made by <strong>@0yield</strong> <span aria-hidden="true">↗</span></a></footer>
+    </section>
+  </div>
+
+  <div id="finish" class="screen" hidden>
+    <section class="vgui-window finish-panel" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+      <header class="window-title"><span>Surfd Timer</span><span class="window-badge">Run complete</span></header>
+      <div class="finish-content">
+        <p id="finish-map-name" class="finish-map-name">surf_boreas</p>
+        <h2 id="finish-title">Map complete.</h2>
+        <div id="finish-time">00:00.000</div>
+        <p id="finish-record"></p>
+        <div id="finish-splits" aria-label="Checkpoint splits"></div>
+      </div>
+      <footer class="window-footer"><button id="finish-menu">Main menu</button><button id="again" class="button-primary">Surf again</button></footer>
+    </section>
+  </div>
+  <div id="fatal" class="vgui-window" hidden role="alert"></div>
+
+</body>
+</html>

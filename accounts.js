@@ -171,14 +171,14 @@
    $('#public-profile-content').replaceChildren(top,identity,pronouns,status,roles,bio,favorite,details);
   }catch(error){if(generation===profileGeneration)$('#public-profile-content').textContent=error.message;}
  }
- function personRow(user,podium=false){
-  const button=document.createElement('button');button.type='button';button.className=podium?'podium-person place-'+user.rank:'leaderboard-person';
+ function personRow(user,podium=false,position=user.rank){
+  const button=document.createElement('button');button.type='button';button.className=podium?'podium-person place-'+position:'leaderboard-person';
   const rank=document.createElement('span');rank.className='rank';rank.textContent='#'+user.rank;
   const name=document.createElement('strong');name.textContent=user.username;
-  const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='showdown'?user.elo.toLocaleString()+' Elo':boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
+  const time=document.createElement('span');time.className='rank-time';time.textContent=boardMode==='krillion'?user.score.toLocaleString()+' points':boardMode==='showdown'?user.elo.toLocaleString()+' Elo':boardMode==='polytrack'?(user.frames/1000).toFixed(3)+'s':duration(user.playSeconds);
   if(boardMode==='showdown')time.title=user.wins+' wins · '+user.losses+' losses';
   button.append(rank,avatar(user),name,badge(user),time);button.addEventListener('click',()=>void openProfile(user.id));
-  if(podium||boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'podium-slot place-'+user.rank:'replay-ranking';row.append(button);if(boardMode!=='polytrack')return row;const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(watch);return row;}return button;
+  if(podium||boardMode==='polytrack') {const row=document.createElement('div');row.className=podium?'podium-slot place-'+position:'replay-ranking';row.append(button);if(boardMode!=='polytrack')return row;const watch=document.createElement('button');watch.type='button';watch.className='watch-replay';watch.textContent='Watch replay';watch.addEventListener('click',()=>window.WackyPolyGame?.watch(user.replayId));row.append(watch);return row;}return button;
  }
  async function loadBoard(reset=true){
   const generation=++listGeneration;if(reset){offset=0;$('#leaderboard-list').replaceChildren();$('#leaderboard-podium').replaceChildren();}$('#leaderboard-more').hidden=true;
@@ -193,10 +193,10 @@
     const map=r=>({...r.profile,rank:r.position,frames:r.frames,replayId:r.id});data={users:result.entries.map(map),top:result.top.map(map),hasMore:result.hasMore};
    }else data=await api('/leaderboard?mode='+boardMode+'&'+query);
    if(generation!==listGeneration)return;
-   $('#leaderboard-podium').replaceChildren(...data.top.map(u=>personRow(u,true)));
+   $('#leaderboard-podium').replaceChildren(...data.top.map((u,i)=>personRow(u,true,i+1)));
    data.users.forEach(user=>$('#leaderboard-list').append(personRow(user)));
    offset+=data.users.length;$('#leaderboard-more').hidden=!data.hasMore;
-   $('#leaderboard-status').textContent=(boardMode==='showdown'?'Ranked battles start at 1,000 Elo. Wins raise your rating; losses lower it. Past battles count. Friend challenges are unranked.':boardMode==='polytrack'?'Best time per player on this track. Community submissions with replays; times are not server-verified.':'All-time game playtime. Select a player to view their profile.')+(offset?'':' No results yet.');
+   $('#leaderboard-status').textContent=(boardMode==='krillion'?'Daily Krillion · '+data.date+'. First signed-in daily dive counts. Ties share a rank; practice does not count. Resets at midnight New York time.':boardMode==='showdown'?'Ranked battles start at 1,000 Elo. Wins raise your rating; losses lower it. Past battles count. Friend challenges are unranked.':boardMode==='polytrack'?'Best time per player on this track. Community submissions with replays; times are not server-verified.':'All-time game playtime. Select a player to view their profile.')+(offset?'':' No results yet.');
   }catch(error){if(generation===listGeneration)$('#leaderboard-status').textContent=error.message;}
   finally{if(generation===listGeneration)$('#leaderboard-more').disabled=false;}
  }
@@ -308,5 +308,12 @@
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void heartbeat();});
  window.addEventListener('pageshow',()=>void heartbeat());
  setInterval(()=>void heartbeat(),30000);
+
+ window.addEventListener('message',async event=>{
+  if(event.origin!=='https://bens-wacky-krillion.mr-ellis1009.workers.dev'||event.data?.type!=='bww:krillion-ready')return;
+  const frame=[...document.querySelectorAll('iframe')].find(f=>f.contentWindow===event.source&&f.src.startsWith(event.origin+'/'));if(!frame)return;
+  let ticket=null,error=null;try{ticket=(await api('/krillion/ticket',{method:'POST',data:{}})).ticket;}catch(e){if(e.status!==401&&me)error='Account connection unavailable. Reopen the game to retry.';}
+  if(frame.isConnected)event.source.postMessage({type:'bww:krillion-account',ticket,error},event.origin);
+ });
  renderAccount();void restore();
 })();

@@ -103,3 +103,14 @@ test('embedded player token works without cookies and cannot access another play
  const owned=await s.call('/api/state?run='+started.body.runId,undefined,{Cookie:'','X-Krillion-Player':token});assert.equal(owned.status,200);
  const denied=await s.call('/api/state?run='+started.body.runId,undefined,{Cookie:'','X-Krillion-Player':crypto.randomUUID()});assert.equal(denied.status,404);s.env.DB.close();
 });
+
+test('signed-in daily run resumes across browsers and publishes authoritative seven-round total',async()=>{
+ const s=service(),published=new Map();s.env.ACCOUNTS_DB={prepare:sql=>({bind:(...args)=>({first:async()=>({id:'account-user'}),run:async()=>{if(sql.startsWith('INSERT')){const key=args[0]+args[1];if(!published.has(key))published.set(key,args);}return {};}})})};
+ const date=etDate(),puzzle={...DEMO,date,sample:false};await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(date,1,'test',JSON.stringify(puzzle)).run();
+ const headers={'X-Wacky-Krillion-Ticket':'a'.repeat(64),Cookie:''};let {body:g}=await s.call('/api/start',{},headers);const id=g.runId;
+ assert.equal((await s.call('/api/start',{},headers)).body.runId,id);
+ let expected=0;for(let i=0;i<7;i++){if(i)await s.call('/api/next',{runId:id},headers);const answer=puzzle.prompts[i].answers[0];expected+=TIERS[answer.tier].score;const r=await s.call('/api/answer',{runId:id,round:i,answer:answer.answer,confirm:true},headers);assert.equal(r.status,200);g=r.body.state;}
+ assert.equal(g.completed,true);assert.equal(g.ranked,true);assert.equal(published.size,1);assert.equal([...published.values()][0][3],expected);
+ assert.equal((await s.call('/api/start',{},headers)).body.runId,id);assert.equal(published.size,1);
+ const guest=await s.call('/api/state?run='+id,undefined,{Cookie:''});assert.equal(guest.status,404);s.env.DB.close();
+});

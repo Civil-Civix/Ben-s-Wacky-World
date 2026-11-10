@@ -1,5 +1,19 @@
 [
   {
+    "id": "cssurf",
+    "title": "CS Surf",
+    "url": "library/imported-20261109/cs-surf.html",
+    "source": "user-upload",
+    "collection": "new"
+  },
+  {
+    "id": "poople",
+    "title": "Poople",
+    "url": "https://pooplegame.com/",
+    "source": "external",
+    "collection": "new"
+  },
+  {
     "id": "krillion",
     "title": "Krillion",
     "url": "https://bens-wacky-krillion.mr-ellis1009.workers.dev/",

@@ -23,7 +23,7 @@
   <script defer src="home.js?v=20261106-music-tile"></script>
   <script defer src="popularity.js?v=20261022-dual-host"></script>
   <script defer src="weekly-track.js?v=20261102-summer4"></script>
-  <script defer src="accounts.js?v=20261022-elo"></script>
+  <script defer src="accounts.js?v=20261109-krillion"></script>
   <script defer src="friends.js?v=20261017-profile-icons"></script>
   <script defer src="admin.js?v=20261103-password-reset"></script>
   <script defer src="messages.js?v=20261107-playlists"></script>
@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="vendor/katex/katex.min.css">
   <script defer src="vendor/katex/katex.min.js"></script>
   <script defer src="ai.js?v=20261102-math-crimson"></script>
-  <script defer src="game-downloads.js?v=20261022-dual-host"></script>
-  <script defer src="app.js?v=20261030-three-games"></script>
+  <script defer src="game-downloads.js?v=20261109-no-watermarks"></script>
+  <script defer src="app.js?v=20261109-clean-overlays"></script>
   <script defer src="battles.js?v=20260930-polish"></script>
   <script defer src="sort-menu.js?v=20260919-menu"></script>
   <script defer src="background-effects.js?v=20261109-animation-clock"></script>
@@ -164,7 +164,7 @@
   <section id="leaderboard-panel" aria-labelledby="leaderboard-heading" hidden>
     <header class="leaderboard-heading"><div><p class="eyebrow">The Wacky crowd</p><h1 id="leaderboard-heading">Leaderboard</h1><p>Every player. One shared scoreboard.</p></div><button type="button" id="leaderboard-refresh">Refresh</button></header>
     <div class="leaderboard-audience" role="group" aria-label="Leaderboard players"><button type="button" data-audience="everyone" aria-pressed="true">Everyone</button><button type="button" data-audience="friends" aria-pressed="false">Friends</button></div>
-    <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="polytrack" aria-pressed="true">Poly Track</button><button type="button" data-ranking="playtime" aria-pressed="false">Playtime</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown Elo</button></div>
+    <div class="leaderboard-tabs" role="group" aria-label="Ranking category"><button type="button" data-ranking="polytrack" aria-pressed="true">Poly Track</button><button type="button" data-ranking="playtime" aria-pressed="false">Playtime</button><button type="button" data-ranking="krillion" aria-pressed="false">Krillion</button><button type="button" data-ranking="showdown" aria-pressed="false">Showdown Elo</button></div>
     <div id="leaderboard-track-label"><span id="track-heading" class="sr-only">Track</span><div class="track-picker"><select id="leaderboard-track" aria-label="Poly Track course" hidden></select><button id="track-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="track-options" aria-labelledby="track-heading track-value"><span id="track-value">Choose a track</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div id="track-options" role="listbox" aria-labelledby="track-heading" hidden></div></div><span id="weekly-track-badge" class="weekly-track-badge" tabindex="0" title="Changes every Monday. Records stay." hidden><span aria-hidden="true">★</span> Track of the week</span><button type="button" id="weekly-track-open" hidden>View featured track</button></div>
     <div id="leaderboard-podium" aria-label="Top three players"></div>
     <div class="leaderboard-search"><label for="leaderboard-search">Find a player</label><input id="leaderboard-search" type="search" placeholder="Search usernames…" maxlength="20" autocomplete="off"></div>

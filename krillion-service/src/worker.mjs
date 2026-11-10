@@ -1,10 +1,12 @@
+import {rankedPlayer,publishDaily} from './ranking.mjs';
 import { SITE } from './config.mjs';
 import { documents } from './docs.mjs';
 import { homePage, infoPage } from './html.mjs';
 import { DEMO } from './demo.mjs';
 import { TIERS, normalize, matchAnswer, etDate, resetAt, ROUND_MS, PREVIEW_MS } from '../public/rules.mjs';
 
-const cache = new Map();
+const puzzleCaches = new WeakMap();
+function puzzleCache(env){if(!puzzleCaches.has(env.DB))puzzleCaches.set(env.DB,new Map());return puzzleCaches.get(env.DB);}
 const json = (data, status = 200, extra = {}) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store', ...extra } });
 const fail = (message, status = 400) => json({ error: message }, status);
 // A scoped bearer ID also supports embedded browsers that block third-party cookies.
@@ -27,6 +29,7 @@ export function validateReference(today, reveal, date) {
   }) };
 }
 export async function syncPuzzle(env, date = etDate()) {
+  const cache=puzzleCache(env);
   const [t, r] = await Promise.all([
     fetch('https://krillion.io/api/today', { signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'OpenKrillion/1.0 (+https://openkrillion.com/about)' } }),
     fetch(`https://krillion.io/api/reveal?date=${date}`, { signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'OpenKrillion/1.0 (+https://openkrillion.com/about)' } }),
@@ -39,6 +42,7 @@ export async function syncPuzzle(env, date = etDate()) {
   return puzzle;
 }
 async function puzzleFor(env, date) {
+  const cache=puzzleCache(env);
   if (cache.has(date)) return cache.get(date);
   const row = await env.DB.prepare('SELECT content FROM puzzles WHERE date=?').bind(date).first();
   if (row) { const p = JSON.parse(row.content); cache.set(date, p); return p; }
@@ -56,7 +60,8 @@ function promptDTO(puzzle) {
 async function state(env, run) {
   const results = (await env.DB.prepare('SELECT round,raw_answer AS rawAnswer,answer,tier,score FROM answers WHERE run_id=? ORDER BY round').bind(run.id).all()).results;
   const puzzle = await puzzleFor(env, run.date);
-  return { ...promptDTO(puzzle), runId: run.id, mode: run.mode, round: run.next_round, roundStart: run.round_start, pausedAt: run.paused_at || null, serverNow: Date.now(), completed: !!run.completed, results, score: results.reduce((s, r) => s + r.score, 0) };
+  const ranked=await publishDaily(env,run,puzzle,results);
+  return { ranked, ...promptDTO(puzzle), runId: run.id, mode: run.mode, round: run.next_round, roundStart: run.round_start, pausedAt: run.paused_at || null, serverNow: Date.now(), completed: !!run.completed, results, score: results.reduce((s, r) => s + r.score, 0) };
 }
 async function ownRun(env, id, player) {
   if (!/^[a-f0-9-]{36}$/.test(id || '')) return null;
@@ -71,7 +76,9 @@ async function limit(env, request, player) {
   return count.count <= 100;
 }
 async function api(request, env, url) {
-  const date = etDate(), path = url.pathname, player = playerId(request);
+  const date = etDate(), path = url.pathname;
+  let account;try{account=await rankedPlayer(request,env);}catch{return fail('Your account connection expired. Close and reopen Krillion to reconnect.',401);}
+  const player = account ? 'account:'+account : playerId(request);
   if (request.method === 'GET' && path === '/api/today') return json(promptDTO(await puzzleFor(env, date)));
   if (request.method === 'GET' && path === '/api/health') return json({ ok: true, name: SITE.name, database: !!(await env.DB.prepare('SELECT 1 AS ok').first()), storage: !!env.BUCKET });
   if (request.method === 'GET' && path === '/api/state') {
@@ -104,7 +111,7 @@ async function api(request, env, url) {
       await env.DB.prepare('INSERT OR IGNORE INTO runs(id,player,date,mode,round_start,created_at) VALUES(?,?,?,?,?,?)').bind(rid, id, date, mode, Date.now() + PREVIEW_MS, Date.now()).run();
       run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id,date).first() : await ownRun(env,rid,id);
     }
-    return json({ ...await state(env, run), playerToken: id }, 200, { 'Set-Cookie': `ok_player=${id}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${url.protocol === 'https:' ? '; Secure' : ''}` });
+    return json({ ...await state(env, run), playerToken: account ? (playerId(request)||crypto.randomUUID()) : id }, 200, { 'Set-Cookie': `ok_player=${id}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${url.protocol === 'https:' ? '; Secure' : ''}` });
   }
   if (path === '/api/pause') {
     const run = await ownRun(env,data.runId,player);

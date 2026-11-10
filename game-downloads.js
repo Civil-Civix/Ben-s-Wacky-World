@@ -1,6 +1,5 @@
 'use strict';
 (() => {
-  const site = "https://sites.google.com/stu.tempeunion.org/bens-wack-world/home";
   const publishedRoot = new URL('./', document.baseURI).href;
   const embedded = new Set(["grandtheftauto3", "yohohoio", "minecraft1121", "cookieclicker", "kirbysoftwet", "busterjam", "minesweeper", "pixelgun3d", "flyinggorilla", "eattherich", "amazingropepolice", "plantsvszombies2", "dokidokiliteratureclub", "baseballbros", "nubbysnumberfactory", "clashroyale", "angrybirds", "plinko", "paperio2", "sandgame", "dodgeball", "cuttherope"]);
   function eligible(game) {
@@ -14,12 +13,7 @@
     const originalBase = parsed.querySelector('base[href]')?.getAttribute('href');
     const baseURL = new URL(originalBase || '.', gameURL).href;
     const base = parsed.createElement('base');base.href = baseURL;parsed.head.prepend(base);
-    const mark = `<style>
-@font-face{font-family:BWWDownloadInter;src:url('${publishedRoot}fonts/InterVariable.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
-#bww-download-watermark{all:initial!important;position:fixed!important;z-index:2147483647!important;bottom:14px!important;right:14px!important;display:grid!important;place-items:center!important;width:42px!important;height:42px!important;box-sizing:border-box!important;border:1px solid #cbd2d9!important;border-radius:11px!important;background:rgba(38,39,42,.88)!important;color:#e5edf2!important;text-decoration:none!important;font:800 32px/1 BWWDownloadInter,Inter,Arial,sans-serif!important;cursor:pointer!important}
-#bww-download-watermark:focus-visible{outline:2px solid white!important;outline-offset:3px!important}
-</style><a id="bww-download-watermark" href="${site}" target="_blank" rel="noopener noreferrer" aria-label="Visit Ben's Wacky Site" title="Ben's Wacky Site · This game may require internet">W</a>`;
-    parsed.body.insertAdjacentHTML('beforeend', mark);
+    parsed.querySelectorAll('.noah-wmk,#bww-download-watermark,#watermark,.watermark').forEach(node=>node.remove());
     const doctype = parsed.doctype ? new XMLSerializer().serializeToString(parsed.doctype) : '';
     return doctype + '\n' + parsed.documentElement.outerHTML;
   }

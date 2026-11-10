@@ -14,6 +14,11 @@
       "database_name": "bens-wacky-krillion",
       "database_id": "3e61ef1c-c0e2-47f4-88d4-73b8318b13ee",
       "migrations_dir": "migrations"
+    },
+    {
+      "binding": "ACCOUNTS_DB",
+      "database_name": "bens-wacky-accounts",
+      "database_id": "5e683b3e-fcda-4a84-8d55-0db23514438e"
     }
   ],
   "vars": {

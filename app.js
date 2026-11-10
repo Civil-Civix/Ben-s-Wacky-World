@@ -158,6 +158,14 @@ function updateFavorite() {
   favoriteButton.setAttribute('aria-pressed', String(Boolean(active)));
   favoriteButton.title = active ? 'Remove from favorites' : 'Add to favorites';
 }
+// Remove detached website badges without changing game UI or embedded canvas artwork.
+function cleanGameOverlays(frame){
+ try{const doc=frame.contentDocument;if(!doc)return;const selector='.noah-wmk,#bww-download-watermark,#watermark,.watermark';
+  const clean=()=>doc.querySelectorAll(selector).forEach(node=>node.remove());clean();
+  const observer=new MutationObserver(clean);observer.observe(doc.documentElement,{childList:true,subtree:true});
+  frame.contentWindow.addEventListener('pagehide',()=>observer.disconnect(),{once:true});
+ }catch{/* Cross-origin games manage their own presentation. */}
+}
 function loadGame() {
   clearTimeout(loadTimer); status.hidden = true;
   const frame = document.createElement('iframe');
@@ -170,7 +178,7 @@ function loadGame() {
   const gameURL=new URL(currentGame.url,location.href);
   if(currentGame.id==='pokemonshowdown')gameURL.searchParams.set('launch',Date.now().toString());
   frame.src = gameURL.href;
-  frame.addEventListener('load', () => {clearTimeout(loadTimer);status.hidden = true;sendBattleTheme();frame.focus();});
+  frame.addEventListener('load', () => {cleanGameOverlays(frame);clearTimeout(loadTimer);status.hidden = true;sendBattleTheme();frame.focus();});
   frame.addEventListener('error', () => {
     clearTimeout(loadTimer);
     status.textContent = 'This content could not load. Try Reload, or close it and choose another game.';

@@ -1,3 +1,4 @@
+import {krillionBoard} from './krillion.mjs';
 import {communityMusic} from './community-music.mjs';
 import {musicPlaylists} from './music-playlists.mjs';
 import {musicAudio} from './music.mjs';
@@ -89,6 +90,7 @@ export default {
     return json({online:results[1].results[0].online});
    }
    let friendId=null;if(url.searchParams.get('scope')==='friends'&&['/leaderboard','/poly/board'].includes(path)){const viewer=await session(request,env,now);permitted(viewer,now);friendId=viewer.id;}
+   if(path==='/leaderboard'&&request.method==='GET'&&url.searchParams.get('mode')==='krillion')return await krillionBoard({url,env,now,json,publicUser,friendId});
    if(path==='/battle/results')return await battleResult({request,env,now,body,fail,json});
    if(request.method==='GET'&&(['/poly/tracks','/poly/board','/poly/replays'].includes(path)||(path==='/leaderboard'&&url.searchParams.get('mode')==='showdown')))return await scoreRead({url,env,now,fail,json,publicUser,friendId});
    if(path==='/battle/verify')return await verifyBattle({request,env,now,body,fail,json});
@@ -142,6 +144,11 @@ export default {
    if(['/music/community','/music/community/audio'].includes(path)&&request.method==='GET')return await communityMusic({request,url,env,me:null,now,body,fail,json,cors});
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
+   if(path==='/krillion/ticket'&&request.method==='POST'){
+    const ticket=randomBytes(32).toString('hex'),expires=now+86400000;
+    await env.DB.batch([env.DB.prepare('DELETE FROM krillion_tickets WHERE expires<?').bind(now),env.DB.prepare('INSERT INTO krillion_tickets VALUES(?,?,?,?)').bind(digest(ticket),me.id,me.token_hash,expires)]);
+    return json({ticket,expires});
+   }
    if(path.startsWith('/music/community'))return await communityMusic({request,url,env,me,now,body,fail,json,cors});
    if(path==='/music/playlists'||path.startsWith('/music/playlists/'))return await musicPlaylists({request,url,env,me,now,body,fail,json,validJPEG});
    if(path==='/feature-poll')return await featurePoll({request,env,me,now,body,fail,json});
