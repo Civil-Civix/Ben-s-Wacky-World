@@ -203,6 +203,7 @@ document.head.append(assetBase);
       }
     }
     const cache = await cachePromise;
+    let cacheWritable = !!cache;
     const total = items.reduce((sum, [, size]) => sum + size, 0);
     let next = 0, loaded = 0, failure;
     progress(0, total);
@@ -212,6 +213,7 @@ document.head.append(assetBase);
         try {
           const cached = await cache?.match(url);
           let blob = await cached?.blob();
+          let stored = blob?.size === size;
           if (blob?.size !== size) {
             for (let attempt = 0; ; attempt++) {
               try {
@@ -225,9 +227,14 @@ document.head.append(assetBase);
                 await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
               }
             }
-            if (cache) await cache.put(url, new Response(blob));
+            if (cacheWritable) {
+              try { await cache.put(url, new Response(blob)); stored = true; }
+              catch { cacheWritable = false; }
+            }
           }
-          downloaded.set(url, cache ? null : blob);
+          // If storage is full, fetch uncached chunks on demand instead of failing.
+          if (stored) downloaded.set(url, null);
+          else downloaded.delete(url);
           loaded += size;
           progress(loaded, total);
         } catch (error) {
