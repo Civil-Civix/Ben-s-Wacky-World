@@ -1,3 +1,5 @@
+import {phone} from './phone.mjs';
+export {PhoneRoom} from './phone-room.mjs';
 import {krillionBoard} from './krillion.mjs';
 import {communityMusic} from './community-music.mjs';
 import {musicPlaylists} from './music-playlists.mjs';
@@ -144,6 +146,7 @@ export default {
    if(['/music/community','/music/community/audio'].includes(path)&&request.method==='GET')return await communityMusic({request,url,env,me:null,now,body,fail,json,cors});
    const me=await session(request,env,now);
    if(path!=='/logout')permitted(me,now);
+   if(path.startsWith('/phone/'))return await phone({request,url,env,me,now,body,fail,json});
    if(path==='/krillion/ticket'&&request.method==='POST'){
     const ticket=randomBytes(32).toString('hex'),expires=now+86400000;
     await env.DB.batch([env.DB.prepare('DELETE FROM krillion_tickets WHERE expires<?').bind(now),env.DB.prepare('INSERT INTO krillion_tickets VALUES(?,?,?,?)').bind(digest(ticket),me.id,me.token_hash,expires)]);

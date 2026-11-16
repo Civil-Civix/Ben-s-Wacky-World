@@ -62,5 +62,21 @@
   },
   "ai": {
     "binding": "AI"
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PHONE_ROOMS",
+        "class_name": "PhoneRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "phone-v1",
+      "new_sqlite_classes": [
+        "PhoneRoom"
+      ]
+    }
+  ]
 }

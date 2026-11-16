@@ -1,5 +1,12 @@
 [
   {
+    "id": "wackyphone",
+    "title": "Wacky Phone",
+    "url": "library/wacky-phone/index.html",
+    "source": "original",
+    "collection": "new"
+  },
+  {
     "id": "minecraftrustedition",
     "title": "Minecraft Rust Edition",
     "url": "library/imported-20261115/minecraft-rust-edition.html",

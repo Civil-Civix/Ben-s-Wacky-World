@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const publishedRoot = new URL('./', document.baseURI).href;
-  const embedded = new Set(["grandtheftauto3", "yohohoio", "minecraft1121", "cookieclicker", "kirbysoftwet", "busterjam", "minesweeper", "pixelgun3d", "flyinggorilla", "eattherich", "amazingropepolice", "plantsvszombies2", "dokidokiliteratureclub", "baseballbros", "nubbysnumberfactory", "clashroyale", "angrybirds", "plinko", "paperio2", "sandgame", "dodgeball", "cuttherope"]);
+  const embedded = new Set(["wackyphone","grandtheftauto3", "yohohoio", "minecraft1121", "cookieclicker", "kirbysoftwet", "busterjam", "minesweeper", "pixelgun3d", "flyinggorilla", "eattherich", "amazingropepolice", "plantsvszombies2", "dokidokiliteratureclub", "baseballbros", "nubbysnumberfactory", "clashroyale", "angrybirds", "plinko", "paperio2", "sandgame", "dodgeball", "cuttherope"]);
   function eligible(game) {
     return Boolean(game && game.kind !== 'stream' && game.url.startsWith('library/') && !embedded.has(game.id));
   }
