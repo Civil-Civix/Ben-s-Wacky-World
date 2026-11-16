@@ -1,5 +1,7 @@
 'use strict';
 const games = window.WACKY_GAMES || [];
+function canAccessGame(game) { return !!game && (game.id !== 'wackyphone' || Boolean(window.WackyAccount?.user?.owner || window.WackyAccount?.user?.admin)); }
+function visibleGames() { return games.filter(canAccessGame); }
 const byId = new Map(games.map(game => [game.id, game]));
 const grid = document.querySelector('#game-grid');
 const search = document.querySelector('#search');
@@ -74,7 +76,7 @@ function makeRandomCard(){
  const img=document.createElement('img');img.alt='';img.decoding='async';
  const label=document.createElement('span');label.textContent='Random game';
  card.append(img,label);
- const art=games.map(g=>imageMap[g.id]).filter(p=>typeof p==='string'&&p.startsWith('images/')&&!p.includes('..')).slice(0,8);
+ const art=visibleGames().map(g=>imageMap[g.id]).filter(p=>typeof p==='string'&&p.startsWith('images/')&&!p.includes('..')).slice(0,8);
  let visible=false;randomArtObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;});randomArtObserver.observe(card);
  let previous=-1;
  function changeArt(){
@@ -89,7 +91,7 @@ function makeRandomCard(){
  randomArtTimer=setInterval(()=>{
   if(visible&&!document.hidden&&!document.body.classList.contains('playing')&&!randomMotion.matches&&!navigator.connection?.saveData&&card.isConnected)changeArt();
  },1800);
- card.addEventListener('click',()=>openGame(games[Math.floor(Math.random()*games.length)]));
+ card.addEventListener('click',()=>{const available=visibleGames();if(available.length)openGame(available[Math.floor(Math.random()*available.length)]);});
  return card;
 }
 
@@ -104,7 +106,7 @@ function render() {
   const query = normalize(search.value);
   const pool = view === 'online' ? games.filter(game=>game.online) : view === 'new' ? games.filter(game=>game.collection==='new') : view === 'recents' ? recents.map(id => byId.get(id)).filter(Boolean)
     : view === 'favorites' ? games.filter(game => favorites.has(game.id)) : games;
-  const matches = pool.filter(game => searchTitles.get(game.id).includes(query));
+  const matches = pool.filter(game => canAccessGame(game) && searchTitles.get(game.id).includes(query));
   const popularity=window.WackyPopularity;
   const popularSort=gameSort==='popular';
   matches.sort((a,b)=>
@@ -118,7 +120,7 @@ function render() {
     popularity.state!=='ready' ? 'Loading site-wide rankings…' :
     '';
   const fragment = document.createDocumentFragment();
-  if(view==='all'&&!query&&games.length)fragment.append(makeRandomCard());
+  if(view==='all'&&!query&&visibleGames().length)fragment.append(makeRandomCard());
   for (const game of matches) {
     const card = document.createElement('button');
     card.type = 'button'; card.className = 'game-card'; card.dataset.game = game.id;
@@ -206,6 +208,7 @@ const alternateServers={
 };
 const serverPicker=document.querySelector('#server-picker');
 function openGame(game) {
+ if(!canAccessGame(game))return;
  const urls=alternateServers[game.id];
  if(!urls){launchGame(game);return;}
  const opener=document.activeElement;
@@ -224,6 +227,7 @@ function openGame(game) {
 }
 document.querySelector('#server-cancel').addEventListener('click',()=>serverPicker.close());
 function launchGame(game,opener=document.activeElement) {
+  if(!canAccessGame(game))return;
   if(game.id==='pokemonshowdown'&&!window.WackyAccount?.user){window.WackyAccount.open();return;}
   amongUsNotice.hidden = game.id !== 'amongus';
   setPlayerBarHidden(false);
@@ -255,10 +259,11 @@ async function closeGame() {
   (lastLaunch?.isConnected?lastLaunch:card || document.querySelector('[data-view][aria-current="page"]') || document.querySelector('.nav-home')).focus({preventScroll:true});
 }
 const newGamesSeenKey='bens-wacky-world.new-games-seen.v1';
-const newGamesVersion=games.filter(g=>g.collection==='new').map(g=>g.id+'@'+g.url).sort().join('|');
+function currentNewGamesVersion(){return visibleGames().filter(g=>g.collection==='new').map(g=>g.id+'@'+g.url).sort().join('|');}
 let newGamesSeen='';
 try{newGamesSeen=localStorage.getItem(newGamesSeenKey)||'';}catch(_){}
 function updateNewGamesBadge(markSeen=false){
+ const newGamesVersion=currentNewGamesVersion();
  if(markSeen&&newGamesVersion){newGamesSeen=newGamesVersion;try{localStorage.setItem(newGamesSeenKey,newGamesSeen);}catch(_){}}
  const unread=Boolean(newGamesVersion&&newGamesSeen!==newGamesVersion),link=document.querySelector('[data-new-collection]');
  document.querySelector('#new-games-badge').hidden=!unread;
@@ -340,6 +345,10 @@ window.addEventListener('storage', event => {
     favorites = new Set(readList(keys.favorites)); recents = readList(keys.recents);
     render(); updateFavorite();
   }
+});
+window.addEventListener('wacky-account-change',()=>{
+ if(currentGame?.id==='wackyphone'&&!canAccessGame(currentGame)){stage.replaceChildren();void closeGame();}
+ render();updateNewGamesBadge(view==='new');
 });
 window.addEventListener('popularitychange',()=>{if(gameSort==='popular')render();});
 applyRoute();

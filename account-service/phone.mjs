@@ -1,6 +1,7 @@
 const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const roomCode=value=>String(value||'').trim().toUpperCase();
 export async function phone({request,url,env,me,now,body,fail,json}){
+ if(!me?.owner&&!me?.admin)fail(403,'Wacky Phone is currently available to admins only.');
  const path=url.pathname,actor={id:me.id,username:me.username,owner:!!me.owner};
  const objectBody=async(request,max)=>{const value=await body(request,max);if(!value||typeof value!=='object'||Array.isArray(value))fail(400,'Invalid request.');return value;};
  if(path==='/phone/me'&&request.method==='GET')return json({user:{id:me.id,username:me.username}});

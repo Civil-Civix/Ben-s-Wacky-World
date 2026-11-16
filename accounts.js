@@ -31,13 +31,14 @@
  $('#account-dialog-close').addEventListener('click',()=>accountDialog.close());
  document.querySelectorAll('[data-close-account]').forEach(button=>button.addEventListener('click',()=>accountDialog.close()));
  accountDialog.addEventListener('close',()=>{$('#auth-password').value='';$('#auth-confirm').value='';$('.nav-settings').removeAttribute('data-active');});
+ function visibleFavoriteGame(game){return game.id!=='wackyphone'||Boolean(me?.owner||me?.admin);}
  function previewProfile(){
   if(!me)return;
   $('#my-name').textContent=$('#profile-username').value||me.username;
   $('#account-preview-banner').style.backgroundColor=$('#profile-banner').value;
   $('#account-preview-pronouns').textContent=$('#profile-pronouns').value;
   $('#account-preview-bio').textContent=$('#profile-bio').value||'No bio yet.';
-  const favorite=(window.WACKY_GAMES||[]).find(g=>g.id===$('#profile-favorite-game').value);
+  const favorite=(window.WACKY_GAMES||[]).find(g=>visibleFavoriteGame(g)&&g.id===$('#profile-favorite-game').value);
   $('#account-preview-favorite').textContent=favorite?'Favorite game · '+favorite.title:'';
   const roles=$('#account-preview-roles');roles.replaceChildren();for(const role of me.roles||[]){const pill=document.createElement('span');pill.className='profile-role';pill.textContent=role.name;if(/^#[0-9a-f]{6}$/i.test(role.color))pill.style.setProperty('--role-color',role.color);roles.append(pill);}
  }
@@ -52,7 +53,7 @@
    $('#my-avatar').replaceChildren(avatar(me,'large'));
    $('#my-name').textContent=me.username;$('#my-badge').replaceChildren(badge(me));
    $('#my-playtime').textContent=duration(me.playSeconds);
-   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';$('#favorite-trigger').textContent=$('#profile-favorite-game').selectedOptions[0]?.textContent||'None selected';$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
+   if(fill){$('#profile-username').value=me.username;$('#profile-bio').value=me.bio;$('#profile-pronouns').value=me.pronouns||'';$('#profile-favorite-game').value=me.favoriteGame||'';favoriteLabel();$('#profile-presence').value=me.presence||'online';$('#profile-banner').value=me.bannerColor||'#24242c';$('#profile-banner-preview').style.backgroundColor=me.bannerColor||'#24242c';}
    previewProfile();
   }
  }
@@ -167,7 +168,7 @@
    const bio=document.createElement('p');bio.className='public-bio';bio.textContent=user.bio||'No bio yet.';
    const details=document.createElement('dl');details.className='public-profile-details';
    for(const [label,value] of [['Total playtime',duration(user.playSeconds)],['Joined',Number.isFinite(user.created)?new Date(user.created).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'—']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;details.append(dt,dd);}
-   const favorite=document.createElement('div');favorite.className='public-favorite-game';const favoriteGame=(window.WACKY_GAMES||[]).find(g=>g.id===user.favoriteGame);if(favoriteGame){const label=document.createElement('small'),title=document.createElement('strong');label.textContent='Favorite game';title.textContent=favoriteGame.title;favorite.append(label,title);}else favorite.hidden=true;
+   const favorite=document.createElement('div');favorite.className='public-favorite-game';const favoriteGame=(window.WACKY_GAMES||[]).find(g=>visibleFavoriteGame(g)&&g.id===user.favoriteGame);if(favoriteGame){const label=document.createElement('small'),title=document.createElement('strong');label.textContent='Favorite game';title.textContent=favoriteGame.title;favorite.append(label,title);}else favorite.hidden=true;
    $('#public-profile-content').replaceChildren(top,identity,pronouns,status,roles,bio,favorite,details);
   }catch(error){if(generation===profileGeneration)$('#public-profile-content').textContent=error.message;}
  }
@@ -268,14 +269,15 @@
   if(view==='leaderboard'){if(weekly&&!weeklySeen()){boardMode='polytrack';trackSelect.value=weekly.track.id;renderTrackOptions();}document.querySelectorAll('[data-ranking]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ranking===boardMode)));$('#leaderboard-track-label').hidden=boardMode!=='polytrack';paintWeekly(true);void loadBoard();}
  };
  const favoriteSelect=$('#profile-favorite-game'),favoriteTrigger=$('#favorite-trigger'),favoritePicker=$('#favorite-picker');
- function favoriteLabel(){favoriteTrigger.textContent=favoriteSelect.selectedOptions[0]?.textContent||'None selected';favoriteTrigger.disabled=favoriteSelect.disabled;}
- function paintFavoriteOptions(){const query=$('#favorite-search').value.trim().toLowerCase();const options=Array.from(favoriteSelect.options).filter(o=>!query||o.textContent.toLowerCase().includes(query));$('#favorite-options').replaceChildren(...options.map(o=>{const b=document.createElement('button');b.type='button';b.textContent=o.textContent;b.setAttribute('aria-pressed',String(o.selected));b.addEventListener('click',()=>{if(favoriteSelect.disabled)return;favoriteSelect.value=o.value;favoriteLabel();favoritePicker.close();favoriteSelect.dispatchEvent(new Event('change'));});return b;}));if(!options.length)$('#favorite-options').textContent='No matching games.';}
+ function favoriteLabel(){for(const option of favoriteSelect.options){if(option.value==='wackyphone'){option.hidden=!visibleFavoriteGame({id:option.value});option.disabled=option.hidden;}}const selected=favoriteSelect.selectedOptions[0];favoriteTrigger.textContent=selected&&!selected.hidden?selected.textContent:'None selected';favoriteTrigger.disabled=favoriteSelect.disabled;}
+ function paintFavoriteOptions(){const query=$('#favorite-search').value.trim().toLowerCase();const options=Array.from(favoriteSelect.options).filter(o=>!o.hidden&&(!query||o.textContent.toLowerCase().includes(query)));$('#favorite-options').replaceChildren(...options.map(o=>{const b=document.createElement('button');b.type='button';b.textContent=o.textContent;b.setAttribute('aria-pressed',String(o.selected));b.addEventListener('click',()=>{if(favoriteSelect.disabled)return;favoriteSelect.value=o.value;favoriteLabel();favoritePicker.close();favoriteSelect.dispatchEvent(new Event('change'));});return b;}));if(!options.length)$('#favorite-options').textContent='No matching games.';}
  favoriteTrigger.addEventListener('click',()=>{$('#favorite-search').value='';paintFavoriteOptions();favoritePicker.showModal();$('#favorite-search').focus();});
  $('#favorite-search').addEventListener('input',paintFavoriteOptions);
  new MutationObserver(favoriteLabel).observe(favoriteSelect,{attributes:true,attributeFilter:['disabled']});
  window.addEventListener('wacky-account-change',favoriteLabel);
 
  for(const game of [...(window.WACKY_GAMES||[])].sort((a,b)=>a.title.localeCompare(b.title))){const option=document.createElement('option');option.value=game.id;option.textContent=game.title;favoriteSelect.append(option);}
+ favoriteLabel();
  favoriteSelect.addEventListener('change',async()=>{
   if(!me)return;const id=me.id,favoriteGame=favoriteSelect.value;favoriteSelect.disabled=true;
   try{const current=(await api('/me')).user;if(me?.id!==id)return;const result=await api('/me',{method:'PATCH',data:{username:current.username,bio:current.bio,favoriteGame}});if(me?.id!==id)return;me=result.user;renderAccount(false);note('Favorite game saved.');channel?.postMessage('changed');}

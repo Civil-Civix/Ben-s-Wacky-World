@@ -2,15 +2,18 @@
  const account=window.WackyAccount,framePath=new URL('library/wacky-phone/index.html',document.baseURI).pathname;
  function frameFor(source){return [...document.querySelectorAll('#player iframe')].find(f=>f.contentWindow===source&&new URL(f.src,location.href).origin===location.origin&&new URL(f.src,location.href).pathname===framePath);}
  function theme(frame){const s=getComputedStyle(document.documentElement),get=(k,f)=>s.getPropertyValue(k).trim()||f;frame.contentWindow.postMessage({type:'bww:phone-theme',theme:{background:get('--page','#08080d'),panel:get('--surface','#16161d'),text:get('--text','#f5f5f5'),muted:get('--muted','#aaa9b7'),border:get('--line','#33313f'),accent:get('--accent','#ff4242')}},location.origin);}
+ const allowed=()=>Boolean(account.user?.owner||account.user?.admin);
  const pending=new WeakMap();
  window.addEventListener('message',async e=>{if(e.origin!==location.origin)return;const frame=frameFor(e.source);if(!frame)return;const d=e.data;if(!d||typeof d!=='object')return;
   if(d.type==='bww:phone-ready'){theme(frame);return;}
   if(d.type==='bww:phone-login'){await window.WackyBattleGame.close();account.open();return;}
   if(d.type!=='bww:phone-request'||typeof d.id!=='string'||d.id.length>80)return;
   const reply=(status,data)=>{if(frame.isConnected)e.source.postMessage({type:'bww:phone-response',id:d.id,status,data},location.origin);};
+  if(!allowed()){reply(403,{error:'Wacky Phone is currently available to admins only.'});return;}
+  const userId=account.user.id;
   if(!/^\/phone\/(?:me|create|join|[A-Z2-9]{6}(?:\/(?:start|draft|ready|heartbeat|leave|kick|ban|reveal|react|report|download))?)$/.test(d.path)||!['GET','POST'].includes(d.method)){reply(400,{error:'Invalid game request.'});return;}
   const count=pending.get(frame)||0;if(count>=4){reply(429,{error:'Please wait a moment.'});return;}pending.set(frame,count+1);
-  try{const data=await account.api(d.path,{method:d.method,data:d.method==='POST'?(d.data||{}):undefined});reply(200,data);}catch(error){reply(error.status||503,{error:error.message});}finally{pending.set(frame,Math.max(0,(pending.get(frame)||1)-1));}
+  try{const data=await account.api(d.path,{method:d.method,data:d.method==='POST'?(d.data||{}):undefined});if(!allowed()||account.user.id!==userId){reply(403,{error:'Wacky Phone is currently available to admins only.'});return;}reply(200,data);}catch(error){reply(error.status||503,{error:error.message});}finally{pending.set(frame,Math.max(0,(pending.get(frame)||1)-1));}
  });
  let themeTimer;new MutationObserver(()=>{if(themeTimer)return;themeTimer=setTimeout(()=>{themeTimer=null;for(const f of document.querySelectorAll('#player iframe'))if(frameFor(f.contentWindow))theme(f);},250);}).observe(document.documentElement,{attributes:true,attributeFilter:['style','data-background']});
  const section=document.querySelector('[data-admin-section="reports"]');if(!section)return;
