@@ -2,17 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
-import worker, { validateReference } from '../src/worker.mjs';
+import worker, { validateReference, syncPuzzle, encodePuzzle, decodePuzzle } from '../src/worker.mjs';
 import { DEMO } from '../src/demo.mjs';
 import { SITE } from '../src/config.mjs';
 import { documents, aiLinks } from '../src/docs.mjs';
 import { etDate, resetAt, normalize, matchAnswer, TIERS } from '../public/rules.mjs';
 import { homePage } from '../src/html.mjs';
 
-function database(){
+function database(snapshot = true){
   const db=new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001_initial.sql',import.meta.url),'utf8'));
   db.exec(readFileSync(new URL('../migrations/0002_pause.sql',import.meta.url),'utf8'));
+  if(snapshot) db.exec(readFileSync(new URL('../migrations/0003_run_puzzle_snapshot.sql',import.meta.url),'utf8'));
   const prepare=sql=>({
     bind(...args){
       const s=db.prepare(sql);
@@ -24,7 +25,7 @@ function database(){
     },
     async first(){return db.prepare(sql).get()||null},
   });
-  return{prepare,async batch(statements){db.exec('BEGIN');try{const r=[];for(const s of statements)r.push(await s.run());db.exec('COMMIT');return r}catch(e){db.exec('ROLLBACK');throw e}},close:()=>db.close()};
+  return{prepare,migrateSnapshots:()=>db.exec(readFileSync(new URL('../migrations/0003_run_puzzle_snapshot.sql',import.meta.url),'utf8')),async batch(statements){db.exec('BEGIN');try{const r=[];for(const s of statements)r.push(await s.run());db.exec('COMMIT');return r}catch(e){db.exec('ROLLBACK');throw e}},close:()=>db.close()};
 }
 function service(){const env={DB:database(),BUCKET:{put:async()=>{},get:async()=>null},LOCAL_DEVELOPMENT:'true',REFERENCE_SYNC:'false',ASSETS:{fetch:async()=>new Response('not found',{status:404})}};let cookie='';return{env,async call(path,data,extra={}){const r=await worker.fetch(new Request('http://localhost:3051'+path,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json','Cookie':cookie,...extra}}),...(data===undefined?{headers:{Cookie:cookie,...extra}}:{})}),env,{});if(r.headers.get('Set-Cookie'))cookie=r.headers.get('Set-Cookie').split(';')[0];return{status:r.status,body:await r.json()}},cookie:()=>cookie};}
 
@@ -44,8 +45,87 @@ test('answer matching normalizes accents, uses known aliases and avoids short fu
 test('reference import validates date, question identity and tier whitelist',()=>{
   const date='2026-10-17';const today={date,dayNumber:94,prompts:DEMO.prompts.map(({id,text})=>({id,text}))},reveal={date,prompts:structuredClone(DEMO.prompts)};
   assert.equal(validateReference(today,reveal,date).prompts.length,7);
+  const bad = structuredClone(reveal);
+  bad.prompts[0].answers = [{answer:'Invalid',tier:'toString'}, {answer:'',tier:'rare'}, null];
+  assert.throws(()=>validateReference(today,bad,date), /valid reference answer/);
+  bad.prompts[0].answers.push({answer:'Valid',tier:'rare'});
+  assert.deepEqual(validateReference(today,bad,date).prompts[0].answers,[{answer:'Valid',tier:'rare'}]);
   assert.throws(()=>validateReference(today,{...reveal,date:'2026-10-18'},date));
   reveal.prompts[0].text='Different question';assert.throws(()=>validateReference(today,reveal,date));
+});
+
+test('sample recovery backfills existing dives and preserves their prompts, scoring and review',async()=>{
+  const s=service(),originalFetch=globalThis.fetch,date=etDate(),oldPlayer=crypto.randomUUID(),oldRun=crypto.randomUUID();
+  s.env.DB.close();s.env.DB=database(false);
+  const sample={...DEMO,date,dayNumber:1,sample:true};
+  await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(date,1,sample.source,JSON.stringify(sample)).run();
+  await s.env.DB.prepare('INSERT INTO runs(id,player,date,mode,round_start,created_at) VALUES(?,?,?,?,?,?)').bind(oldRun,oldPlayer,date,'daily',Date.now()-1000,Date.now()).run();
+  s.env.DB.migrateSnapshots();
+  assert.equal(JSON.parse((await s.env.DB.prepare('SELECT puzzle_content FROM runs WHERE id=?').bind(oldRun).first()).puzzle_content).sample,true);
+  const duringDeploy=crypto.randomUUID();
+  await s.env.DB.prepare('INSERT INTO runs(id,player,date,mode,round_start,created_at) VALUES(?,?,?,?,?,?)').bind(duringDeploy,crypto.randomUUID(),date,'daily',Date.now()-1000,Date.now()).run();
+  const real={...DEMO,date,dayNumber:2,prompts:DEMO.prompts.map((p,i)=>({...p,text:`Official ${i}`,answers:[{answer:`Official answer ${i}`,tier:'rare'}]}))};
+  s.env.REFERENCE_SYNC='true';let upstream=0;
+  globalThis.fetch=async url=>{upstream++;return Response.json(String(url).includes('/reveal?')?real:{...real,prompts:real.prompts.map(({id,text})=>({id,text}))});};
+  try{
+    const today=await s.call('/api/today');assert.equal(today.body.sample,false);assert.equal(today.body.prompts[0].text,'Official 0');assert.equal(upstream,2);
+    assert.equal(JSON.parse((await s.env.DB.prepare('SELECT puzzle_content FROM runs WHERE id=?').bind(duringDeploy).first()).puzzle_content).sample,true);
+    const oldHeaders={'X-Krillion-Player':oldPlayer};
+    assert.equal((await s.call('/api/state?run='+oldRun,undefined,oldHeaders)).body.prompts[0].text,DEMO.prompts[0].text);
+    for(let round=0;round<7;round++){
+      const answer=DEMO.prompts[round].answers.find(a=>a.tier==='krillion').answer;
+      const scored=await s.call('/api/answer',{runId:oldRun,round,answer,confirm:true},oldHeaders);
+      assert.equal(scored.body.result.score,100);assert.equal(scored.body.state.sample,true);
+      if(round<6)await s.call('/api/next',{runId:oldRun},oldHeaders);
+    }
+    const review=await s.call('/api/review?run='+oldRun,undefined,oldHeaders);assert.equal(review.body.prompts[0].text,DEMO.prompts[0].text);
+    const newHeaders={'X-Krillion-Player':crypto.randomUUID()},fresh=await s.call('/api/start',{},newHeaders);
+    assert.equal(fresh.body.sample,false);assert.equal(fresh.body.prompts[0].text,'Official 0');
+    assert.equal((await s.env.DB.prepare('SELECT puzzle_content FROM runs WHERE id=?').bind(fresh.body.runId).first()).puzzle_content,null);
+    const scored=await s.call('/api/answer',{runId:fresh.body.runId,round:0,answer:'Official answer 0',confirm:true},newHeaders);assert.equal(scored.body.result.score,60);
+    await s.env.DB.prepare('UPDATE runs SET completed=1 WHERE id=?').bind(fresh.body.runId).run();
+    const realReview=await s.call('/api/review?run='+fresh.body.runId,undefined,newHeaders);assert.equal(realReview.body.population,0);
+    const sampleReview=await s.call('/api/review?run='+oldRun,undefined,oldHeaders);assert.equal(sampleReview.body.population,0);
+    const resumed=await s.call('/api/start',{},oldHeaders);assert.equal(resumed.body.runId,oldRun);assert.equal(resumed.body.sample,true);assert.equal(resumed.body.score,700);
+  }finally{globalThis.fetch=originalFetch;s.env.DB.close();}
+});
+
+test('failed reference synchronization retries after one minute instead of permanently caching sample content',async()=>{
+  const s=service(),originalFetch=globalThis.fetch,originalNow=Date.now;let now=originalNow(),calls=0,available=false;
+  Date.now=()=>now;s.env.REFERENCE_SYNC='true';
+  globalThis.fetch=async()=>{calls++;return available?Response.json({...DEMO,date:etDate(),dayNumber:2}):new Response('Unavailable',{status:503});};
+  try{
+    assert.equal((await s.call('/api/today')).body.sample,true);assert.equal(calls,2);
+    assert.equal((await s.call('/api/today')).body.sample,true);assert.equal(calls,2);
+    now+=60001;available=true;
+    assert.equal((await s.call('/api/today')).body.sample,false);assert.equal(calls,4);
+    assert.equal((await s.call('/api/today')).body.sample,false);assert.equal(calls,4);
+  }finally{globalThis.fetch=originalFetch;Date.now=originalNow;s.env.DB.close();}
+});
+
+test('large reference banks store lossless gzip BLOBs and reload every answer and alias',async()=>{
+  const s=service(),originalFetch=globalThis.fetch,date=etDate();
+  const massive={date,dayNumber:3,prompts:DEMO.prompts.map((p,round)=>({...p,answers:Array.from({length:2000},(_,i)=>({answer:`Café coral ${round} ${i}`,tier:'rare',aliases:[`tidal-${round}-${i}-`+'x'.repeat(180),`alias ${round} ${i}`],quip:'Original reference detail'}))}))};
+  const validated=validateReference(massive,massive,date);
+  assert.ok(new TextEncoder().encode(JSON.stringify(validated)).length>2*1024*1024);
+  globalThis.fetch=async()=>Response.json(massive);
+  try{
+    await syncPuzzle(s.env,date);
+    const row=await s.env.DB.prepare('SELECT content,typeof(content) AS kind FROM puzzles WHERE date=?').bind(date).first();
+    assert.equal(row.kind,'blob');assert.ok(row.content.length<2*1024*1024-1024);
+    assert.deepEqual(await decodePuzzle(row.content),validated);
+    assert.deepEqual(await decodePuzzle(Array.from(row.content)),validated);
+    assert.deepEqual(await decodePuzzle(row.content.buffer.slice(row.content.byteOffset,row.content.byteOffset+row.content.byteLength)),validated);
+    // Recreate the binding wrapper so this read cannot use the warm puzzle cache.
+    s.env.DB={...s.env.DB};
+    const started=await s.call('/api/start',{});assert.equal(started.body.sample,false);
+    const scored=await s.call('/api/answer',{runId:started.body.runId,round:0,answer:'alias 0 1999',confirm:true});
+    assert.equal(scored.body.result.answer,'Café coral 0 1999');assert.equal(scored.body.result.score,60);
+    // Refreshing an existing compressed row must not call JSON functions on BLOBs.
+    await syncPuzzle(s.env,date);
+    const sample={...DEMO,date,sample:true};
+    assert.equal(typeof await encodePuzzle(sample),'string');assert.deepEqual(await decodePuzzle(await encodePuzzle(sample)),sample);
+  }finally{globalThis.fetch=originalFetch;s.env.DB.close();}
 });
 test('seven rounds are scored on server; retries cannot duplicate points; other browsers cannot read the run',async()=>{
   const s=service();let{body:game}=await s.call('/api/start',{});const id=game.runId;

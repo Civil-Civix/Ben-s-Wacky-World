@@ -6,6 +6,7 @@ import { DEMO } from './demo.mjs';
 import { TIERS, normalize, matchAnswer, etDate, resetAt, ROUND_MS, PREVIEW_MS } from '../public/rules.mjs';
 
 const puzzleCaches = new WeakMap();
+const sampleRetryAt = new WeakMap();
 function puzzleCache(env){if(!puzzleCaches.has(env.DB))puzzleCaches.set(env.DB,new Map());return puzzleCaches.get(env.DB);}
 const json = (data, status = 200, extra = {}) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store', ...extra } });
 const fail = (message, status = 400) => json({ error: message }, status);
@@ -25,8 +26,24 @@ export function validateReference(today, reveal, date) {
   return { date, dayNumber: today.dayNumber, source: 'Reference snapshot from krillion.io', prompts: today.prompts.map(p => {
     const source = reveal.prompts.find(r => r.id === p.id && r.text === p.text);
     if (!source?.answers?.length) throw new Error('Missing reference answer set');
-    return { id: p.id, text: p.text, answers: source.answers.filter(a => typeof a.answer === 'string' && TIERS[a.tier]).map(a => ({ answer: a.answer, tier: a.tier, ...(a.quip ? { quip: a.quip } : {}), ...(Array.isArray(a.aliases) ? { aliases: a.aliases.filter(x => typeof x === 'string') } : {}) })) };
+    const answers = source.answers.filter(a => a && typeof a.answer === 'string' && a.answer.trim() && Object.hasOwn(TIERS, a.tier)).map(a => ({ answer: a.answer, tier: a.tier, ...(a.quip ? { quip: a.quip } : {}), ...(Array.isArray(a.aliases) ? { aliases: a.aliases.filter(x => typeof x === 'string') } : {}) }));
+    if (!answers.length) throw new Error('Missing valid reference answer set');
+    return { id: p.id, text: p.text, answers };
   }) };
+}
+// D1 limits a value/row to 2 MiB. Reference answer banks can exceed 9 MB as
+// JSON; gzip BLOBs preserve every alias without base64's extra 33% overhead.
+export async function encodePuzzle(puzzle) {
+  if (puzzle.sample) return JSON.stringify(puzzle);
+  const compressed = new Uint8Array(await new Response(new Blob([JSON.stringify(puzzle)]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
+  if (compressed.byteLength > 2 * 1024 * 1024 - 1024) throw new Error('Compressed reference puzzle exceeds the safe D1 row size');
+  return compressed;
+}
+export async function decodePuzzle(content) {
+  if (typeof content === 'string') return JSON.parse(content);
+  // D1 returns BLOBs as number arrays; native SQLite returns Uint8Arrays.
+  const bytes = content instanceof ArrayBuffer ? new Uint8Array(content) : content instanceof Uint8Array ? content : new Uint8Array(content);
+  return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).json();
 }
 export async function syncPuzzle(env, date = etDate()) {
   const cache=puzzleCache(env);
@@ -36,20 +53,36 @@ export async function syncPuzzle(env, date = etDate()) {
   ]);
   if (!t.ok || !r.ok) throw new Error('Reference service unavailable');
   const puzzle = validateReference(await t.json(), await r.json(), date);
-  await env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?) ON CONFLICT(date) DO UPDATE SET day_number=excluded.day_number, source=excluded.source, content=excluded.content, updated_at=CURRENT_TIMESTAMP').bind(date, puzzle.dayNumber, puzzle.source, JSON.stringify(puzzle)).run();
+  const content = await encodePuzzle(puzzle);
+  // Pin fallback dives created by an older Worker after the migration backfill,
+  // in the same transaction that replaces that date's sample puzzle.
+  await env.DB.batch([
+    env.DB.prepare("UPDATE runs SET puzzle_content=(SELECT content FROM puzzles WHERE date=?) WHERE date=? AND puzzle_content IS NULL AND EXISTS(SELECT 1 FROM puzzles WHERE date=? AND CASE WHEN typeof(content)='text' THEN json_extract(content,'$.sample') ELSE 0 END=1)").bind(date,date,date),
+    env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?) ON CONFLICT(date) DO UPDATE SET day_number=excluded.day_number, source=excluded.source, content=excluded.content, updated_at=CURRENT_TIMESTAMP').bind(date, puzzle.dayNumber, puzzle.source, content),
+  ]);
   if (env.BUCKET) await env.BUCKET.put(`puzzles/${date}.json`, JSON.stringify(puzzle), { httpMetadata: { contentType: 'application/json' } });
   cache.set(date, puzzle);
   return puzzle;
 }
 async function puzzleFor(env, date) {
   const cache=puzzleCache(env);
-  if (cache.has(date)) return cache.get(date);
+  if (!sampleRetryAt.has(env.DB)) sampleRetryAt.set(env.DB,new Map());
+  const retryAt=sampleRetryAt.get(env.DB);
+  if (cache.has(date) && (!cache.get(date).sample || Date.now() < (retryAt.get(date) || 0))) return cache.get(date);
   const row = await env.DB.prepare('SELECT content FROM puzzles WHERE date=?').bind(date).first();
-  if (row) { const p = JSON.parse(row.content); cache.set(date, p); return p; }
+  const fallback = row ? await decodePuzzle(row.content) : { ...DEMO, date, dayNumber: Math.floor((Date.parse(date) - Date.parse('2026-07-16')) / 86400000) + 1, sample: true };
+  cache.set(date, fallback);
+  if (!fallback.sample) return fallback;
   if (env.REFERENCE_SYNC === 'true' && date === etDate()) {
+    // A persisted sample is a temporary fallback. Retry it without changing
+    // snapshots already attached to in-progress or completed dives.
+    retryAt.set(date,Date.now()+60000);
     try { return await syncPuzzle(env, date); } catch (e) { console.warn('Puzzle synchronization failed:', e.message); }
   }
-  return { ...DEMO, date, dayNumber: Math.floor((Date.parse(date) - Date.parse('2026-07-16')) / 86400000) + 1, sample: true };
+  return fallback;
+}
+async function runPuzzle(env, run) {
+  return run.puzzle_content ? decodePuzzle(run.puzzle_content) : puzzleFor(env, run.date);
 }
 async function saveSample(env, puzzle) {
   if (puzzle.sample) await env.DB.prepare('INSERT OR IGNORE INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(puzzle.date, puzzle.dayNumber, puzzle.source, JSON.stringify(puzzle)).run();
@@ -59,7 +92,7 @@ function promptDTO(puzzle) {
 }
 async function state(env, run) {
   const results = (await env.DB.prepare('SELECT round,raw_answer AS rawAnswer,answer,tier,score FROM answers WHERE run_id=? ORDER BY round').bind(run.id).all()).results;
-  const puzzle = await puzzleFor(env, run.date);
+  const puzzle = await runPuzzle(env, run);
   const ranked=await publishDaily(env,run,puzzle,results);
   return { ranked, ...promptDTO(puzzle), runId: run.id, mode: run.mode, round: run.next_round, roundStart: run.round_start, pausedAt: run.paused_at || null, serverNow: Date.now(), completed: !!run.completed, results, score: results.reduce((s, r) => s + r.score, 0) };
 }
@@ -88,8 +121,8 @@ async function api(request, env, url) {
   if (request.method === 'GET' && path === '/api/review') {
     const run = await ownRun(env, url.searchParams.get('run'), player);
     if (!run?.completed) return fail('Finish your dive before opening the answer sheet.', 403);
-    const puzzle = await puzzleFor(env, run.date);
-    const population = (await env.DB.prepare("SELECT r.id,SUM(a.score) AS score FROM runs r JOIN answers a ON a.run_id=r.id WHERE r.date=? AND r.mode='daily' AND r.completed=1 GROUP BY r.id").bind(run.date).all()).results;
+    const puzzle = await runPuzzle(env, run);
+    const population = (await env.DB.prepare("SELECT r.id,SUM(a.score) AS score FROM runs r JOIN answers a ON a.run_id=r.id WHERE r.date=? AND r.mode='daily' AND r.completed=1 AND COALESCE(json_extract(r.puzzle_content,'$.sample'),0)=? GROUP BY r.id").bind(run.date,puzzle.sample?1:0).all()).results;
     const own = await state(env, run);
     const others = population.filter(p => p.id !== run.id);
     const dist = Array.from({ length: 71 }, () => 0);
@@ -104,11 +137,11 @@ async function api(request, env, url) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return fail('Invalid request.');
   if (path === '/api/start') {
     const id = player || crypto.randomUUID(), mode = data.practice === true ? 'practice' : 'daily';
-    const puzzle = await puzzleFor(env, date); await saveSample(env, puzzle);
     let run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id, date).first() : null;
     if (!run) {
+      const puzzle = await puzzleFor(env, date); await saveSample(env, puzzle);
       const rid = crypto.randomUUID();
-      await env.DB.prepare('INSERT OR IGNORE INTO runs(id,player,date,mode,round_start,created_at) VALUES(?,?,?,?,?,?)').bind(rid, id, date, mode, Date.now() + PREVIEW_MS, Date.now()).run();
+      await env.DB.prepare('INSERT OR IGNORE INTO runs(id,player,date,mode,round_start,created_at,puzzle_content) VALUES(?,?,?,?,?,?,?)').bind(rid, id, date, mode, Date.now() + PREVIEW_MS, Date.now(),puzzle.sample ? JSON.stringify(puzzle) : null).run();
       run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id,date).first() : await ownRun(env,rid,id);
     }
     return json({ ...await state(env, run), playerToken: account ? (playerId(request)||crypto.randomUUID()) : id }, 200, { 'Set-Cookie': `ok_player=${id}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${url.protocol === 'https:' ? '; Secure' : ''}` });
@@ -136,7 +169,7 @@ async function api(request, env, url) {
     if (run.paused_at) return fail('Close the menu to resume your dive.',409);
     if (run.completed || run.round_start === null || data.round !== run.next_round) return json({ state: await state(env, run), alreadyScored: true });
     if (Date.now() < run.round_start && env.LOCAL_DEVELOPMENT !== 'true') return fail('The answer window has not opened yet.',409);
-    const puzzle = await puzzleFor(env,run.date), prompt = puzzle.prompts[run.next_round];
+    const puzzle = await runPuzzle(env,run), prompt = puzzle.prompts[run.next_round];
     const raw = typeof data.answer === 'string' ? data.answer.trim().slice(0,256) : '';
     const late = Date.now() > run.round_start + ROUND_MS;
     // A small network grace period applies only to the client's timed submission.
