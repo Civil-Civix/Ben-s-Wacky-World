@@ -8,7 +8,7 @@
   if(d.type==='bww:phone-login'){await window.WackyBattleGame.close();account.open();return;}
   if(d.type!=='bww:phone-request'||typeof d.id!=='string'||d.id.length>80)return;
   const reply=(status,data)=>{if(frame.isConnected)e.source.postMessage({type:'bww:phone-response',id:d.id,status,data},location.origin);};
-  if(!/^\/phone\/(?:me|create|join|[A-Z2-9]{6}(?:\/(?:start|draft|ready|heartbeat|leave|kick|ban|reveal|react|report|download))?)$/.test(d.path)||!['GET','POST'].includes(d.method)){reply(400,{error:'Invalid game request.'});return;}
+  if(!/^\/phone\/(?:me|create|join|[A-Z2-9]{6}(?:\/(?:start|draft|ready|heartbeat|leave|kick|ban|reveal|report|download))?)$/.test(d.path)||!['GET','POST'].includes(d.method)){reply(400,{error:'Invalid game request.'});return;}
   const count=pending.get(frame)||0;if(count>=4){reply(429,{error:'Please wait a moment.'});return;}pending.set(frame,count+1);
   try{const data=await account.api(d.path,{method:d.method,data:d.method==='POST'?(d.data||{}):undefined});reply(200,data);}catch(error){reply(error.status||503,{error:error.message});}finally{pending.set(frame,Math.max(0,(pending.get(frame)||1)-1));}
  });

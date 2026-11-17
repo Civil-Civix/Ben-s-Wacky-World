@@ -2,8 +2,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const pending = new Map();
-  const state = { user: null, room: null, drawing: null, taskKey: '', dirty: false, revision: 0, savedRevision: 0, saving: 0, saveQueue: Promise.resolve(), generation: 0, saveTimer: null, polling: false, offset: 0, viewedChain: null, revealKey: '', chainCache: new Map(), report: null, lastConnected: Date.now(), submitting: false };
-  const reactionValues = { laugh: '😂', love: '❤️', clap: '👏', wow: '😮' };
+  const state = { user: null, room: null, drawing: null, taskKey: '', dirty: false, revision: 0, savedRevision: 0, saving: 0, saveQueue: Promise.resolve(), generation: 0, saveTimer: null, polling: false, offset: 0, viewedChain: null, revealKey: '', chainCache: new Map(), seenEntries: new Set(), report: null, lastConnected: Date.now(), submitting: false };
   let sequence = 0, toastTimer, requestPending = 0;
   function send(path, method = 'GET', data) {
     return new Promise((resolve, reject) => {
@@ -35,6 +34,28 @@
     } else item.resolve(response);
   });
   function toast(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').hidden = true; }, 5000); }
+  function confirmAction(title, description, accept = 'Leave room') {
+    const dialog = $('confirm-dialog');
+    if (dialog.open) return Promise.resolve(false);
+    $('confirm-title').textContent = title;
+    $('confirm-description').textContent = description;
+    $('confirm-accept').textContent = accept;
+    dialog.querySelector('[value="cancel"]').textContent = accept === 'Leave room' ? 'Stay here' : 'Cancel';
+    dialog.returnValue = '';
+    return new Promise(resolve => {
+      dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once: true });
+      dialog.showModal();
+    });
+  }
+  async function leaveRoom() {
+    if (!state.room) return;
+    const room = state.room, generation = state.generation;
+    if (room.phase !== 'complete' && !await confirmAction('Leave this room?', 'You can return with the room code while your seat is available.')) return;
+    if (generation !== state.generation || state.room?.code !== room.code) return;
+    const code = room.code;
+    leaveView();
+    send('/phone/' + encodeURIComponent(code) + '/leave', 'POST', {}).catch(() => {});
+  }
   function show(id, visible) { $(id).hidden = !visible; }
   function localGet() { try { return localStorage.getItem('bww-phone-room') || ''; } catch { return ''; } }
   function localSet(code) { try { if (code) localStorage.setItem('bww-phone-room', code); else localStorage.removeItem('bww-phone-room'); } catch {} }
@@ -57,6 +78,8 @@
     state.room = room;
     localSet(room.code);
     show('welcome', false); show('room', true); show('leave', true);
+    $('leave').textContent = room.phase === 'complete' ? 'Back to lobby' : 'Leave room';
+    $('room').dataset.phase = room.phase;
     $('room-code').textContent = room.code;
     $('player-count').textContent = `${room.players.length} / ${room.capacity || 10}`;
     const host = room.hostId === state.user?.id;
@@ -85,7 +108,7 @@
       if (player.ready && room.phase === 'playing') { const ready = document.createElement('span'); ready.className = 'player-status'; ready.textContent = '✓'; ready.setAttribute('aria-label', 'Ready'); row.append(ready); }
       if (host && player.id !== state.user?.id && !player.kicked && room.phase !== 'complete') {
         const buttons = document.createElement('div'); buttons.className = 'moderation';
-        for (const kind of ['kick', 'ban']) { const button = document.createElement('button'); button.textContent = kind === 'kick' ? 'Remove' : 'Ban'; button.addEventListener('click', () => { if (window.confirm(`${kind === 'ban' ? 'Ban' : 'Remove'} ${player.username} from this room?`)) action(kind, { playerId: player.id }).catch(error => toast(error.message)); }); buttons.append(button); }
+        for (const kind of ['kick', 'ban']) { const button = document.createElement('button'); button.textContent = kind === 'kick' ? 'Remove' : 'Ban'; button.addEventListener('click', async () => { const generation = state.generation; const label = kind === 'ban' ? 'Ban' : 'Remove'; if (await confirmAction(`${label} ${player.username}?`, kind === 'ban' ? 'They will not be able to join this room again.' : 'They will lose their seat in this room.', label) && generation === state.generation) action(kind, { playerId: player.id }).catch(error => toast(error.message)); }); buttons.append(button); }
         row.append(buttons);
       }
       fragment.append(row);
@@ -167,10 +190,9 @@
     if (!reveal?.chains?.length) return;
     for (const chain of reveal.chains) { if (chain.entries?.length) state.chainCache.set(chain.chainId, chain.entries); }
     const key = JSON.stringify({ chainIndex: reveal.chainIndex, stepIndex: reveal.stepIndex, chains: reveal.chains });
-    const labels = { laugh: 'Hilarious', love: 'Love it', clap: 'Bravo', wow: 'Wait, what?' };
-    for (const button of $('reactions').querySelectorAll('[data-reaction]')) { const kind = button.dataset.reaction; const count = (reveal.reactions || []).filter(reaction => reaction.chainId === reveal.chainIndex && reaction.round === reveal.stepIndex && reaction.reaction === reactionValues[kind]).length; button.textContent = labels[kind] + (count ? ` · ${count}` : ''); }
+    show('back-lobby', room.phase === 'complete');
     show('advance', host && room.phase === 'reveal');
-    $('reveal-wait').textContent = room.phase === 'complete' ? 'Rooms expire after 24 hours. Save your favorite chains before then. Leave this room to start another game.' : host ? 'You set the pace. Give everyone a moment to enjoy the mix-up.' : 'Your host will reveal the next step.';
+    $('reveal-wait').textContent = room.phase === 'complete' ? 'Rooms expire after 24 hours. Save your favorite chains before then. Head back to the lobby when you’re ready for another game.' : host ? 'You set the pace. Give everyone a moment to enjoy the mix-up.' : 'Your host will reveal the next step.';
     $('reveal-title').textContent = room.phase === 'complete' ? 'Look what you all made.' : 'Well, that took a turn.';
     $('reveal-count').textContent = `${reveal.chainIndex + 1} / ${room.roundCount} CHAINS`;
     if (state.revealKey === key && state.renderedChain === state.viewedChain) return;
@@ -184,6 +206,8 @@
     const entries = document.createDocumentFragment();
     for (const entry of (selected.entries?.length ? selected.entries : state.chainCache.get(selected.chainId) || [])) {
       const article = document.createElement('article'); article.className = 'chain-entry';
+      const entryKey = `${room.code}:${selected.chainId}:${entry.round}`;
+      if (!state.seenEntries.has(entryKey)) { article.classList.add('just-revealed'); state.seenEntries.add(entryKey); }
       const meta = document.createElement('div'); meta.className = 'entry-meta';
       const author = document.createElement('span'); author.textContent = `${entry.username || 'A mystery friend'} · ${entry.kind === 'draw' ? 'drew' : entry.kind === 'guess' ? 'guessed' : 'started with'}`;
       const report = document.createElement('button'); report.textContent = 'Report'; report.addEventListener('click', () => { state.report = { chainId: selected.chainId, round: entry.round }; $('report-reason').value = ''; $('report-dialog').showModal(); }); meta.append(author, report); article.append(meta);
@@ -201,6 +225,8 @@
     const seconds = Math.max(0, Math.ceil((Number(room.deadline) - Date.now() - state.offset) / 1000));
     $('timer').textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
     $('timer').classList.toggle('urgent', seconds <= 10);
+    const duration = room.task?.kind === 'draw' ? 90 : 45;
+    $('timer').style.setProperty('--remaining', `${Math.min(1, seconds / duration) * 100}%`);
     if (seconds === 0) $('ready-status').textContent = 'Time’s up. Passing the pages…';
   }
   async function poll() {
@@ -215,7 +241,7 @@
     } finally { state.polling = false; }
   }
   function leaveView() {
-    state.generation++; clearTimeout(state.saveTimer); state.saveTimer = null; state.dirty = false; state.room = null; state.taskKey = ''; state.revealKey = ''; state.viewedChain = null; state.chainCache.clear();
+    state.generation++; clearTimeout(state.saveTimer); state.saveTimer = null; state.dirty = false; state.room = null; state.taskKey = ''; state.revealKey = ''; state.viewedChain = null; state.chainCache.clear(); state.seenEntries.clear(); state.renderedChain = null;
     state.drawing?.destroy(); state.drawing = null;
     show('room', false); show('welcome', true); show('leave', false); localSet(''); show('rejoin', false);
   }
@@ -257,11 +283,11 @@
   $('join-form').addEventListener('submit', event => { event.preventDefault(); enter('join', $('code').value); });
   $('rejoin').addEventListener('click', () => enter('join', localGet()));
   $('login').addEventListener('click', () => window.parent.postMessage({ type: 'bww:phone-login' }, window.location.origin));
-  $('leave').addEventListener('click', async () => { if (!window.confirm('Leave this room? You can return with its room code.')) return; try { await action('leave'); leaveView(); } catch (error) { toast(error.message); } });
+  $('leave').addEventListener('click', leaveRoom);
+  $('back-lobby').addEventListener('click', leaveRoom);
   $('start').addEventListener('click', async () => { $('start').disabled = true; try { await action('start'); } catch (error) { toast(error.message); $('start').disabled = false; } });
   $('copy-code').addEventListener('click', async () => { try { await navigator.clipboard.writeText(state.room.code); toast('Room code copied. Send it to your friends!'); } catch { toast(`Your room code is ${state.room.code}`); } });
   $('advance').addEventListener('click', async () => { $('advance').disabled = true; try { await action('reveal', { advance: true }); } catch (error) { toast(error.message); } finally { $('advance').disabled = false; } });
-  $('reactions').addEventListener('click', event => { const button = event.target.closest('button[data-reaction]'); if (!button) return; action('react', { reaction: reactionValues[button.dataset.reaction] }).then(() => toast('Reaction sent!')).catch(error => toast(error.message)); });
   $('download').addEventListener('click', downloadChain);
   $('cancel-report').addEventListener('click', () => $('report-dialog').close());
   $('report-form').addEventListener('submit', async event => { event.preventDefault(); const button = event.submitter; button.disabled = true; try { await action('report', { ...state.report, reason: $('report-reason').value.trim() }); $('report-dialog').close(); toast('Report sent. Thank you for helping keep things friendly.'); } catch (error) { toast(error.message); } finally { button.disabled = false; } });

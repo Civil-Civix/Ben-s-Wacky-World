@@ -64,6 +64,10 @@ test('all rounds, simultaneous drawing, reveal privacy, downloads, reports and r
     assert.equal(final.reveal.chains[0].fullyRevealed,true); assert.equal(final.reveal.chains[0].entryCount,n);
     assert.equal(final.reveal.chains[0].entries.length,0); assert.equal(final.reveal.chains[n-1].entries.length,n);
     assert.equal('scores' in h.run(0,'state').room,false);
+    assert.equal('reactions' in final.reveal,false);
+    assert.throws(()=>h.run(0,'react',{reaction:'wow'}),/Unknown room action/);
+    assert.deepEqual(h.run(0,'leave'),{left:true});
+    assert.equal(h.state.phase,'complete');
   }
 });
 test('timers finalize saved drafts; blank drawing, invalid image, stale and expired actions rejected',()=>{

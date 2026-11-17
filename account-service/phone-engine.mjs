@@ -69,8 +69,7 @@ export function view(s, actor, store, now) {
     chains: s.players.map((_, chainId) => ({ chainId,
       fullyRevealed: visible(s, chainId, s.players.length - 1),
       entryCount: s.phase === 'complete' || chainId < s.revealChain ? s.players.length : chainId === s.revealChain ? s.revealStep + 1 : 0,
-      entries: chainId === s.revealChain ? s.players.flatMap((_, round) => visible(s, chainId, round) ? [cleanEntry(store.get(chainId, round))] : []) : [] })),
-    reactions: s.reactions || [] };
+      entries: chainId === s.revealChain ? s.players.flatMap((_, round) => visible(s, chainId, round) ? [cleanEntry(store.get(chainId, round))] : []) : [] })) };
   return dto;
 }
 function submission(data, kind) {
@@ -147,9 +146,6 @@ export function execute(s, actor, action, data, store, now) {
     if (s.revealStep + 1 < s.players.length) s.revealStep++;
     else if (s.revealChain + 1 < s.players.length) { s.revealChain++; s.revealStep = 0; }
     else s.phase = 'complete';
-  } else if (action === 'react') {
-    if (!['reveal','complete'].includes(s.phase) || !['😂','❤️','👏','😮'].includes(data.reaction)) fail('Invalid reaction.');
-    s.reactions = [...(s.reactions || []).filter(x => x.playerId !== actor.id), { playerId: actor.id, reaction: data.reaction, chainId: s.revealChain, round: s.revealStep }];
   } else if (action === 'download' || action === 'report') {
     const chain = data.chainId, round = data.round;
     if (!Number.isInteger(chain) || chain < 0 || chain >= s.players.length) fail('Invalid chain.');
