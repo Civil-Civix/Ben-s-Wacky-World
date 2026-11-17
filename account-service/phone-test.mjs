@@ -83,3 +83,83 @@ test('kick freezes occupied seat then skips it without losing rotation',()=>{
   assert.equal(h.state.players.length,4); assert.throws(()=>h.run(1,'state'),/member/);
   h.now+=GRACE+1; h.tick(); assert.equal(h.state.players[1].skipped,true);
 });
+
+
+test('settings are strict, host-only, lobby-only and returned with legacy defaults',()=>{
+  const h=harness(), settings={mode:'icebreaker',timerPreset:'relaxed'};
+  assert.deepEqual(h.run(0,'state').room.settings,{mode:'classic',timerPreset:'standard'});
+  assert.throws(()=>h.run(null,'settings',settings),/Sign in/);
+  assert.throws(()=>h.run({id:'guest',username:'Guest'},'settings',settings),/member/);
+  assert.throws(()=>h.run(1,'settings',settings),/host/);
+  for(const invalid of [{},{mode:'classic'},{...settings,mode:'unknown'},{...settings,timerPreset:'quick'},{...settings,deadline:1}]) {
+    assert.throws(()=>h.run(0,'settings',invalid),/Invalid room settings/);
+    assert.deepEqual(h.run(0,'state').room.settings,{mode:'classic',timerPreset:'standard'});
+  }
+  assert.deepEqual(h.run(0,'settings',settings).room.settings,settings);
+  h.run(0,'start');
+  assert.throws(()=>h.run(0,'settings',{mode:'classic',timerPreset:'standard'}),/lobby/);
+  assert.deepEqual(h.run(0,'state').room.settings,settings);
+  const old=harness(); delete old.state.settings;
+  assert.deepEqual(old.run(0,'start').room.settings,{mode:'classic',timerPreset:'standard'});
+  assert.equal(old.state.deadline-old.now,45000);
+  for(let i=0;i<4;i++) old.run(i,'ready',{round:0,text:'legacy'});
+  assert.equal(old.run(0,'state').room.task.kind,'draw');
+  assert.equal(old.state.deadline-old.now,90000);
+});
+
+test('both presets provide the selected duration on every round in both modes',()=>{
+  for(const mode of ['classic','icebreaker']) for(const timerPreset of ['standard','relaxed']) {
+    const h=harness(5);h.run(0,'settings',{mode,timerPreset});h.run(0,'start');
+    for(let round=0;round<5;round++) {
+      const kind=kindFor(round,mode),expected=(kind==='draw'?90000:45000)*(timerPreset==='relaxed'?2:1);
+      const room=h.run(0,'state').room;
+      assert.equal(room.task.kind,kind);assert.equal(room.roundDurationMs,expected);assert.equal(room.deadline-h.now,expected);
+      for(let i=0;i<5;i++) h.run(i,'ready',{round,...(kind==='draw'?{image:png}:{text:'text'})});
+    }
+    assert.equal(h.state.phase,'reveal');
+  }
+});
+
+test('Icebreaker gives each other player the original question once, keeps drawings private and exports correct kinds',()=>{
+  for(let n=4;n<=10;n++) {
+    const h=harness(n),seen=Array.from({length:n},()=>new Set());
+    h.run(0,'settings',{mode:'icebreaker',timerPreset:'standard'});h.run(0,'start');
+    for(let i=0;i<n;i++) h.run(i,'ready',{round:0,text:'question '+i});
+    for(let round=1;round<n;round++) {
+      for(let i=0;i<n;i++) {
+        const dto=h.run(i,'state').room,chain=chainFor(i,round,n);
+        assert.equal(dto.roundCount,n);assert.equal(dto.task.kind,'draw');assert.equal(dto.task.chainId,chain);
+        assert.equal(dto.task.prompt.text,'question '+chain);assert.equal(dto.task.prompt.round,0);
+        assert.equal(dto.task.prompt.kind,'prompt');assert.equal(dto.task.submission,null);assert.equal(dto.reveal,null);
+        assert.ok(!JSON.stringify(dto).includes('data:image/'));
+        assert.notEqual(chain,i);seen[i].add(chain);
+        if(round>1) {
+          assert.equal(h.run(i,'report',{chainId:chain,round:0,reason:'question'}).report.text,'question '+chain);
+          assert.throws(()=>h.run(i,'report',{chainId:chain,round:round-1,reason:'hidden drawing'}),/not available/);
+        }
+      }
+      assert.throws(()=>h.run(0,'draft',{round,text:'guess'}),/drawing/);
+      for(let i=0;i<n;i++) h.run(i,'ready',{round,image:png});
+    }
+    assert.equal(h.state.phase,'reveal');
+    for(const visited of seen) assert.equal(visited.size,n-1);
+    for(let i=0;i<n*n;i++) if(h.state.phase==='reveal') h.run(0,'reveal');
+    for(let chainId=0;chainId<n;chainId++) {
+      const entries=h.run(0,'download',{chainId}).chain.entries;
+      assert.equal(entries.length,n);assert.equal(entries[0].kind,'prompt');
+      for(const e of entries.slice(1)) {assert.equal(e.kind,'draw');assert.ok(e.image);}
+      assert.equal(new Set(entries.map(e=>e.authorId)).size,n);
+    }
+  }
+});
+
+test('Icebreaker deadline finalization preserves draw metadata for saved and skipped entries',()=>{
+  const h=harness();h.run(0,'settings',{mode:'icebreaker',timerPreset:'standard'});h.run(0,'start');
+  for(let i=0;i<4;i++) h.run(i,'ready',{round:0,text:'question'});
+  for(let i=0;i<4;i++) h.run(i,'ready',{round:1,image:png});
+  h.run(0,'draft',{round:2,image:png});h.now=h.state.deadline+GRACE+1;h.tick();
+  assert.equal(h.state.round,3);
+  for(let chain=0;chain<4;chain++) assert.equal(h.store.get(chain,2).kind,'draw');
+  assert.equal(h.store.get(chainFor(0,2,4),2).image,png);
+  assert.equal(h.store.get(chainFor(1,2,4),2).skipped,true);
+});

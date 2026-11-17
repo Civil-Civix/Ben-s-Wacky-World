@@ -1,6 +1,10 @@
 // All times are server times. Entries (especially drawings) live outside metadata.
 export const LEASE = 15000, GRACE = 30000, TTL = 86400000;
-export const kindFor = round => round === 0 ? 'prompt' : round % 2 ? 'draw' : 'guess';
+export const kindFor = (round, mode = 'classic') => round === 0 ? 'prompt' : mode === 'icebreaker' || round % 2 ? 'draw' : 'guess';
+const settingsFor = s => ({ mode: s.settings?.mode ?? 'classic', timerPreset: s.settings?.timerPreset ?? 'standard' });
+const roundKind = s => kindFor(s.round, settingsFor(s).mode);
+const durationFor = s => (roundKind(s) === 'draw' ? 90000 : 45000) * (settingsFor(s).timerPreset === 'relaxed' ? 2 : 1);
+const promptRound = s => settingsFor(s).mode === 'icebreaker' ? 0 : s.round - 1;
 export const chainFor = (seat, round, count) => (seat - round + count) % count;
 const fail = (error, status = 400) => { throw Object.assign(new Error(error), { status }); };
 const key = (chain, round) => `${chain}:${round}`;
@@ -14,7 +18,7 @@ function transfer(s, now) {
   }
 }
 function begin(s, round, now) {
-  s.round = round; s.deadline = now + (kindFor(round) === 'draw' ? 90000 : 45000); s.graceExtended = false;
+  s.round = round; s.deadline = now + durationFor(s); s.graceExtended = false;
   for (const p of s.players) {
     p.ready = false; p.skipped = false;
     p.graceUsed = !connected(p, now); p.graceUntil = p.graceUsed ? now + GRACE : null;
@@ -24,7 +28,7 @@ function finish(s, store, now) {
   for (let seat = 0; seat < s.players.length; seat++) {
     const p = s.players[seat], chainId = chainFor(seat, s.round, s.players.length);
     const draft = store.get(chainId, s.round);
-    store.put(chainId, s.round, { round: s.round, chainId, kind: kindFor(s.round), authorId: p.id, username: p.username,
+    store.put(chainId, s.round, { round: s.round, chainId, kind: roundKind(s), authorId: p.id, username: p.username,
       ...(draft && !p.kicked ? draft : { skipped: true }), final: true });
   }
   if (s.round + 1 === s.players.length) {
@@ -58,10 +62,11 @@ export function view(s, actor, store, now) {
   if (!p || p.kicked) fail('You are not a member of this room.', 403);
   const dto = { code: s.code, phase: s.phase, hostId: s.hostId, capacity: 10, minPlayers: 4,
     players: s.players.map(p => ({ id: p.id, username: p.username, connected: connected(p, now), ready: !!p.ready, kicked: !!p.kicked })),
+    settings: settingsFor(s), roundDurationMs: durationFor(s),
     round: s.round, roundCount: s.players.length, deadline: s.deadline, serverNow: now, expiresAt: s.expiresAt, task: null, reveal: null };
   if (s.phase === 'playing') {
     const chainId = chainFor(s.players.indexOf(p), s.round, s.players.length);
-    dto.task = { round: s.round, chainId, kind: kindFor(s.round), prompt: s.round ? cleanEntry(store.get(chainId, s.round - 1)) : null,
+    dto.task = { round: s.round, chainId, kind: roundKind(s), prompt: s.round ? cleanEntry(store.get(chainId, promptRound(s))) : null,
       submission: cleanEntry(store.get(chainId, s.round)), ready: !!p.ready };
   }
   if (s.phase === 'reveal' || s.phase === 'complete') dto.reveal = {
@@ -88,7 +93,7 @@ export function execute(s, actor, action, data, store, now) {
   if (action === 'create') {
     if (s) fail('Room already exists.', 409);
     if (!/^[A-Z0-9]{6}$/.test(data.code || '')) fail('Invalid room code.');
-    s = { code: data.code, phase: 'lobby', hostId: actor.id, createdAt: now, expiresAt: now + TTL, players: [], bans: [], round: 0, deadline: null };
+    s = { code: data.code, phase: 'lobby', hostId: actor.id, createdAt: now, expiresAt: now + TTL, players: [], bans: [], settings: { mode: 'classic', timerPreset: 'standard' }, round: 0, deadline: null };
   }
   if (!s || now >= s.expiresAt) fail('Room expired or not found.', 404);
   if (action === 'remove-entry') {
@@ -116,7 +121,11 @@ export function execute(s, actor, action, data, store, now) {
   transfer(s, now);
   const host = () => { if (actor.id !== s.hostId) fail('Only the host can do that.', 403); };
   let extra = {};
-  if (action === 'start') {
+  if (action === 'settings') {
+    host(); if (s.phase !== 'lobby') fail('Settings can only change in the lobby.', 409);
+    if (Object.keys(data).length !== 2 || !Object.hasOwn(data, 'mode') || !Object.hasOwn(data, 'timerPreset') || !['classic', 'icebreaker'].includes(data.mode) || !['standard', 'relaxed'].includes(data.timerPreset)) fail('Invalid room settings.');
+    s.settings = { mode: data.mode, timerPreset: data.timerPreset };
+  } else if (action === 'start') {
     host(); if (s.phase !== 'lobby') fail('Game already started.', 409);
     if (s.players.length < 4 || s.players.some(p => !connected(p, now))) fail('Need 4–10 connected players.');
     s.phase = 'playing'; begin(s, 0, now);
@@ -124,7 +133,7 @@ export function execute(s, actor, action, data, store, now) {
     if (s.phase !== 'playing' || data.round !== s.round) fail('That round has ended.', 409);
     if (now >= s.deadline || p.skipped) fail('The submission deadline has passed.', 409);
     const chainId = chainFor(s.players.indexOf(p), s.round, s.players.length);
-    if ('text' in data || 'image' in data) store.put(chainId, s.round, submission(data, kindFor(s.round)));
+    if ('text' in data || 'image' in data) store.put(chainId, s.round, submission(data, roundKind(s)));
     if (action === 'ready') {
       if (data.ready !== false && !store.get(chainId, s.round)) fail('Add a submission before marking ready.');
       p.ready = data.ready !== false;
@@ -155,7 +164,7 @@ export function execute(s, actor, action, data, store, now) {
     } else {
       if (!Number.isInteger(round) || round < 0 || round >= s.players.length) fail('Invalid entry.');
       const e = store.get(chain, round), seat = s.players.indexOf(p);
-      const ownPrompt = s.phase === 'playing' && chain === chainFor(seat, s.round, s.players.length) && round === s.round - 1;
+      const ownPrompt = s.phase === 'playing' && chain === chainFor(seat, s.round, s.players.length) && s.round > 0 && round === promptRound(s);
       if (!e || (!visible(s, chain, round) && e.authorId !== actor.id && !ownPrompt)) fail('That entry is not available to you.', 403);
       if (typeof data.reason !== 'string' || !data.reason.trim() || data.reason.length > 1000) fail('Provide a report reason (up to 1000 characters).');
       extra.report = { code: s.code, chainId: chain, round, reporterId: actor.id, reason: data.reason.trim(), entry: cleanEntry(e),
