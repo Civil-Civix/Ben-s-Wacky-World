@@ -66,6 +66,12 @@
     if (result.room && generation === state.generation && state.room) acceptRoom(result.room);
     return result;
   }
+  let waitingDrawing = null;
+  function placeWaitingPad(inLobby = false) {
+    const pad = $('waiting-pad'), slot = $(inLobby ? 'lobby-pad-slot' : 'welcome-pad-slot');
+    if (pad.parentElement !== slot) slot.append(pad);
+    if (!waitingDrawing && window.WackyDrawing?.create) waitingDrawing = window.WackyDrawing.create($('waiting-drawing'));
+  }
   function acceptRoom(room) {
     if (!room || !Array.isArray(room.players)) return;
     const phaseOrder = { lobby: 0, playing: 1, reveal: 2, complete: 3 };
@@ -88,6 +94,7 @@
     $('room-title').textContent = titles[room.phase]?.[1] || 'Your room';
     renderPlayers(room, host);
     show('lobby', room.phase === 'lobby'); show('playing', room.phase === 'playing'); show('reveal', room.phase === 'reveal' || room.phase === 'complete');
+    placeWaitingPad(room.phase === 'lobby');
     if (room.phase === 'lobby') {
       $('lobby-message').textContent = `${Math.max(0, (room.minPlayers || 4) - room.players.length) ? 'At least four players make a proper game. Share the code to fill your room.' : 'The gang is here. There is still room for more friends.'}`;
       show('start', host); $('start').disabled = room.players.length < (room.minPlayers || 4);
@@ -243,6 +250,7 @@
   function leaveView() {
     state.generation++; clearTimeout(state.saveTimer); state.saveTimer = null; state.dirty = false; state.room = null; state.taskKey = ''; state.revealKey = ''; state.viewedChain = null; state.chainCache.clear(); state.seenEntries.clear(); state.renderedChain = null;
     state.drawing?.destroy(); state.drawing = null;
+    placeWaitingPad();
     show('room', false); show('welcome', true); show('leave', false); localSet(''); show('rejoin', false);
   }
   async function enter(kind, code) {
@@ -295,6 +303,7 @@
   window.addEventListener('online', poll);
   setInterval(poll, 3000); setInterval(tick, 250);
   async function init() {
+    placeWaitingPad();
     window.parent.postMessage({ type: 'bww:phone-ready' }, window.location.origin);
     for (let attempt = 0; attempt < 3; attempt++) {
       try {

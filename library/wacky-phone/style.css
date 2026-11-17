@@ -21,3 +21,9 @@
 body{font-family:Inter,ui-sans-serif,system-ui,'Segoe UI',sans-serif}
 #playing .task-top{position:sticky;top:8px;z-index:5;background:var(--panel);padding:6px 0;box-shadow:0 8px 8px var(--panel);border-radius:10px}
 @media(max-width:680px){#playing .task-top{top:0;padding:4px 0}.timer{width:62px;height:62px;font-size:17px}}
+
+/* Personal doodles stay independent of room submissions. */
+.welcome{grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr);gap:40px;align-items:center}
+#welcome-pad-slot{min-width:0}.waiting-pad{text-align:left;min-width:0}.waiting-pad h2{margin:0 0 8px}.waiting-pad>p{margin:0 0 18px}#lobby-pad-slot:not(:empty){margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
+.waiting-pad .wacky-drawing .wd-workspace{grid-template-columns:minmax(0,1fr);gap:10px}.waiting-pad .wacky-drawing .wd-palette{display:flex;align-items:center;gap:12px;padding:10px}.waiting-pad .wacky-drawing .wd-caption{display:none}.waiting-pad .wacky-drawing .wd-colors{grid-template-columns:repeat(9,minmax(0,1fr));flex:1;gap:6px}.waiting-pad .wacky-drawing .wd-swatch{width:100%;height:auto;aspect-ratio:1;max-height:28px}.waiting-pad .wacky-drawing .wd-custom-label{margin:0;flex-direction:column}.waiting-pad .wacky-drawing .wd-canvas-wrap{grid-row:2}.waiting-pad .wacky-drawing .wd-tools{grid-row:3;flex-direction:row;justify-content:center;gap:9px}.waiting-pad .wacky-drawing .wd-tool-divider{width:1px;height:30px;margin:5px 1px}.waiting-pad .wacky-drawing .wd-bottom,.waiting-pad .wacky-drawing .wd-confirm{margin:14px 0 0}.waiting-pad .wacky-drawing .wd-bottom{gap:9px}.waiting-pad .wacky-drawing .wd-width{min-width:100px}
+@media(max-width:680px){.welcome{grid-template-columns:minmax(0,1fr);gap:32px}.waiting-pad .wacky-drawing .wd-palette{gap:8px}.waiting-pad .wacky-drawing .wd-colors{gap:4px}}
