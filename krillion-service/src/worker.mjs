@@ -87,6 +87,15 @@ async function runPuzzle(env, run) {
 async function saveSample(env, puzzle) {
   if (puzzle.sample) await env.DB.prepare('INSERT OR IGNORE INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(puzzle.date, puzzle.dayNumber, puzzle.source, JSON.stringify(puzzle)).run();
 }
+function validPuzzleDate(date) {
+  return typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(date)) && new Date(date).toISOString().slice(0,10) === date;
+}
+// Only reference snapshots use gzip. Guard JSON functions by storage type so
+// compressed answer banks are never parsed as JSON or decoded just for a list.
+const archiveRows = `SELECT date,day_number AS dayNumber FROM puzzles WHERE date<? AND CASE
+  WHEN typeof(content)='blob' THEN source='Reference snapshot from krillion.io'
+  WHEN typeof(content)='text' AND json_valid(content) THEN COALESCE(json_extract(content,'$.sample'),0)=0 AND source<>'OpenKrillion sample bank'
+  ELSE 0 END ORDER BY date DESC`;
 function promptDTO(puzzle) {
   return { date: puzzle.date, dayNumber: puzzle.dayNumber, sample: !!puzzle.sample, source: puzzle.source, resetsAt: resetAt(puzzle.date), prompts: puzzle.prompts.map(({ id, text }) => ({ id, text })) };
 }
@@ -94,7 +103,7 @@ async function state(env, run) {
   const results = (await env.DB.prepare('SELECT round,raw_answer AS rawAnswer,answer,tier,score FROM answers WHERE run_id=? ORDER BY round').bind(run.id).all()).results;
   const puzzle = await runPuzzle(env, run);
   const ranked=await publishDaily(env,run,puzzle,results);
-  return { ranked, ...promptDTO(puzzle), runId: run.id, mode: run.mode, round: run.next_round, roundStart: run.round_start, pausedAt: run.paused_at || null, serverNow: Date.now(), completed: !!run.completed, results, score: results.reduce((s, r) => s + r.score, 0) };
+  return { ranked, archive: run.mode === 'practice' && run.date < etDate(), ...promptDTO(puzzle), runId: run.id, mode: run.mode, round: run.next_round, roundStart: run.round_start, pausedAt: run.paused_at || null, serverNow: Date.now(), completed: !!run.completed, results, score: results.reduce((s, r) => s + r.score, 0) };
 }
 async function ownRun(env, id, player) {
   if (!/^[a-f0-9-]{36}$/.test(id || '')) return null;
@@ -112,6 +121,10 @@ async function api(request, env, url) {
   const date = etDate(), path = url.pathname;
   let account;try{account=await rankedPlayer(request,env);}catch{return fail('Your account connection expired. Close and reopen Krillion to reconnect.',401);}
   const player = account ? 'account:'+account : playerId(request);
+  if (request.method === 'GET' && path === '/api/archive') {
+    const rows = await env.DB.prepare(archiveRows).bind(date).all();
+    return json({ today: date, dates: rows.results.filter(row => validPuzzleDate(row.date)) });
+  }
   if (request.method === 'GET' && path === '/api/today') return json(promptDTO(await puzzleFor(env, date)));
   if (request.method === 'GET' && path === '/api/health') return json({ ok: true, name: SITE.name, database: !!(await env.DB.prepare('SELECT 1 AS ok').first()), storage: !!env.BUCKET });
   if (request.method === 'GET' && path === '/api/state') {
@@ -136,13 +149,25 @@ async function api(request, env, url) {
   let data; try { const raw = await request.text(); if (raw.length > 8000) return fail('Request is too large.', 413); data = JSON.parse(raw); } catch { return fail('Invalid request.'); }
   if (!data || typeof data !== 'object' || Array.isArray(data)) return fail('Invalid request.');
   if (path === '/api/start') {
-    const id = player || crypto.randomUUID(), mode = data.practice === true ? 'practice' : 'daily';
-    let run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id, date).first() : null;
+    const archive = Object.hasOwn(data, 'archiveDate');
+    if (archive && (!validPuzzleDate(data.archiveDate) || data.archiveDate >= date)) return fail('Choose a valid past puzzle date.');
+    const runDate = archive ? data.archiveDate : date;
+    let archivePuzzle = null;
+    if (archive) {
+      const stored = await env.DB.prepare('SELECT content FROM puzzles WHERE date=?').bind(runDate).first();
+      if (!stored) return fail('That archive puzzle is unavailable.',404);
+      try { archivePuzzle = await decodePuzzle(stored.content); } catch { return fail('That archive puzzle is unavailable.',404); }
+      if (!archivePuzzle || archivePuzzle.sample || archivePuzzle.source === 'OpenKrillion sample bank' || archivePuzzle.date !== runDate || !Array.isArray(archivePuzzle.prompts) || archivePuzzle.prompts.length !== 7 || archivePuzzle.prompts.some(p => !p || typeof p.text !== 'string' || !Array.isArray(p.answers) || !p.answers.length)) return fail('That archive puzzle is unavailable.',404);
+    }
+    const id = player || crypto.randomUUID(), mode = archive || data.practice === true ? 'practice' : 'daily';
+    let run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id, runDate).first() : null;
     if (!run) {
-      const puzzle = await puzzleFor(env, date); await saveSample(env, puzzle);
+      const puzzle = archivePuzzle || await puzzleFor(env, runDate); await saveSample(env, puzzle);
       const rid = crypto.randomUUID();
-      await env.DB.prepare('INSERT OR IGNORE INTO runs(id,player,date,mode,round_start,created_at,puzzle_content) VALUES(?,?,?,?,?,?,?)').bind(rid, id, date, mode, Date.now() + PREVIEW_MS, Date.now(),puzzle.sample ? JSON.stringify(puzzle) : null).run();
-      run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id,date).first() : await ownRun(env,rid,id);
+      // Real archive runs reuse the persisted date snapshot, like real daily
+      // runs, rather than duplicating a multi-megabyte answer bank per attempt.
+      await env.DB.prepare('INSERT OR IGNORE INTO runs(id,player,date,mode,round_start,created_at,puzzle_content) VALUES(?,?,?,?,?,?,?)').bind(rid, id, runDate, mode, Date.now() + PREVIEW_MS, Date.now(),puzzle.sample ? JSON.stringify(puzzle) : null).run();
+      run = mode === 'daily' ? await env.DB.prepare("SELECT * FROM runs WHERE player=? AND date=? AND mode='daily'").bind(id,runDate).first() : await ownRun(env,rid,id);
     }
     return json({ ...await state(env, run), playerToken: account ? (playerId(request)||crypto.randomUUID()) : id }, 200, { 'Set-Cookie': `ok_player=${id}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${url.protocol === 'https:' ? '; Secure' : ''}` });
   }

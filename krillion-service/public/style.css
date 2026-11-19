@@ -207,3 +207,7 @@ body[data-phase="done"] .mascot{z-index:15}
 @keyframes companion-chomp{22%{transform:translateX(-7px) scale(.9) rotate(7deg)}42%{transform:translateX(11px) scale(1.24) rotate(-9deg)}58%{transform:translateX(5px) scale(1.02)}74%{transform:translateX(9px) scale(1.18) rotate(-7deg)}}
 .low-power .mascot:not(.poked):not(.celebrate) img{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.mascot img{animation:none!important}}
+
+/* Archive controls use the existing dialog and pixel palette. */
+.archive-list{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}.archive-list button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;min-height:48px}.archive-list time{color:var(--cyan)}.archive-status{position:absolute;z-index:12;top:78px;left:16px;right:16px;text-align:center;pointer-events:none;color:var(--gold);font-size:15px;letter-spacing:.06em;margin:0}body:is([data-phase="intro"],[data-phase="done"]) .archive-status{display:none}.intro-meta nav{flex-wrap:wrap}
+@media(max-width:699px){.archive-status{top:72px;right:62px;left:8px;font-size:12px}.intro-meta nav>button{flex:1 1 40%;max-width:none;min-height:36px;line-height:1.4}.archive-list button{font-size:18px}}

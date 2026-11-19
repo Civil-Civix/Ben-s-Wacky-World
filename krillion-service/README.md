@@ -83,6 +83,6 @@ Run artifacts are generated under ignored `output/`. `render_game_to_text()` exp
 
 ## Project scope and fidelity
 
-This is a working reconstruction of the classic seven-question experience, not the original source code. The ocean, boat, pixel buddies, UI, and sounds are independently implemented. Animation curves, sounds, art details, aliases, and changing reference data may differ. Archive/themed packs, original player distributions, and paid features are outside this release. A title or screenshot similarity is not a claim of pixel-perfect equivalence.
+This is a working reconstruction of the classic seven-question experience, not the original source code. The ocean, boat, pixel buddies, UI, and sounds are independently implemented. Animation curves, sounds, art details, aliases, and changing reference data may differ. Past Dives offers saved real daily puzzles as unranked practice; missing dates are not backfilled. Themed packs, original player distributions, and paid features are outside this release. A title or screenshot similarity is not a claim of pixel-perfect equivalence.
 
 Contributions and bug reports are welcome through this repository. Please avoid including credentials or private player data in issues.

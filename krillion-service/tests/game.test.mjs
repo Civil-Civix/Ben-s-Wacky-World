@@ -194,3 +194,62 @@ test('signed-in daily run resumes across browsers and publishes authoritative se
  assert.equal((await s.call('/api/start',{},headers)).body.runId,id);assert.equal(published.size,1);
  const guest=await s.call('/api/state?run='+id,undefined,{Cookie:''});assert.equal(guest.status,404);s.env.DB.close();
 });
+
+
+test('archive lists only real stored past puzzles without revealing answers',async()=>{
+  const s=service(),source='Reference snapshot from krillion.io';
+  const put=async(date,day,puzzle,compressed=false,rowSource=source)=>s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(date,day,rowSource,compressed?await encodePuzzle(puzzle):JSON.stringify(puzzle)).run();
+  try{
+    await put('2000-01-01',1,{...DEMO,date:'2000-01-01',source,sample:false});
+    await put('2000-01-02',2,{...DEMO,date:'2000-01-02',source},true);
+    await put('2000-01-03',3,{...DEMO,date:'2000-01-03',sample:true});
+    await put('2000-01-04',4,{...DEMO,date:'2000-01-04'},false,DEMO.source);
+    await put(etDate(),5,{...DEMO,date:etDate(),source});
+    await put('9999-01-01',6,{...DEMO,date:'9999-01-01',source});
+    await put('2000-02-31',7,{...DEMO,date:'2000-02-31',source});
+    await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind('2000-01-05',8,source,'invalid JSON').run();
+    const list=await s.call('/api/archive');
+    assert.equal(list.status,200);assert.deepEqual(list.body,{today:etDate(),dates:[{date:'2000-01-02',dayNumber:2},{date:'2000-01-01',dayNumber:1}]});
+  }finally{s.env.DB.close();}
+});
+
+test('archive rejects invalid dates, missing rows and samples without upstream requests',async()=>{
+  const s=service(),originalFetch=globalThis.fetch;let upstream=0;s.env.REFERENCE_SYNC='true';
+  globalThis.fetch=async()=>{upstream++;throw new Error('Archive must not synchronize');};
+  try{
+    for(const archiveDate of [null,17,'','2000-2-01','2000-02-31',etDate(),'9999-01-01'])assert.equal((await s.call('/api/start',{archiveDate})).status,400);
+    assert.equal((await s.call('/api/start',{archiveDate:'2000-01-01'})).status,404);
+    for(const [date,puzzle] of [['2000-01-02',{...DEMO,date:'2000-01-02',sample:true}],['2000-01-03',{...DEMO,date:'2000-01-03'}],['2000-01-04',{...DEMO,date:'1999-12-31',source:'Reference snapshot from krillion.io'}]]){
+      await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(date,1,puzzle.source,JSON.stringify(puzzle)).run();
+      assert.equal((await s.call('/api/start',{archiveDate:date})).status,404);
+    }
+    await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind('2000-01-05',1,'Reference snapshot from krillion.io','null').run();
+    assert.equal((await s.call('/api/start',{archiveDate:'2000-01-05'})).status,404);
+    assert.equal(upstream,0);assert.equal((await s.env.DB.prepare('SELECT COUNT(*) AS n FROM runs').first()).n,0);
+  }finally{globalThis.fetch=originalFetch;s.env.DB.close();}
+});
+
+test('archive scores exact compressed past puzzle as unranked practice and preserves signed-in daily',async()=>{
+  const s=service(),source='Reference snapshot from krillion.io',published=[];
+  s.env.ACCOUNTS_DB={prepare:sql=>({bind:(...args)=>({first:async()=>({id:'archive-user'}),run:async()=>{if(sql.startsWith('INSERT'))published.push(args);return {};}})})};
+  const headers={'X-Wacky-Krillion-Ticket':'a'.repeat(64)},date='2000-01-01';
+  const historical={...DEMO,date,dayNumber:42,source,prompts:DEMO.prompts.map((p,i)=>({...p,text:'Archive prompt '+i,answers:[{answer:'Archive answer '+i,tier:'rare'}]}))};
+  try{
+    await s.env.DB.prepare('INSERT INTO puzzles(date,day_number,source,content) VALUES(?,?,?,?)').bind(date,42,source,await encodePuzzle(historical)).run();
+    const {body:daily}=await s.call('/api/start',{},headers);assert.equal(daily.archive,false);
+    let {body:g}=await s.call('/api/start',{archiveDate:date,practice:false},headers);const id=g.runId;
+    assert.equal(g.mode,'practice');assert.equal(g.archive,true);assert.equal(g.date,date);assert.equal(g.dayNumber,42);assert.equal(g.prompts[0].text,'Archive prompt 0');assert.equal(g.prompts[0].answers,undefined);assert.equal(g.ranked,false);
+    assert.equal((await s.env.DB.prepare('SELECT puzzle_content FROM runs WHERE id=?').bind(id).first()).puzzle_content,null);
+    assert.equal((await s.call('/api/review?run='+id,undefined,headers)).status,403);
+    for(let round=0;round<7;round++){
+      if(round)await s.call('/api/next',{runId:id},headers);
+      const scored=await s.call('/api/answer',{runId:id,round,answer:'Archive answer '+round,confirm:true},headers);
+      assert.equal(scored.status,200);assert.equal(scored.body.result.score,60);g=scored.body.state;
+    }
+    assert.equal(g.completed,true);assert.equal(g.score,420);assert.equal(g.archive,true);assert.equal(g.ranked,false);assert.equal(published.length,0);
+    const review=await s.call('/api/review?run='+id,undefined,headers);assert.equal(review.status,200);assert.equal(review.body.prompts[0].answers[0].answer,'Archive answer 0');
+    assert.equal((await s.call('/api/state?run='+id,undefined,headers)).body.archive,true);
+    assert.equal((await s.call('/api/start',{},headers)).body.runId,daily.runId);
+    const replay=await s.call('/api/start',{archiveDate:date},headers);assert.notEqual(replay.body.runId,id);assert.equal(replay.body.score,0);
+  }finally{s.env.DB.close();}
+});
