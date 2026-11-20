@@ -4,14 +4,14 @@
     "title": "Wacky Phone",
     "url": "library/wacky-phone/index.html",
     "source": "original",
-    "collection": "new"
+    "online": true
   },
   {
     "id": "minecraftrustedition",
     "title": "Minecraft Rust Edition",
     "url": "library/imported-20261115/minecraft-rust-edition.html",
     "source": "user-upload",
-    "collection": "new"
+    "online": true
   },
   {
     "id": "pleasedonttouchanything3d",
@@ -67,7 +67,7 @@
     "title": "Krillion",
     "url": "https://bens-wacky-krillion.mr-ellis1009.workers.dev/",
     "source": "external",
-    "collection": "new"
+    "online": true
   },
   {
     "id": "leafblowerrevolution",
