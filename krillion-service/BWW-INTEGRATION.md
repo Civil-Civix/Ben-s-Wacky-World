@@ -9,3 +9,7 @@ Run npm test, npm run build, and browser game-flow QA before deployment. The loc
 ## Past Dives
 
 The archive lists only saved real puzzles dated before the current New York day. Archive attempts use practice mode, never publish to the daily leaderboard, and keep a separate browser resume slot from today's dive. Missing dates and sample puzzles are not offered. No database migration is required. Historical puzzle rows are reused rather than copying multi-megabyte answer banks into each attempt.
+
+## Puffer Party
+
+Private rooms are available at /party through the same Worker. The PartyRoom SQLite Durable Object is introduced by the party-v1 Wrangler migration; it does not alter the existing D1 daily puzzle or ranking tables. See PUFFER-PARTY.md for implemented rules, known fidelity limits and local QA boundaries. Publish only after the full existing test suite, build and focused local multiplayer browser acceptance pass.

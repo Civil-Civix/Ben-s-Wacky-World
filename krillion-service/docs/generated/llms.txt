@@ -23,6 +23,6 @@ Daily resets at midnight America/New_York. Practice is separate. Guest settings 
 - [Report a problem](https://github.com/VulcanEon/openkrillion.com-service/issues)
 
 ## Limits
-No generative model, credits, payment flow, themed packs, user login or official affiliation. The public source ships a small independently assembled sample bank. Runtime reference snapshots are separate from the MIT application license.
+No generative model, credits, payment flow, themed packs, public party matchmaking, rated party queue or official affiliation. The public source ships a small independently assembled sample bank. Runtime reference snapshots are separate from the MIT application license.
 
 These documents are rendered from the same public product configuration used by the website. Changes take effect on deployment. External AI links only prefill a public question and may require a provider account; answers and indexing are not guaranteed.

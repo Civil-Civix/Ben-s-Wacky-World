@@ -23,7 +23,7 @@ Daily resets at midnight America/New_York. Practice is separate. Guest settings 
 - [Report a problem](https://github.com/VulcanEon/openkrillion.com-service/issues)
 
 ## Limits
-No generative model, credits, payment flow, themed packs, user login or official affiliation. The public source ships a small independently assembled sample bank. Runtime reference snapshots are separate from the MIT application license.
+No generative model, credits, payment flow, themed packs, public party matchmaking, rated party queue or official affiliation. The public source ships a small independently assembled sample bank. Runtime reference snapshots are separate from the MIT application license.
 
 These documents are rendered from the same public product configuration used by the website. Changes take effect on deployment. External AI links only prefill a public question and may require a provider account; answers and indexing are not guaranteed.
 
@@ -53,6 +53,8 @@ Canonical: https://openkrillion.com/models.md
 No generative AI model is available or called by this game. The models.md filename follows the agent documentation convention; this is a trivia game, not an AI generation workspace.
 
 ## Available workflows
+- Private Puffer Party rooms
+- Unranked past dives archive
 - Daily seven-prompt trivia
 - Practice dives
 - Six rarity tiers
@@ -69,7 +71,7 @@ Gameplay language: English. Help and AI questions: English and Chinese.
 
 Answers are validated server-side against prepared entries, with normalization, known aliases and conservative typo correction. Reference answer snapshots may differ from the original game in aliases or subsequent edits. Daily reference synchronization uses public endpoints, caches the snapshot in D1, and falls back to a clearly identified sample practice bank when unavailable.
 
-No accounts, multiplayer, themed packs, checkout or cross-device account sync is implemented. Practice does not change the daily score or streak.
+Wacky World accounts can connect for the daily leaderboard. Private Puffer Party rooms support multiplayer with hearts, a shared hidden fuse, and rematches. Public matchmaking, rated queues, themed packs and checkout are not implemented. Practice and party games do not change the daily score or streak.
 
 Play: https://openkrillion.com/
 Pricing: https://openkrillion.com/pricing.md

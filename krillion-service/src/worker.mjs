@@ -1,3 +1,5 @@
+import { partyPage } from './party-html.mjs';
+import { partyAPI } from './party-api.mjs';
 import {rankedPlayer,publishDaily} from './ranking.mjs';
 import { SITE } from './config.mjs';
 import { documents } from './docs.mjs';
@@ -233,10 +235,12 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.hostname === 'www.openkrillion.com') { url.hostname='openkrillion.com'; return Response.redirect(url.href,301); }
+      if (url.pathname.startsWith('/api/party/')) { const response=await partyAPI(request,env,url); return response.status===101?response:headers(response); }
       if (url.pathname.startsWith('/api/')) return headers(await api(request,env,url));
       if (!['GET','HEAD'].includes(request.method)) return headers(fail('Method not allowed.',405));
       const docs = documents();
       if (docs[url.pathname]) return headers(new Response(request.method==='HEAD'?null:docs[url.pathname],{headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-cache'}}));
+      if (url.pathname === '/party' || url.pathname === '/party/') return headers(new Response(request.method==='HEAD'?null:partyPage(env),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'}}));
       if (url.pathname === '/') return headers(new Response(request.method==='HEAD'?null:homePage(url.searchParams.get('lang') === 'zh' ? 'zh':'en',env),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'}}));
       if (['/privacy','/about'].includes(url.pathname)) return headers(new Response(request.method==='HEAD'?null:infoPage(url.pathname),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'public, max-age=300'}}));
       if (url.pathname === '/robots.txt') return headers(new Response('User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: https://openkrillion.com/sitemap.xml\n',{headers:{'Content-Type':'text/plain; charset=utf-8'}}));

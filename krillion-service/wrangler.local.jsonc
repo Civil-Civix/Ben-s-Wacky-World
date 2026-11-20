@@ -1,8 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bens-wacky-krillion",
-  "main": "src/worker.mjs",
+  "main": "src/party-entry.mjs",
   "compatibility_date": "2026-10-17",
+  "durable_objects": { "bindings": [{ "name": "PARTY_ROOMS", "class_name": "PartyRoom" }] },
+  "migrations": [{ "tag": "party-v1", "new_sqlite_classes": ["PartyRoom"] }],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",

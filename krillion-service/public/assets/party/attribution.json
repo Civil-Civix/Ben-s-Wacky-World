@@ -1,0 +1,14 @@
+{
+  "source": "https://krillion.io/party",
+  "creator": "krillion.io — original Puffer Party artwork",
+  "notice": "Third-party original artwork, copied from publicly served assets for the requested visual recreation. Copyright and other rights remain with the original owner. These files are not covered by this repository's MIT license. No additional license grant is asserted.",
+  "files": [
+    {"file":"puffer-0.png","url":"https://krillion.io/gen/party/puffer-0.png"},
+    {"file":"puffer-1.png","url":"https://krillion.io/gen/party/puffer-1.png"},
+    {"file":"puffer-2.png","url":"https://krillion.io/gen/party/puffer-2.png"},
+    {"file":"puffer-3.png","url":"https://krillion.io/gen/party/puffer-3.png"},
+    {"file":"puffer-sleep.png","url":"https://krillion.io/gen/party/puffer-sleep.png"},
+    {"file":"reef-m-clean.png","url":"https://krillion.io/gen/party/reef-m-clean.png"},
+    {"file":"reef-d-clean.png","url":"https://krillion.io/gen/party/reef-d-clean.png"}
+  ]
+}
