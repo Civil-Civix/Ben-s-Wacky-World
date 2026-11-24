@@ -1,7 +1,7 @@
 'use strict';
 (() => {
-  // Never request advertising from Portable, Google Sites, or any other embed.
-  if (location.hostname !== 'bens-wacky-world.pages.dev' || window.self !== window.top) return;
+  // Scope advertising to the Cloudflare site, including embedded visits.
+  if (location.hostname !== 'bens-wacky-world.pages.dev') return;
   const home = document.querySelector('#home-panel');
   if (!home) return;
   const wide = matchMedia('(min-width: 1500px) and (min-height: 740px)');
