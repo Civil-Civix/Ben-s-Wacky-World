@@ -1,0 +1,8 @@
+.site-ad-settings{max-width:640px;margin:24px auto;color:var(--muted);font-size:12px;text-align:left;line-height:1.6}
+.site-ad-settings summary{cursor:pointer;text-align:center;text-decoration:underline;text-underline-offset:3px}
+.site-ad-settings button{padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);cursor:pointer}
+.site-ad-settings a{color:var(--accent)}
+.site-ad-rail{position:fixed;top:100px;width:160px;min-height:620px;background:var(--panel);outline:1px solid var(--line);border-radius:8px;text-align:center;z-index:1}
+.site-ad-rail>span{display:block;height:20px;font-size:10px;line-height:20px;color:var(--muted);letter-spacing:.08em}
+.site-ad-left{left:80px}.site-ad-right{right:16px}
+@media(min-width:1500px) and (min-height:740px){#home-panel.with-site-ads{padding-left:205px;padding-right:205px}}

@@ -9,7 +9,7 @@ const MAX_ASSET_BYTES = 25 * 1024 * 1024;
 const GITHUB_PAGES_ROOT = 'https://civil-civix.github.io/Ben-s-Wacky-World/';
 
 const ROOT_FILES = [
-  'index.html', 'styles.css', 'games.js', 'home-quotes.js', 'home.js',
+  'index.html', 'site-ads.js', 'site-ads.css', 'styles.css', 'games.js', 'home-quotes.js', 'home.js',
   'popularity.js', 'weekly-track.js', 'accounts.js', 'friends.js', 'admin.js', 'phone.js',
   'community-music.js', 'community-music.css', 'music.js', 'music.css', 'music-library.json', 'feature-poll.js', 'messages.js', 'ai-files.js', 'ai.js', 'game-downloads.js', 'app.js',
   'battles.js', 'sort-menu.js', 'background-effects.js', 'appearance.js',
