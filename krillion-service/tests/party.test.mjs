@@ -154,3 +154,26 @@ test('unchanged state and connection polling do not rewrite rooms or broadcast u
  await call(controller,'join','bob');assert.equal(ctx.alarmCalls,writes+1);assert.equal(broadcasts,1);
  }finally{ctx.close();}
 });
+
+test('party pool reaches old dates beyond the latest three and shuffles each match',async()=>{
+ const {sql,db,close}=database();try{
+  for(let day=1;day<=10;day++)seed(sql,{date:'2001-01-'+String(day).padStart(2,'0'),source:'Real reference',prompts:Array.from({length:8},(_,i)=>({text:'Question '+day+' '+i,answers}))},day%2===0);
+  seed(sql,{date:'2999-01-01',source:'Real reference',prompts:[{text:'Future question',answers}]});
+  const first=await loadPartyBanks({DB:db},()=>0),second=await loadPartyBanks({DB:db},()=>.999999);
+  assert.equal(first.length,7);assert.equal(second.length,7);
+  assert(first.some(b=>b.id.startsWith('2001-01-04:')));
+  assert.notDeepEqual(first.map(b=>b.id),second.map(b=>b.id));
+  assert(first.every(b=>b.id.endsWith(':1'))); // prompt order is randomized too
+  assert(second.every(b=>b.id.endsWith(':0')));
+  assert([...first,...second].every(b=>!b.id.startsWith('2999')));
+ }finally{close();}
+});
+
+test('party pool includes prompts beyond the old seven-prompt cutoff and removes repeated questions',async()=>{
+ const {sql,db,close}=database();try{
+  seed(sql,{date:'2001-01-01',source:'Real reference',prompts:[...Array.from({length:7},()=>({text:'Repeated question',answers})),{text:'Extra question',answers}]});
+  const banks=await loadPartyBanks({DB:db},()=>.999999);
+  assert.equal(banks.length,2);assert(banks.some(b=>b.id==='2001-01-01:7'));
+  assert.equal(new Set(banks.map(b=>b.text)).size,banks.length);
+ }finally{close();}
+});

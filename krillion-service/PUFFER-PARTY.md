@@ -14,7 +14,7 @@ Host/join by private code, host settings, real-time room updates, answer validat
 
 Room state and immutable per-match answer snapshots live in a SQLite Durable Object. Answer banks are chunked rather than placed in a large single SQLite row. Browser messages contain only public room state; answer banks, player credentials, and the exact hidden fuse stay on the server. WebSocket upgrades use short-lived single-use room connection tickets. The existing guest identifier or Wacky World account ticket authenticates HTTP actions.
 
-Production uses available saved real Krillion puzzle snapshots. Local acceptance tests use an independently assembled synthetic fixture in an isolated local database, never production player data.
+Production samples up to seven distinct questions across all saved real Krillion puzzle snapshots, with shuffled dates and prompt order for each start/rematch. All published saved dates are eligible; at most 21 candidate snapshots are decoded sequentially per start and retained answer JSON is capped at 24 MiB. Duplicate question text is skipped. Unavailable/private upstream questions are not invented or fetched during a match. Existing matches retain their immutable banks. Local acceptance tests use an independently assembled synthetic fixture in an isolated local database, never production player data.
 
 ## Reference and fidelity
 

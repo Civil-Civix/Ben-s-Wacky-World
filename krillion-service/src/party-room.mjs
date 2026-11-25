@@ -9,23 +9,33 @@ async function boundedPuzzle(content){
  try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>BANK_LIMIT)throw new Error('Oversize expanded bank');parts.push(value);}}finally{await reader.cancel();}
  return JSON.parse(await new Blob(parts).text());
 }
-export async function loadPartyBanks(env){
- // Bounded historical reads only. Never silently fall back to the demo bank or
- // fetch a live mutable reference answer set for an ongoing match.
- const rows=await env.DB.prepare("SELECT date FROM puzzles WHERE date<=? AND length(content)<=2097152 AND source<>'OpenKrillion sample bank' AND CASE WHEN typeof(content)='blob' THEN 1 WHEN json_valid(content) THEN COALESCE(json_extract(content,'$.sample'),0)=0 ELSE 0 END ORDER BY date DESC LIMIT 3").bind(etDate()).all();
- for(const row of rows.results){
+function shuffle(items,random){
+ const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;
+}
+export async function loadPartyBanks(env,random=Math.random){
+ // Every saved published date is eligible, not just today's seven prompts.
+ // Shuffle metadata first, then decode sequentially to bound memory and I/O.
+ const rows=await env.DB.prepare("SELECT date FROM puzzles WHERE date<=? AND length(content)<=2097152 AND source<>'OpenKrillion sample bank' AND CASE WHEN typeof(content)='blob' THEN 1 WHEN json_valid(content) THEN COALESCE(json_extract(content,'$.sample'),0)=0 ELSE 0 END ORDER BY date DESC").bind(etDate()).all();
+ const candidates=shuffle(rows.results,random).slice(0,21),banks=[],texts=new Set();let bankBytes=0;
+ for(const [index,row] of candidates.entries()){
   try{
-   const stored=await env.DB.prepare('SELECT content FROM puzzles WHERE date=?').bind(row.date).first(),puzzle=await boundedPuzzle(stored.content);
+   const stored=await env.DB.prepare('SELECT content FROM puzzles WHERE date=?').bind(row.date).first(),puzzle=await boundedPuzzle(stored?.content);
    if(puzzle.sample||puzzle.source==='OpenKrillion sample bank'||puzzle.date!==row.date||!Array.isArray(puzzle.prompts))continue;
-   const banks=[];for(const p of puzzle.prompts.slice(0,7)){
-    if(typeof p?.text!=='string'||!Array.isArray(p.answers)||!p.answers.length)continue;
+   const quota=Math.ceil((7-banks.length)/Math.min(7-banks.length,candidates.length-index));let added=0;
+   for(const {prompt:p,promptIndex} of shuffle(puzzle.prompts.map((prompt,promptIndex)=>({prompt,promptIndex})),random)){
+    if(typeof p?.text!=='string'||!normalize(p.text)||texts.has(normalize(p.text))||!Array.isArray(p.answers)||!p.answers.length)continue;
     const seen=new Set(),answers=p.answers.filter(a=>{if(!a||typeof a.answer!=='string'||!normalize(a.answer)||!Object.hasOwn(TIERS,a.tier))return false;const k=normalize(a.answer);if(seen.has(k))return false;seen.add(k);return true;}).map(a=>({answer:a.answer,tier:a.tier,...(Array.isArray(a.aliases)?{aliases:a.aliases.filter(x=>typeof x==='string')}: {})}));
-    if(answers.length)banks.push({id:`${row.date}:${banks.length}`,text:p.text,total:answers.length,answers});
+    if(!answers.length)continue;
+    const size=JSON.stringify(answers).length;
+    if(bankBytes+size>BANK_LIMIT)continue;
+    banks.push({id:row.date+':'+promptIndex,text:p.text,total:answers.length,answers});bankBytes+=size;texts.add(normalize(p.text));
+    if(++added>=quota||banks.length===7)break;
    }
-   if(banks.length)return banks;
+   if(banks.length===7)break;
   }catch(error){console.warn('Party snapshot unavailable',{date:row.date,message:error.message});}
  }
- throw new PartyError('Puffer Party needs a saved real puzzle. Play after a daily puzzle has synced.',503);
+ if(banks.length)return shuffle(banks,random);
+ throw new PartyError('Puffer Party needs a saved real puzzle. No usable questions are available yet.',503);
 }
 // This controller is also runtime-independent so the existing Node test suite
 // can exercise storage/recovery. party-entry extends the platform base class.
